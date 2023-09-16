@@ -4,11 +4,6 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
-
-	"flag"
-	"os"
-
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -38,13 +33,6 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// pullCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-}
-
-var DEFAULT_DIR = ".canvas-sync"
-
-func usage() {
-	fmt.Fprintf(os.Stderr, "Usage:\n  %s [file]\n", os.Args[0])
-	flag.PrintDefaults()
 }
 
 // pull video: client-rendered panopto thingy - will need to use playwright

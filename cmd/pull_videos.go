@@ -10,7 +10,7 @@ import (
 )
 
 // videosCmd represents the videos command
-var videosCmd = &cobra.Command{
+var pullVideosCmd = &cobra.Command{
 	Use:   "videos",
 	Short: "Downloads videos for a given course (all if none specified)",
 	Long: `Downloads videos for the given course code(s) case insensitive. If none is specified, all will be downloaded.
@@ -23,7 +23,7 @@ Examples:
 }
 
 func init() {
-	pullCmd.AddCommand(videosCmd)
+	pullCmd.AddCommand(pullVideosCmd)
 
 	// Here you will define your flags and configuration settings.
 

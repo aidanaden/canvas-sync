@@ -9,7 +9,7 @@ import (
 )
 
 // filesCmd represents the files command
-var filesCmd = &cobra.Command{
+var pullFilesCmd = &cobra.Command{
 	Use:   "files",
 	Short: "Downloads files for a given course (all if none specified)",
 	Long: `Downloads files for the given course code(s) case insensitive. If none is specified, all will be downloaded.
@@ -23,7 +23,7 @@ Examples:
 }
 
 func init() {
-	pullCmd.AddCommand(filesCmd)
+	pullCmd.AddCommand(pullFilesCmd)
 
 	// Here you will define your flags and configuration settings.
 
