@@ -1,4 +1,4 @@
-package pull_files
+package pull
 
 import (
 	"encoding/json"
@@ -13,7 +13,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/aidanaden/canvas-sync/internal/pkg"
+	"github.com/aidanaden/canvas-sync/internal/pkg/nodes"
+	"github.com/aidanaden/canvas-sync/internal/pkg/utils"
 	"github.com/chelnak/ysmrr"
 	"github.com/pkg/browser"
 	"github.com/spf13/cobra"
@@ -21,7 +22,7 @@ import (
 	_ "github.com/zellyn/kooky/browser/all" // register cookie store finders!
 )
 
-func recurseDirectoryNode(client *http.Client, node *DirectoryNode, parent *DirectoryNode, accessToken string) {
+func recurseDirectoryNode(client *http.Client, node *nodes.DirectoryNode, parent *nodes.DirectoryNode, accessToken string) {
 	dir := ""
 	if parent != nil {
 		dir += parent.Directory
@@ -43,13 +44,13 @@ func recurseDirectoryNode(client *http.Client, node *DirectoryNode, parent *Dire
 		if err != nil {
 			panic(err)
 		}
-		setQueryAccessToken(fileReq, accessToken)
+		utils.SetQueryAccessToken(fileReq, accessToken)
 		filesRes, err := client.Do(fileReq)
 		if err != nil {
 			panic(err)
 		}
-		filesJson := pkg.ExtractResponseToString(filesRes)
-		var files []*FileNode
+		filesJson := utils.ExtractResponseToString(filesRes)
+		var files []*nodes.FileNode
 		json.Unmarshal([]byte(filesJson), &files)
 		for f := range files {
 			files[f].Directory = fmt.Sprintf("%s%s", dir, files[f].Display_name)
@@ -62,13 +63,13 @@ func recurseDirectoryNode(client *http.Client, node *DirectoryNode, parent *Dire
 		if err != nil {
 			panic(err)
 		}
-		setQueryAccessToken(folderReq, accessToken)
+		utils.SetQueryAccessToken(folderReq, accessToken)
 		foldersRes, err := client.Do(folderReq)
 		if err != nil {
 			panic(err)
 		}
-		foldersJson := pkg.ExtractResponseToString(foldersRes)
-		var folders []*DirectoryNode
+		foldersJson := utils.ExtractResponseToString(foldersRes)
+		var folders []*nodes.DirectoryNode
 		json.Unmarshal([]byte(foldersJson), &folders)
 		for fi := range folders {
 			recurseDirectoryNode(client, folders[fi], node, accessToken)
@@ -77,7 +78,7 @@ func recurseDirectoryNode(client *http.Client, node *DirectoryNode, parent *Dire
 	}
 }
 
-func downloadFileNode(client *http.Client, node *FileNode) error {
+func downloadFileNode(client *http.Client, node *nodes.FileNode) error {
 	if client == nil || node == nil {
 		return errors.New("cannot download file without http client or file node")
 	}
@@ -98,7 +99,7 @@ func downloadFileNode(client *http.Client, node *FileNode) error {
 	return nil
 }
 
-func recursiveCreateNode(client *http.Client, node *DirectoryNode) {
+func recursiveCreateNode(client *http.Client, node *nodes.DirectoryNode) {
 	if node == nil {
 		return
 	}
@@ -116,15 +117,6 @@ func recursiveCreateNode(client *http.Client, node *DirectoryNode) {
 	}
 }
 
-func setQueryAccessToken(req *http.Request, accessToken string) {
-	if accessToken == "" {
-		return
-	}
-	q := req.URL.Query()
-	q.Set("access_token", accessToken)
-	req.URL.RawQuery = q.Encode()
-}
-
 func getCourseCodesFromArgs(rawArgs []string) []string {
 	args := make([]string, 0)
 	for _, raw := range rawArgs {
@@ -140,7 +132,7 @@ func getCourseCodesFromArgs(rawArgs []string) []string {
 	return args
 }
 
-func Run(cmd *cobra.Command, args []string) {
+func RunPullFiles(cmd *cobra.Command, args []string) {
 	targetDir := fmt.Sprintf("%v/files", viper.Get("data_dir"))
 	accessToken := fmt.Sprintf("%v", viper.Get("access_token"))
 
@@ -151,13 +143,13 @@ func Run(cmd *cobra.Command, args []string) {
 		fmt.Printf("\nno cookies found, getting auth cookies from browser...")
 
 		var rawCookies []*http.Cookie
-		rawCookies = pkg.ExtractCookies("canvas.nus.edu.sg")
+		rawCookies = utils.ExtractCookies("canvas.nus.edu.sg")
 		if rawCookies == nil || len(rawCookies) == 0 {
 			if err := browser.OpenURL("https://canvas.nus.edu.sg"); err != nil {
 				panic(err)
 			}
 			for {
-				rawCookies = pkg.ExtractCookies("canvas.nus.edu.sg")
+				rawCookies = utils.ExtractCookies("canvas.nus.edu.sg")
 				if rawCookies != nil && len(rawCookies) > 0 {
 					break
 				}
@@ -180,20 +172,20 @@ func Run(cmd *cobra.Command, args []string) {
 	providedCodes := getCourseCodesFromArgs(args)
 	// courses request
 	req, err := http.NewRequest("GET", "https://canvas.nus.edu.sg/api/v1/courses", nil)
-	setQueryAccessToken(req, accessToken)
+	utils.SetQueryAccessToken(req, accessToken)
 	if err != nil {
 		panic(err)
 	}
 
 	resp, err := client.Do(req)
-	courseJson := pkg.ExtractResponseToString(resp)
-	var rawCourses []CourseNode
+	courseJson := utils.ExtractResponseToString(resp)
+	var rawCourses []nodes.CourseNode
 	json.Unmarshal([]byte(courseJson), &rawCourses)
 
 	if strings.Contains(courseJson, "user authorisation required") {
 		panic(fmt.Errorf("\nerror querying '/api/v1/courses' endpoint: %v\nTRY LAUNCHING https://canvas.nus.edu.sg in a chrome/safari/edge browser and try again!", courseJson))
 	}
-	courses := make([]CourseNode, 0)
+	courses := make([]nodes.CourseNode, 0)
 	for _, raw := range rawCourses {
 		if raw.CourseCode == "" {
 			continue
@@ -222,7 +214,7 @@ func Run(cmd *cobra.Command, args []string) {
 			code := courses[i].CourseCode
 
 			req, err := http.NewRequest("GET", fmt.Sprintf("https://canvas.nus.edu.sg/api/v1/courses/%d/folders/root", courses[i].ID), nil)
-			setQueryAccessToken(req, accessToken)
+			utils.SetQueryAccessToken(req, accessToken)
 			if err != nil {
 				panic(err)
 			}
@@ -230,8 +222,8 @@ func Run(cmd *cobra.Command, args []string) {
 			if err != nil {
 				log.Fatalf("Error occured. Error is: %s", err.Error())
 			}
-			rootJson := pkg.ExtractResponseToString(rootRes)
-			var rootNode DirectoryNode
+			rootJson := utils.ExtractResponseToString(rootRes)
+			var rootNode nodes.DirectoryNode
 			json.Unmarshal([]byte(rootJson), &rootNode)
 			rootNode.Name = fmt.Sprintf("%s/%s", targetDir, code)
 

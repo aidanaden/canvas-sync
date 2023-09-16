@@ -1,6 +1,3 @@
-/*
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
@@ -9,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// viewCmd represents the view command
+// represents the view command
 var viewCmd = &cobra.Command{
 	Use:   "view",
 	Short: "View data from canvas (upcoming lectures, deadlines, etc)",
@@ -24,7 +21,55 @@ to quickly create a Cobra application.`,
 	},
 }
 
+// represents the view people command
+var peopleCmd = &cobra.Command{
+	Use:   "people",
+	Short: "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("people called")
+	},
+}
+
+// represents the view events command
+var viewEventsCmd = &cobra.Command{
+	Use:   "events",
+	Short: "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("events called")
+	},
+}
+
+// deadlinesCmd represents the deadlines command
+var deadlinesCmd = &cobra.Command{
+	Use:   "deadlines",
+	Short: "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("deadlines called")
+	},
+}
+
 func init() {
+	viewCmd.AddCommand(peopleCmd)
+	viewCmd.AddCommand(viewEventsCmd)
+	viewCmd.AddCommand(deadlinesCmd)
 	rootCmd.AddCommand(viewCmd)
 
 	// Here you will define your flags and configuration settings.

@@ -1,6 +1,8 @@
-package pull_files
+package nodes
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func recursivePrintNode(node *DirectoryNode, depth int) {
 	if node == nil {
