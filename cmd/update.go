@@ -8,13 +8,10 @@ import (
 // represents the update command
 var updateCmd = &cobra.Command{
 	Use:   "update",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Updates locally downloaded course data from canvas",
+	Long: `Updates downloaded course data from canvas in a target directory (defaults to $HOME/.canvas-sync/data/files)
+Specify target directory in the $HOME/.canvas-sync/config.yml file
+`,
 }
 
 // represents the update files command
@@ -23,13 +20,10 @@ to quickly create a Cobra application.`,
 // 3. if last-updated/modified time of file node is later, re-create file from node
 var updateFilesCmd = &cobra.Command{
 	Use:   "files",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Updates locally downloaded course files from canvas",
+	Long: `Updates downloaded files from canvas to a target directory (defaults to $HOME/.canvas-sync/data/files)
+Specify target directory in the $HOME/.canvas-sync/config.yml file
+`,
 	Run: update.RunUpdateFiles,
 }
 
