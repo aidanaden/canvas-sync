@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/aidanaden/canvas-sync/internal/app/view"
 	"github.com/spf13/cobra"
 )
 
@@ -16,9 +15,6 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("view called")
-	},
 }
 
 // represents the view people command
@@ -31,9 +27,7 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("people called")
-	},
+	Run: view.RunViewPeople,
 }
 
 // represents the view events command
@@ -46,9 +40,7 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("events called")
-	},
+	Run: view.RunViewEvents,
 }
 
 // deadlinesCmd represents the deadlines command
@@ -61,9 +53,7 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("deadlines called")
-	},
+	Run: view.RunViewDeadlines,
 }
 
 func init() {

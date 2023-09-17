@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/aidanaden/canvas-sync/internal/app/update"
 	"github.com/spf13/cobra"
 )
 
@@ -16,12 +15,12 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("update called")
-	},
 }
 
 // represents the update files command
+// 1. build node trees for all course nodes
+// 2. last-updated/modified time of files of each node vs of currently downloaded file
+// 3. if last-updated/modified time of file node is later, re-create file from node
 var updateFilesCmd = &cobra.Command{
 	Use:   "files",
 	Short: "A brief description of your command",
@@ -31,9 +30,7 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("files called")
-	},
+	Run: update.RunUpdateFiles,
 }
 
 func init() {
