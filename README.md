@@ -5,6 +5,7 @@ CLI to download (course files, videos, etc) & view (deadlines, events, announcem
 ### Install
 
 Brew:
+
 ```bash
 brew install aidanaden/tools/canvas-sync
 ```
@@ -27,9 +28,33 @@ All configuration is done in the `$HOME/.canvas-sync/config.yaml` file.
 
 Downloads data (files, videos, etc) from canvas, overwrites all existing data
 
+##### `pull files`
+
+View documentation via `pull files -h`:
+
+![pull files help](examples/pull_files_help.gif)
+
+![pull files demo](examples/pull_files_all.gif)
+
+##### `pull videos`
+
+TBD!
+
 #### Update
 
-Downloads new/updated data (files, videos, etc) from canvas
+Updates downloaded data (files, videos, etc) from canvas
+
+##### `update files`
+
+View documentation via `update files -h`:
+
+![update files help](examples/update_files_help.gif)
+
+![update files demo](examples/update_files_all.gif)
+
+##### `update videos`
+
+TBD!
 
 #### View
 
