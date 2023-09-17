@@ -52,7 +52,7 @@
 #   Hide                            Hide the subsequent commands from the output
 #   Show                            Show the subsequent commands in the output
 
-Output examples/pull_files_all.gif
+Output examples/update_files_all.gif
 
 Require echo
 
@@ -61,6 +61,6 @@ Set FontSize 32
 Set Width 1400
 Set Height 700
 
-Type "./bin/canvas-sync pull files" Sleep 500ms  Enter
+Type "./bin/canvas-sync update files" Sleep 500ms  Enter
 
-Sleep 15s
+Sleep 10s

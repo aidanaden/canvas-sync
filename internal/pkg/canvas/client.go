@@ -29,7 +29,7 @@ func NewClient(client *http.Client, rawUrl string, accessToken string) *CanvasCl
 	canvasHost := ""
 	for _, schema := range schemas {
 		if strings.Contains(rawUrl, schema) {
-			splits := strings.Split(rawUrl, "https://")
+			splits := strings.Split(rawUrl, schema)
 			canvasHost = splits[1]
 			break
 		}
@@ -182,7 +182,7 @@ func (c *CanvasClient) downloadFileNode(node *nodes.FileNode) error {
 	return nil
 }
 
-func (c *CanvasClient) RecursiveCreateNode(node *nodes.DirectoryNode) {
+func (c *CanvasClient) RecursiveCreateNode(node *nodes.DirectoryNode, updateNumDownloads func(numDownloads int)) {
 	if node == nil {
 		return
 	}
@@ -190,23 +190,26 @@ func (c *CanvasClient) RecursiveCreateNode(node *nodes.DirectoryNode) {
 		panic(err)
 	}
 	var wg sync.WaitGroup
+	numDownloads := 0
 	for j := range node.FileNodes {
 		if node.FileNodes[j] == nil {
 			continue
 		}
 		wg.Add(1)
+		numDownloads += 1
 		go func(i int) {
 			defer wg.Done()
 			c.downloadFileNode(node.FileNodes[i])
 		}(j)
 	}
+	updateNumDownloads(numDownloads)
 	for d := range node.FolderNodes {
-		c.RecursiveCreateNode(node.FolderNodes[d])
+		c.RecursiveCreateNode(node.FolderNodes[d], updateNumDownloads)
 	}
 	wg.Wait()
 }
 
-func (c *CanvasClient) RecursiveUpdateNode(node *nodes.DirectoryNode) {
+func (c *CanvasClient) RecursiveUpdateNode(node *nodes.DirectoryNode, updateNumDownloads func(numDownloads int)) {
 	if node == nil {
 		return
 	}
@@ -216,20 +219,24 @@ func (c *CanvasClient) RecursiveUpdateNode(node *nodes.DirectoryNode) {
 			panic(err)
 		}
 	}
+	numDownloads := 0
 	for j := range node.FileNodes {
 		if node.FileNodes[j] == nil {
 			continue
 		}
 		file, err := os.Stat(node.FileNodes[j].Directory)
 		if err != nil {
+			numDownloads += 1
 			c.downloadFileNode(node.FileNodes[j])
 		} else {
 			if file.ModTime().Unix() < node.FileNodes[j].UpdatedAt.Unix() {
+				numDownloads += 1
 				c.downloadFileNode(node.FileNodes[j])
 			}
 		}
 	}
+	updateNumDownloads(numDownloads)
 	for d := range node.FolderNodes {
-		c.RecursiveUpdateNode(node.FolderNodes[d])
+		c.RecursiveUpdateNode(node.FolderNodes[d], updateNumDownloads)
 	}
 }

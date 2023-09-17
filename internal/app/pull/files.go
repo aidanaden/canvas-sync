@@ -17,14 +17,17 @@ import (
 func RunPullFiles(cmd *cobra.Command, args []string) {
 	targetDir := fmt.Sprintf("%v/files", viper.Get("data_dir"))
 	accessToken := fmt.Sprintf("%v", viper.Get("access_token"))
+	canvasUrl := fmt.Sprintf("%v", viper.Get("canvas_url"))
 	providedCodes := utils.GetCourseCodesFromArgs(args)
 
 	fmt.Printf("Files will be downloaded to:\n%s\n", targetDir)
 
-	canvasClient := canvas.NewClient(http.DefaultClient, "canvas.nus.edu.sg", accessToken)
+	canvasClient := canvas.NewClient(http.DefaultClient, canvasUrl, accessToken)
 	if accessToken == "" {
 		fmt.Printf("\nno cookies found, getting auth cookies from browser...")
 		canvasClient.ExtractDomainBrowserCookies()
+	} else {
+		fmt.Printf("\nUsing access token starting with: %s", accessToken[:5])
 	}
 
 	rawCourses := canvasClient.GetActiveEnrolledCourses()
@@ -46,8 +49,6 @@ func RunPullFiles(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	fmt.Printf("\nUsing access token starting with: %s", accessToken[:5])
-
 	var wg sync.WaitGroup
 	sm := ysmrr.NewSpinnerManager()
 
@@ -66,9 +67,13 @@ func RunPullFiles(cmd *cobra.Command, args []string) {
 			canvasClient.RecurseDirectoryNode(&rootNode, nil)
 
 			sp.UpdateMessagef("Downloading files for %s", code)
-			canvasClient.RecursiveCreateNode(&rootNode)
+			totalFileDownloads := 0
+			canvasClient.RecursiveCreateNode(&rootNode, func(numDownloads int) {
+				totalFileDownloads += numDownloads
+				sp.UpdateMessagef("Downloading %d files for %s", totalFileDownloads, code)
+			})
 
-			sp.UpdateMessagef("Downloaded files for %s", code)
+			sp.UpdateMessagef("Downloaded %d files for %s", totalFileDownloads, code)
 			sp.Complete()
 		}(ci, sp)
 	}

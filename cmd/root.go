@@ -43,6 +43,8 @@ func init() {
 
 	rootCmd.PersistentFlags().String("access_token", "", "canvas access token; configurable in $HOME/.canvas-sync/config.yaml")
 	viper.BindPFlag("access_token", rootCmd.PersistentFlags().Lookup("access_token"))
+	rootCmd.PersistentFlags().String("canvas_url", "", "canvas url e.g. canvas.nus.edu.sg; configurable in $HOME/.canvas-sync/config.yaml")
+	viper.BindPFlag("canvas_url", rootCmd.PersistentFlags().Lookup("canvas_url"))
 
 	viper.SetDefault("author", "ryan aidan aidan@u.nus.edu")
 	viper.SetDefault("license", "MIT")
@@ -55,7 +57,9 @@ func init() {
 func initConfigFile(path string) {
 	configDir := filepath.Dir(path)
 	dataDir := fmt.Sprintf("%s/data", configDir)
-	d1 := []byte(fmt.Sprintf("access_token: \ndata_dir: %s\n", dataDir))
+	d1 := []byte(
+		fmt.Sprintf("access_token: \ndata_dir: %s\ncanvas_url: %s\n", dataDir, "https://canvas.nus.edu.sg"),
+	)
 	if err := os.WriteFile(path, d1, 0644); err != nil {
 		panic(err)
 	}
