@@ -52,7 +52,7 @@
 #   Hide                            Hide the subsequent commands from the output
 #   Show                            Show the subsequent commands in the output
 
-Output pull_files_all.gif
+Output examples/pull_files_all.gif
 
 Require echo
 
@@ -63,4 +63,4 @@ Set Height 700
 
 Type "./bin/canvas-sync pull files" Sleep 500ms  Enter
 
-Sleep 15s
+Sleep 12s

@@ -8,30 +8,16 @@ import (
 
 	"github.com/aidanaden/canvas-sync/internal/pkg/canvas"
 	"github.com/aidanaden/canvas-sync/internal/pkg/nodes"
+	"github.com/aidanaden/canvas-sync/internal/pkg/utils"
 	"github.com/chelnak/ysmrr"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
-func getCourseCodesFromArgs(rawArgs []string) []string {
-	args := make([]string, 0)
-	for _, raw := range rawArgs {
-		if strings.Contains(raw, ",") {
-			splits := strings.Split(raw, ",")
-			for _, split := range splits {
-				args = append(args, strings.ToLower(split))
-			}
-		} else {
-			args = append(args, strings.ToLower(raw))
-		}
-	}
-	return args
-}
-
 func RunPullFiles(cmd *cobra.Command, args []string) {
 	targetDir := fmt.Sprintf("%v/files", viper.Get("data_dir"))
 	accessToken := fmt.Sprintf("%v", viper.Get("access_token"))
-	providedCodes := getCourseCodesFromArgs(args)
+	providedCodes := utils.GetCourseCodesFromArgs(args)
 
 	fmt.Printf("Files will be downloaded to:\n%s\n", targetDir)
 

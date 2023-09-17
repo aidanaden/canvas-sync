@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"sync"
 
 	"github.com/aidanaden/canvas-sync/internal/pkg/nodes"
 	"github.com/aidanaden/canvas-sync/internal/pkg/utils"
@@ -188,13 +189,47 @@ func (c *CanvasClient) RecursiveCreateNode(node *nodes.DirectoryNode) {
 	if err := os.MkdirAll(node.Directory, os.ModePerm); err != nil {
 		panic(err)
 	}
+	var wg sync.WaitGroup
 	for j := range node.FileNodes {
 		if node.FileNodes[j] == nil {
 			continue
 		}
-		c.downloadFileNode(node.FileNodes[j])
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			c.downloadFileNode(node.FileNodes[i])
+		}(j)
 	}
 	for d := range node.FolderNodes {
 		c.RecursiveCreateNode(node.FolderNodes[d])
+	}
+	wg.Wait()
+}
+
+func (c *CanvasClient) RecursiveUpdateNode(node *nodes.DirectoryNode) {
+	if node == nil {
+		return
+	}
+	// create directory if doesnt exist
+	if _, err := os.Stat(node.Directory); os.IsNotExist(err) {
+		if err := os.MkdirAll(node.Directory, os.ModePerm); err != nil {
+			panic(err)
+		}
+	}
+	for j := range node.FileNodes {
+		if node.FileNodes[j] == nil {
+			continue
+		}
+		file, err := os.Stat(node.FileNodes[j].Directory)
+		if err != nil {
+			c.downloadFileNode(node.FileNodes[j])
+		} else {
+			if file.ModTime().Unix() < node.FileNodes[j].UpdatedAt.Unix() {
+				c.downloadFileNode(node.FileNodes[j])
+			}
+		}
+	}
+	for d := range node.FolderNodes {
+		c.RecursiveUpdateNode(node.FolderNodes[d])
 	}
 }
