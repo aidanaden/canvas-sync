@@ -14,10 +14,6 @@ Specify target directory in the $HOME/.canvas-sync/config.yml file
 `,
 }
 
-// represents the update files command
-// 1. build node trees for all course nodes
-// 2. last-updated/modified time of files of each node vs of currently downloaded file
-// 3. if last-updated/modified time of file node is later, re-create file from node
 var updateFilesCmd = &cobra.Command{
 	Use:   "files",
 	Short: "Updates locally downloaded course files from canvas",
