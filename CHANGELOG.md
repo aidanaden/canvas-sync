@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/aidanaden/canvas-sync/compare/v1.0.1...v1.0.2) (2023-09-17)
+
+
+### Bug Fixes
+
+* use pat for goreleaser ([#10](https://github.com/aidanaden/canvas-sync/issues/10)) ([3c61fb1](https://github.com/aidanaden/canvas-sync/commit/3c61fb1968c4adfdb070fa1f305c73d58e07bf0f))
+
 ## [1.0.1](https://github.com/aidanaden/canvas-sync/compare/v1.0.0...v1.0.1) (2023-09-17)
 
 
