@@ -1,2 +1,2 @@
 build:
-	go build -o bin/sync main.go
+	go build -o bin/canvas-sync main.go

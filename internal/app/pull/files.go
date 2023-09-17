@@ -33,7 +33,7 @@ func RunPullFiles(cmd *cobra.Command, args []string) {
 	accessToken := fmt.Sprintf("%v", viper.Get("access_token"))
 	providedCodes := getCourseCodesFromArgs(args)
 
-	fmt.Printf("files will be downloaded to data_dir: %s", targetDir)
+	fmt.Printf("Files will be downloaded to:\n%s\n", targetDir)
 
 	canvasClient := canvas.NewClient(http.DefaultClient, "canvas.nus.edu.sg", accessToken)
 	if accessToken == "" {
@@ -41,7 +41,6 @@ func RunPullFiles(cmd *cobra.Command, args []string) {
 		canvasClient.ExtractDomainBrowserCookies()
 	}
 
-	fmt.Printf("\naccess token found: %s", accessToken)
 	rawCourses := canvasClient.GetActiveEnrolledCourses()
 	courses := make([]nodes.CourseNode, 0)
 	for _, raw := range rawCourses {
@@ -60,6 +59,8 @@ func RunPullFiles(cmd *cobra.Command, args []string) {
 			}
 		}
 	}
+
+	fmt.Printf("\nUsing access token starting with: %s", accessToken[:5])
 
 	var wg sync.WaitGroup
 	sm := ysmrr.NewSpinnerManager()
@@ -88,5 +89,5 @@ func RunPullFiles(cmd *cobra.Command, args []string) {
 	sm.Start()
 	wg.Wait()
 	sm.Stop()
-	fmt.Printf("\ndownloaded files - view here: %s", targetDir)
+	fmt.Printf("\nDownloaded files:\n%s\n", targetDir)
 }

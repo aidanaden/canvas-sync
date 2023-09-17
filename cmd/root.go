@@ -19,11 +19,10 @@ var rootCmd = &cobra.Command{
 	Long: `Canvas-sync is a CLI alternative to the canvas website.
 
 Features:
-  - downloading files from canvas (files, videos, etc)
-  - displaying course calendars
-  - more to come...
-
-Report bugs to https://github.com/aidanaden/canvas-sync/issues`,
+  - download from canvas (files, videos, etc)
+  - display canvas info (deadlines, announcements, etc)
+  - upload/submit assignments (only if i get > 10 stars on github)
+  - more to come (tm)...`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -45,17 +44,12 @@ func init() {
 	rootCmd.PersistentFlags().String("access_token", "", "canvas access token; configurable in $HOME/.canvas-sync/config.yaml")
 	viper.BindPFlag("access_token", rootCmd.PersistentFlags().Lookup("access_token"))
 
-	// rootCmd.PersistentFlags().StringP("author", "a", "YOUR NAME", "author name for copyright attribution")
-	// rootCmd.PersistentFlags().StringVarP(&userLicense, "license", "l", "", "name of license for the project")
-	// rootCmd.PersistentFlags().Bool("viper", true, "use Viper for configuration")
-	// viper.BindPFlag("author", rootCmd.PersistentFlags().Lookup("author"))
-	// viper.BindPFlag("useViper", rootCmd.PersistentFlags().Lookup("viper"))
-	// viper.SetDefault("author", "NAME HERE <EMAIL ADDRESS>")
-	// viper.SetDefault("license", "apache")
+	viper.SetDefault("author", "ryan aidan aidan@u.nus.edu")
+	viper.SetDefault("license", "MIT")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 func initConfigFile(path string) {
@@ -99,6 +93,6 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
+		fmt.Fprintln(os.Stderr, fmt.Sprintf("Using config file:\n%s\n", viper.ConfigFileUsed()))
 	}
 }
