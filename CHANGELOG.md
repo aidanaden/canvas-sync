@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/aidanaden/canvas-sync/compare/v1.3.6...v1.4.0) (2023-09-18)
+
+
+### Features
+
+* add snap ci ([#49](https://github.com/aidanaden/canvas-sync/issues/49)) ([5cd483f](https://github.com/aidanaden/canvas-sync/commit/5cd483f69115310960c7a6465a50e2cf1386125f))
+
 ## [1.3.6](https://github.com/aidanaden/canvas-sync/compare/v1.3.5...v1.3.6) (2023-09-18)
 
 
