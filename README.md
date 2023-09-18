@@ -51,7 +51,6 @@ fi" >> ~/.bash_profile
 **fish** (not necessary if you installed fish via homebrew)
 
 ```bash
-# if '~/.bash_profile' doesn't exist, replace with '~/.profile' 
 echo "if test -d (brew --prefix)"/share/fish/completions"
     set -gx fish_complete_path $fish_complete_path (brew --prefix)/share/fish/completions
 end
