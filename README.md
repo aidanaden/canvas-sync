@@ -1,7 +1,7 @@
 <!-- omit in toc -->
 # canvas-sync
 
-CLI to download (course files, videos, etc) & view (deadlines, events, announcements) from canvas
+CLI to download (course files, videos, etc) & view (deadlines, events, announcements) from [Canvas](https://www.instructure.com/canvas)
 
 <!-- omit in toc -->
 ## Contents

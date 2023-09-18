@@ -20,6 +20,16 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.21
+      # taken from https://github.com/goreleaser/goreleaser/blob/main/.github/workflows/release.yml
+      - name: setup-snapcraft
+        # FIXME: the mkdirs are a hack for https://github.com/goreleaser/goreleaser/issues/1715
+        run: |
+          sudo apt-get update
+          sudo apt-get -yq --no-install-suggests --no-install-recommends install snapcraft
+          mkdir -p $HOME/.cache/snapcraft/download
+          mkdir -p $HOME/.cache/snapcraft/stage-packages
+      - name: snapcraft-login
+        run: snapcraft login --with <(echo "${{ secrets.SNAP_CREDS }}")
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
