@@ -26,7 +26,7 @@ Examples:
   canvas-sync pull files - downloads files for all courses
   canvas-sync pull files --data_dir /Users/test - downloads files for all courses in the /Users/test/files directory
   canvas-sync pull files CS3219 - downloads files for course with course code "CS3219"
-  canvas-sync pull files CS3219,CS3230,CS1101S - downloads files for courses with course codes "CS3219", "CS3230" and "CS1101S"`,
+  canvas-sync pull files CS3219 CS3230 - downloads files for courses with course codes "CS3219" or "CS3230"`,
 	Run: pull.RunPullFiles,
 }
 
@@ -39,7 +39,7 @@ var pullVideosCmd = &cobra.Command{
 Examples:
   canvas-sync pull videos - downloads videos for all courses
   canvas-sync pull videos CS3219 - downloads videos for course with course code "CS3219"
-  canvas-sync pull videos CS3219,CS3230,CS1101S - downloads videos for courses with course codes "CS3219", "CS3230" and "CS1101S"`,
+  canvas-sync pull videos CS3219 CS3230 - downloads videos for courses with course codes "CS3219" or "CS3230"`,
 	Run: pull.RunPullVideos,
 }
 

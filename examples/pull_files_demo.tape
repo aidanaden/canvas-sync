@@ -60,7 +60,9 @@ Set Shell "bash"
 Set FontSize 32
 Set Width 1400
 Set Height 700
+Set PlaybackSpeed 0.5 # Make output 2 times slower
+Set CursorBlink false
 
-Type "./bin/canvas-sync pull files" Sleep 500ms  Enter
+Type "canvas-sync pull files" Sleep 500ms  Enter
 
-Sleep 15s
+Sleep 20s
