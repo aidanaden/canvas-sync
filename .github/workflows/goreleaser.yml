@@ -2,9 +2,6 @@ name: goreleaser
 
 on:
   push:
-    branches:
-      - main
-    # Sequence of patterns matched against refs/tags
     tags:
       - v*
 
@@ -12,6 +9,9 @@ jobs:
   goreleaser:
     runs-on: ubuntu-latest
     steps:
+      - name: Exit if not on main branch
+        if: endsWith(github.ref, 'main') == false
+        run: exit -1
       - name: Checkout
         uses: actions/checkout@v2
         with:
