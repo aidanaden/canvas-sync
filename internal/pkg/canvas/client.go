@@ -224,6 +224,7 @@ func (c *CanvasClient) RecursiveUpdateNode(node *nodes.DirectoryNode, updateNumD
 			panic(err)
 		}
 	}
+	var wg sync.WaitGroup
 	numDownloads := 0
 	for j := range node.FileNodes {
 		if node.FileNodes[j] == nil {
@@ -231,17 +232,30 @@ func (c *CanvasClient) RecursiveUpdateNode(node *nodes.DirectoryNode, updateNumD
 		}
 		file, err := os.Stat(node.FileNodes[j].Directory)
 		if err != nil {
+			wg.Add(1)
 			numDownloads += 1
-			c.downloadFileNode(node.FileNodes[j])
+			go func(i int) {
+				defer wg.Done()
+				c.downloadFileNode(node.FileNodes[i])
+			}(j)
 		} else {
 			if file.ModTime().Unix() < node.FileNodes[j].UpdatedAt.Unix() {
+				wg.Add(1)
 				numDownloads += 1
-				c.downloadFileNode(node.FileNodes[j])
+				go func(i int) {
+					defer wg.Done()
+					c.downloadFileNode(node.FileNodes[i])
+				}(j)
 			}
 		}
 	}
 	updateNumDownloads(numDownloads)
 	for d := range node.FolderNodes {
-		c.RecursiveUpdateNode(node.FolderNodes[d], updateNumDownloads)
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			c.RecursiveUpdateNode(node.FolderNodes[i], updateNumDownloads)
+		}(d)
 	}
+	wg.Wait()
 }
