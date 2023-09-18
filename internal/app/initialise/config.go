@@ -5,6 +5,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/aidanaden/canvas-sync/internal/pkg/input"
 )
 
 func initConfigFile(path string) {
@@ -44,12 +46,8 @@ func RunInit(isInitCommand bool) string {
 		// overwrite existing
 		if err == nil && isInitCommand {
 			fmt.Printf("Existing config file found - confirm create new config file? (y/N): ")
-			var res string
-			_, err := fmt.Scanln(&res)
-			if err != nil {
-				log.Fatalf("\nError getting response for creating new config file: %s", err.Error())
-			}
-			if res == "y" {
+			res := input.GetYesOrNoFromUser()
+			if res {
 				initConfigFile(cfgFilePath)
 				if isInitCommand {
 					fmt.Printf("\nSuccessfully created config file.")
