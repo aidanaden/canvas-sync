@@ -2,6 +2,29 @@
 
 CLI to download (course files, videos, etc) & view (deadlines, events, announcements) from canvas
 
+## Table of Contents
+
+- [canvas-sync](#canvas-sync)
+  - [Table of Contents](#table-of-contents)
+  - [Install](#install)
+    - [Autocomplete](#autocomplete)
+      - [zsh](#zsh)
+      - [bash](#bash)
+      - [fish (not necessary if you installed fish via homebrew)](#fish-not-necessary-if-you-installed-fish-via-homebrew)
+  - [Config](#config)
+  - [Commands](#commands)
+    - [Pull](#pull)
+      - [Pull Files](#pull-files)
+      - [Pull Videos](#pull-videos)
+    - [Update](#update)
+      - [Update Files](#update-files)
+      - [Update Videos](#update-videos)
+    - [View](#view)
+      - [View Deadlines](#view-deadlines)
+      - [View Events (lectures/tutorials)](#view-events-lecturestutorials)
+      - [View Announcements](#view-announcements)
+  - [LICENSE](#license)
+
 ## Install
 
 Brew:
@@ -12,11 +35,11 @@ brew install aidanaden/tools/canvas-sync
 
 You can also download directly from the [releases](https://github.com/aidanaden/canvas-sync/releases) page
 
-## Autocomplete
+### Autocomplete
 
 Add autocompletion for canvas-sync in your terminal:
 
-### zsh
+#### zsh
 
 ```bash
 # add autocomplete to .zsh
@@ -29,7 +52,7 @@ then
 fi" >> ~/.zshrc && source ~/.zshrc
 ```
 
-### bash
+#### bash
 
 ```bash
 # replace '~/.bash_profile' with wherever your bash file is
@@ -48,7 +71,7 @@ then
 fi" >> ~/.bash_profile && source ~/.bash_profile
 ```
 
-### fish (not necessary if you installed fish via homebrew)
+#### fish (not necessary if you installed fish via homebrew)
 
 ```bash
 # replace '~/.config/fish/config.fish' with wherever your fish config file is
@@ -87,7 +110,7 @@ View documentation via `pull files -h`:
 
 #### Pull Videos
 
-TBD!
+WIP
 
 ### Update
 
@@ -103,8 +126,24 @@ View documentation via `update files -h`:
 
 #### Update Videos
 
-TBD!
+WIP
 
 ### View
 
 Display data from canvas (deadlines, events, announcements, etc)
+
+#### View Deadlines
+
+WIP
+
+#### View Events (lectures/tutorials)
+
+WIP
+
+#### View Announcements
+
+WIP
+
+## LICENSE
+
+MIT
