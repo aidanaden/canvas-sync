@@ -186,7 +186,7 @@ func (c *CanvasClient) RecursiveCreateNode(node *nodes.DirectoryNode, updateNumD
 	if node == nil {
 		return
 	}
-	if err := os.MkdirAll(node.Directory, os.ModePerm); err != nil {
+	if err := os.MkdirAll(node.Directory, 755); err != nil {
 		panic(err)
 	}
 	var wg sync.WaitGroup
@@ -215,7 +215,7 @@ func (c *CanvasClient) RecursiveUpdateNode(node *nodes.DirectoryNode, updateNumD
 	}
 	// create directory if doesnt exist
 	if _, err := os.Stat(node.Directory); os.IsNotExist(err) {
-		if err := os.MkdirAll(node.Directory, os.ModePerm); err != nil {
+		if err := os.MkdirAll(node.Directory, 755); err != nil {
 			panic(err)
 		}
 	}

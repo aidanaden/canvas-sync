@@ -77,7 +77,7 @@ func initConfig() {
 		cfgDir := fmt.Sprintf("%s/.canvas-sync", home)
 		cfgFilePath := fmt.Sprintf("%s/config.yaml", cfgDir)
 		if _, err := os.Stat(cfgDir); os.IsNotExist(err) {
-			if err := os.MkdirAll(cfgDir, os.ModePerm); err != nil {
+			if err := os.MkdirAll(cfgDir, 755); err != nil {
 				panic(err)
 			}
 			initConfigFile(cfgFilePath)
