@@ -3,6 +3,7 @@ package update
 import (
 	"fmt"
 	"net/http"
+	"path/filepath"
 	"strings"
 	"sync"
 
@@ -15,7 +16,8 @@ import (
 )
 
 func RunUpdateFiles(cmd *cobra.Command, args []string) {
-	targetDir := fmt.Sprintf("%v/files", viper.Get("data_dir"))
+	targetDir := filepath.Join(fmt.Sprintf("%s", viper.Get("data_dir")), "files")
+	targetDir = utils.GetExpandedHomeDirectoryPath(targetDir)
 	accessToken := fmt.Sprintf("%v", viper.Get("access_token"))
 	canvasUrl := fmt.Sprintf("%v", viper.Get("canvas_url"))
 	providedCodes := utils.GetCourseCodesFromArgs(args)

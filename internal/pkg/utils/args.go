@@ -1,6 +1,10 @@
 package utils
 
-import "strings"
+import (
+	"os"
+	"path/filepath"
+	"strings"
+)
 
 func GetCourseCodesFromArgs(rawArgs []string) []string {
 	args := make([]string, 0)
@@ -15,4 +19,15 @@ func GetCourseCodesFromArgs(rawArgs []string) []string {
 		}
 	}
 	return args
+}
+
+func GetExpandedHomeDirectoryPath(path string) string {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		panic(err)
+	}
+	if strings.HasPrefix(path, "~") {
+		return filepath.Join(home, path[2:])
+	}
+	return path
 }
