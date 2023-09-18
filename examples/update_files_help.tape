@@ -60,7 +60,9 @@ Set Shell "bash"
 Set FontSize 32
 Set Width 1800
 Set Height 1200
+Set PlaybackSpeed 0.5 # Make output 2 times slower
+Set CursorBlink false
 
-Type "./bin/canvas-sync update files -h" Sleep 500ms  Enter
+Type "canvas-sync update files -h" Sleep 500ms  Enter
 
-Sleep 60s
+Sleep 20s
