@@ -60,8 +60,8 @@ brews:
 
     # Custom post_install script for brew.
     # Could be used to do any additional work after the "install" script
-    post_install: |
-      system "echo", "\nif type brew &>/dev/null; then FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH && autoload -Uz compinit && compinit; fi", ">>", "~/.zshrc"
+    # post_install: |
+    #   system "echo", "\nif type brew &>/dev/null; then FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH && autoload -Uz compinit && compinit; fi", ">>", "~/.zshrc"
 
 # winget:
 #   - name: canvas-sync
