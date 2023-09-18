@@ -44,6 +44,6 @@ changelog:
 brews:
   - name: canvas-sync
     homepage: https://github.com/aidanaden/homebrew-tools
-    tap:
+    repository:
       owner: aidanaden
       name: homebrew-tools
