@@ -56,7 +56,7 @@ func init() {
 
 func initConfigFile(path string) {
 	configDir := filepath.Dir(path)
-	dataDir := fmt.Sprintf("%s/data", configDir)
+	dataDir := filepath.Join(configDir, "data")
 	d1 := []byte(
 		fmt.Sprintf("access_token: \ndata_dir: %s\ncanvas_url: %s\n", dataDir, "https://canvas.nus.edu.sg"),
 	)

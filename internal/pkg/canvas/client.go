@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 
@@ -114,12 +115,12 @@ func (c *CanvasClient) GetCourseRootFolder(courseId int) nodes.DirectoryNode {
 func (c *CanvasClient) RecurseDirectoryNode(node *nodes.DirectoryNode, parent *nodes.DirectoryNode) {
 	dir := ""
 	if parent != nil {
-		dir += parent.Directory
+		dir = filepath.Join(parent.Directory)
 	}
 	if node == nil {
 		panic("node is nil!")
 	}
-	dir += fmt.Sprintf("%s/", node.Name)
+	dir = filepath.Join(dir, node.Name)
 	node.Directory = dir
 
 	if node.FilesCount > 0 {
@@ -136,7 +137,7 @@ func (c *CanvasClient) RecurseDirectoryNode(node *nodes.DirectoryNode, parent *n
 		var files []*nodes.FileNode
 		json.Unmarshal([]byte(filesJson), &files)
 		for f := range files {
-			files[f].Directory = fmt.Sprintf("%s%s", dir, files[f].Display_name)
+			files[f].Directory = filepath.Join(dir, files[f].Display_name)
 		}
 		node.FileNodes = files
 	}
