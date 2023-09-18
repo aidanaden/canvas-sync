@@ -42,48 +42,70 @@ Add autocompletion for canvas-sync in your terminal:
 
 #### zsh
 
-```bash
-# replace '~/.zshrc' with wherever your zsh config file is
-echo "\n\nif type brew &>/dev/null
-then
-  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+<details>
+  <summary>
+    Code for zsh autocomplete
+  </summary>
 
-  autoload -Uz compinit
-  compinit
-fi" >> ~/.zshrc && source ~/.zshrc
-```
+  ```bash
+  # replace '~/.zshrc' with wherever your zsh config file is
+  echo "\n\nif type brew &>/dev/null
+  then
+    FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+
+    autoload -Uz compinit
+    compinit
+  fi" >> ~/.zshrc && source ~/.zshrc
+
+  ```
+
+</details>
 
 #### bash
 
-```bash
-# replace '~/.bash_profile' with wherever your bash config file is
-echo "if type brew &>/dev/null
-then
-  HOMEBREW_PREFIX="$(brew --prefix)"
-  if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]
+<details>
+  <summary>
+    Code for bash autocomplete
+  </summary>
+
+  ```bash
+  # replace '~/.bash_profile' with wherever your bash config file is
+  echo "if type brew &>/dev/null
   then
-    source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
-  else
-    for COMPLETION in "${HOMEBREW_PREFIX}/etc/bash_completion.d/"*
-    do
-      [[ -r "${COMPLETION}" ]] && source "${COMPLETION}"
-    done
-  fi
-fi" >> ~/.bash_profile && source ~/.bash_profile
-```
+    HOMEBREW_PREFIX="$(brew --prefix)"
+    if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]
+    then
+      source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
+    else
+      for COMPLETION in "${HOMEBREW_PREFIX}/etc/bash_completion.d/"*
+      do
+        [[ -r "${COMPLETION}" ]] && source "${COMPLETION}"
+      done
+    fi
+  fi" >> ~/.bash_profile && source ~/.bash_profile
+  ```
+
+</details>
 
 #### fish (not necessary if you installed fish via homebrew)
 
-```bash
-# replace '~/.config/fish/config.fish' with wherever your fish config file is
-echo "if test -d (brew --prefix)"/share/fish/completions"
-    set -gx fish_complete_path $fish_complete_path (brew --prefix)/share/fish/completions
-end
+<details>
+  <summary>
+    Code for fish autocomplete
+  </summary>
 
-if test -d (brew --prefix)"/share/fish/vendor_completions.d"
-    set -gx fish_complete_path $fish_complete_path (brew --prefix)/share/fish/vendor_completions.d
-end" >> ~/.config/fish/config.fish && source ~/.config/fish/config.fish
-```
+  ```bash
+  # replace '~/.config/fish/config.fish' with wherever your fish config file is
+  echo "if test -d (brew --prefix)"/share/fish/completions"
+      set -gx fish_complete_path $fish_complete_path (brew --prefix)/share/fish/completions
+  end
+
+  if test -d (brew --prefix)"/share/fish/vendor_completions.d"
+      set -gx fish_complete_path $fish_complete_path (brew --prefix)/share/fish/vendor_completions.d
+  end" >> ~/.config/fish/config.fish && source ~/.config/fish/config.fish
+  ```
+
+</details>
 
 ## Config
 

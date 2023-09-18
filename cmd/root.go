@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"path/filepath"
-
+	"github.com/aidanaden/canvas-sync/internal/app/initialise"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -35,8 +34,6 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
-
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
@@ -54,17 +51,6 @@ func init() {
 	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func initConfigFile(path string) {
-	configDir := filepath.Dir(path)
-	dataDir := filepath.Join(configDir, "data")
-	d1 := []byte(
-		fmt.Sprintf("access_token: \ndata_dir: %s\ncanvas_url: %s\n", dataDir, "https://canvas.nus.edu.sg"),
-	)
-	if err := os.WriteFile(path, d1, 0644); err != nil {
-		panic(err)
-	}
-}
-
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
 	if cfgFile != "" {
@@ -72,20 +58,9 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	} else {
 		// Find home directory.
-		home, err := os.UserHomeDir()
+		_, err := os.UserHomeDir()
 		cobra.CheckErr(err)
-		cfgDir := fmt.Sprintf("%s/.canvas-sync", home)
-		cfgFilePath := fmt.Sprintf("%s/config.yaml", cfgDir)
-		if _, err := os.Stat(cfgDir); os.IsNotExist(err) {
-			if err := os.MkdirAll(cfgDir, 755); err != nil {
-				panic(err)
-			}
-			initConfigFile(cfgFilePath)
-		}
-
-		if _, err := os.Stat(cfgFilePath); os.IsNotExist(err) {
-			initConfigFile(cfgFilePath)
-		}
+		cfgDir := initialise.RunInit(false)
 
 		// Search config in home directory with name ".canvas-sync/config" (without extension).
 		viper.AddConfigPath(cfgDir)
