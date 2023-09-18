@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/aidanaden/canvas-sync/compare/v1.0.2...v1.1.0) (2023-09-18)
+
+
+### Features
+
+* update pull videos, examples ([#13](https://github.com/aidanaden/canvas-sync/issues/13)) ([414f0c7](https://github.com/aidanaden/canvas-sync/commit/414f0c788227c91ccba4cc362cf982dae5b9a156))
+
 ## [1.0.2](https://github.com/aidanaden/canvas-sync/compare/v1.0.1...v1.0.2) (2023-09-17)
 
 
