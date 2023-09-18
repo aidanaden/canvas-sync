@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/aidanaden/canvas-sync/compare/v1.1.3...v1.2.0) (2023-09-18)
+
+
+### Features
+
+* parallelise recursive create ([#26](https://github.com/aidanaden/canvas-sync/issues/26)) ([9e2dcd9](https://github.com/aidanaden/canvas-sync/commit/9e2dcd9c09ce0ca80e7c8942d679bb9046dddfd0))
+
 ## [1.1.3](https://github.com/aidanaden/canvas-sync/compare/v1.1.2...v1.1.3) (2023-09-18)
 
 
