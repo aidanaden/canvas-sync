@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/aidanaden/canvas-sync/compare/v1.1.1...v1.1.2) (2023-09-18)
+
+
+### Bug Fixes
+
+* use 755 instead of 511 fileperm bits ([#20](https://github.com/aidanaden/canvas-sync/issues/20)) ([f45b6f5](https://github.com/aidanaden/canvas-sync/commit/f45b6f58419fce4f3a586d1bcf51d773c714aa99))
+
 ## [1.1.1](https://github.com/aidanaden/canvas-sync/compare/v1.1.0...v1.1.1) (2023-09-18)
 
 
