@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/aidanaden/canvas-sync/compare/v1.4.0...v1.4.1) (2023-09-18)
+
+
+### Bug Fixes
+
+* snap creds ([#51](https://github.com/aidanaden/canvas-sync/issues/51)) ([8fe682b](https://github.com/aidanaden/canvas-sync/commit/8fe682b1eaada833872e50c3e33d8b0cfb86c41c))
+
 ## [1.4.0](https://github.com/aidanaden/canvas-sync/compare/v1.3.6...v1.4.0) (2023-09-18)
 
 
