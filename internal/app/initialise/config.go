@@ -15,7 +15,7 @@ func initConfigFile(path string) {
 	d1 := []byte(
 		fmt.Sprintf("access_token: \ndata_dir: %s\ncanvas_url: %s\n", dataDir, "https://canvas.nus.edu.sg"),
 	)
-	if err := os.WriteFile(path, d1, 0644); err != nil {
+	if err := os.WriteFile(path, d1, 0755); err != nil {
 		log.Fatalf("\nError creating config file: %s", err.Error())
 	}
 }
@@ -34,7 +34,7 @@ func RunInit(isInitCommand bool) string {
 
 	// create config directory + file if not exist
 	if _, err := os.Stat(cfgDir); os.IsNotExist(err) {
-		if err := os.MkdirAll(cfgDir, 755); err != nil {
+		if err := os.MkdirAll(cfgDir, 0755); err != nil {
 			log.Fatalf("\nError creating default config directory: %s", err.Error())
 		}
 		initConfigFile(cfgFilePath)
