@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/aidanaden/canvas-sync/compare/v1.5.0...v1.5.1) (2023-09-18)
+
+
+### Bug Fixes
+
+* file perms for real ([#58](https://github.com/aidanaden/canvas-sync/issues/58)) ([c2a7e45](https://github.com/aidanaden/canvas-sync/commit/c2a7e45722d69c8e4217b43a60e31d6a2b395d54))
+
 ## [1.5.0](https://github.com/aidanaden/canvas-sync/compare/v1.4.3...v1.5.0) (2023-09-18)
 
 
