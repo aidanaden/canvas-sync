@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/aidanaden/canvas-sync/compare/v1.5.1...v1.6.0) (2023-09-18)
+
+
+### Features
+
+* parallel updates ([#60](https://github.com/aidanaden/canvas-sync/issues/60)) ([a9f593b](https://github.com/aidanaden/canvas-sync/commit/a9f593b2d98ee0ceacfebe61b3adf184c9c9c8f0))
+
 ## [1.5.1](https://github.com/aidanaden/canvas-sync/compare/v1.5.0...v1.5.1) (2023-09-18)
 
 
