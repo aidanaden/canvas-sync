@@ -205,7 +205,11 @@ func (c *CanvasClient) RecursiveCreateNode(node *nodes.DirectoryNode, updateNumD
 	}
 	updateNumDownloads(numDownloads)
 	for d := range node.FolderNodes {
-		c.RecursiveCreateNode(node.FolderNodes[d], updateNumDownloads)
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			c.RecursiveCreateNode(node.FolderNodes[i], updateNumDownloads)
+		}(d)
 	}
 	wg.Wait()
 }
