@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.4](https://github.com/aidanaden/canvas-sync/compare/v1.3.3...v1.3.4) (2023-09-18)
+
+
+### Bug Fixes
+
+* add completion script to gitignore ([#37](https://github.com/aidanaden/canvas-sync/issues/37)) ([2ff56fe](https://github.com/aidanaden/canvas-sync/commit/2ff56fe7e1bea6408e6295dd944d799af13ca25f))
+
 ## [1.3.3](https://github.com/aidanaden/canvas-sync/compare/v1.3.2...v1.3.3) (2023-09-18)
 
 
