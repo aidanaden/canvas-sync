@@ -26,13 +26,13 @@ then
 
   autoload -Uz compinit
   compinit
-fi" >> ~/.zshrc
+fi" >> ~/.zshrc && source ~/.zshrc
 ```
 
 ### bash
 
 ```bash
-# if '~/.bash_profile' doesn't exist, replace with '~/.profile' 
+# replace '~/.bash_profile' with wherever your bash file is
 echo "if type brew &>/dev/null
 then
   HOMEBREW_PREFIX="$(brew --prefix)"
@@ -45,19 +45,20 @@ then
       [[ -r "${COMPLETION}" ]] && source "${COMPLETION}"
     done
   fi
-fi" >> ~/.bash_profile
+fi" >> ~/.bash_profile && source ~/.bash_profile
 ```
 
 ### fish (not necessary if you installed fish via homebrew)
 
 ```bash
+# replace '~/.config/fish/config.fish' with wherever your fish config file is
 echo "if test -d (brew --prefix)"/share/fish/completions"
     set -gx fish_complete_path $fish_complete_path (brew --prefix)/share/fish/completions
 end
 
 if test -d (brew --prefix)"/share/fish/vendor_completions.d"
     set -gx fish_complete_path $fish_complete_path (brew --prefix)/share/fish/vendor_completions.d
-end" >> ~/.config/fish/config.fish
+end" >> ~/.config/fish/config.fish && source ~/.config/fish/config.fish
 ```
 
 ## Config
@@ -76,7 +77,7 @@ All configuration is done in the `$HOME/.canvas-sync/config.yaml` file.
 
 Downloads data (files, videos, etc) from canvas, overwrites all existing data
 
-#### `pull files`
+#### Pull Files
 
 View documentation via `pull files -h`:
 
@@ -84,7 +85,7 @@ View documentation via `pull files -h`:
 
 ![pull files demo](examples/pull_files_all.gif)
 
-#### `pull videos`
+#### Pull Videos
 
 TBD!
 
@@ -92,7 +93,7 @@ TBD!
 
 Updates downloaded data (files, videos, etc) from canvas
 
-#### `update files`
+#### Update Files
 
 View documentation via `update files -h`:
 
@@ -100,7 +101,7 @@ View documentation via `update files -h`:
 
 ![update files demo](examples/update_files_all.gif)
 
-#### `update videos`
+#### Update Videos
 
 TBD!
 
