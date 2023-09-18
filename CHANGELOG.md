@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/aidanaden/canvas-sync/compare/v1.1.0...v1.1.1) (2023-09-18)
+
+
+### Bug Fixes
+
+* doc gif, goreleaser brew ([#18](https://github.com/aidanaden/canvas-sync/issues/18)) ([63b7857](https://github.com/aidanaden/canvas-sync/commit/63b7857bca37517ce4da69d6de1d2ffecc6a76b3))
+
 ## [1.1.0](https://github.com/aidanaden/canvas-sync/compare/v1.0.2...v1.1.0) (2023-09-18)
 
 
