@@ -12,7 +12,7 @@ import (
 var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "Initialise new config file with defaults",
-	Long: `Initialise new directory '~/.canvas-sync' with default config '~/.canvas-sync/config.yaml'.
+	Long: `Initialise directory '~/.canvas-sync' with default config '~/.canvas-sync/config.yaml'.
 Default values:
   - access_token: ""
   - data_dir: ~/.canvas-sync/data
