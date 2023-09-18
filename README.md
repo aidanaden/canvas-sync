@@ -12,6 +12,55 @@ brew install aidanaden/tools/canvas-sync
 
 You can also download directly from the [releases](https://github.com/aidanaden/canvas-sync/releases) page
 
+### Autocomplete
+
+Add autocompletion for canvas-sync in your terminal:
+
+**zsh**
+
+```bash
+# add autocomplete to .zsh
+echo "\n\nif type brew &>/dev/null
+then
+  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+
+  autoload -Uz compinit
+  compinit
+fi" >> ~/.zshrc
+```
+
+**bash**
+
+```bash
+# if '~/.bash_profile' doesn't exist, replace with '~/.profile' 
+echo "if type brew &>/dev/null
+then
+  HOMEBREW_PREFIX="$(brew --prefix)"
+  if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]
+  then
+    source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
+  else
+    for COMPLETION in "${HOMEBREW_PREFIX}/etc/bash_completion.d/"*
+    do
+      [[ -r "${COMPLETION}" ]] && source "${COMPLETION}"
+    done
+  fi
+fi" >> ~/.bash_profile
+```
+
+**fish** (not necessary if you installed fish via homebrew)
+
+```bash
+# if '~/.bash_profile' doesn't exist, replace with '~/.profile' 
+echo "if test -d (brew --prefix)"/share/fish/completions"
+    set -gx fish_complete_path $fish_complete_path (brew --prefix)/share/fish/completions
+end
+
+if test -d (brew --prefix)"/share/fish/vendor_completions.d"
+    set -gx fish_complete_path $fish_complete_path (brew --prefix)/share/fish/vendor_completions.d
+end" >> ~/.config/fish/config.fish
+```
+
 ### Config
 
 All configuration is done in the `$HOME/.canvas-sync/config.yaml` file.
