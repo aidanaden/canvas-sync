@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.6](https://github.com/aidanaden/canvas-sync/compare/v1.3.5...v1.3.6) (2023-09-18)
+
+
+### Bug Fixes
+
+* append required reset to zshrc post brew install ([#41](https://github.com/aidanaden/canvas-sync/issues/41)) ([1205b51](https://github.com/aidanaden/canvas-sync/commit/1205b51bfe8ba0e5557229d487e0c2e02c454c8c))
+
 ## [1.3.5](https://github.com/aidanaden/canvas-sync/compare/v1.3.4...v1.3.5) (2023-09-18)
 
 
