@@ -1,8 +1,8 @@
-## canvas-sync
+# canvas-sync
 
 CLI to download (course files, videos, etc) & view (deadlines, events, announcements) from canvas
 
-### Install
+## Install
 
 Brew:
 
@@ -12,11 +12,11 @@ brew install aidanaden/tools/canvas-sync
 
 You can also download directly from the [releases](https://github.com/aidanaden/canvas-sync/releases) page
 
-### Autocomplete
+## Autocomplete
 
 Add autocompletion for canvas-sync in your terminal:
 
-**zsh**
+### zsh
 
 ```bash
 # add autocomplete to .zsh
@@ -29,7 +29,7 @@ then
 fi" >> ~/.zshrc
 ```
 
-**bash**
+### bash
 
 ```bash
 # if '~/.bash_profile' doesn't exist, replace with '~/.profile' 
@@ -48,7 +48,7 @@ then
 fi" >> ~/.bash_profile
 ```
 
-**fish** (not necessary if you installed fish via homebrew)
+### fish (not necessary if you installed fish via homebrew)
 
 ```bash
 echo "if test -d (brew --prefix)"/share/fish/completions"
@@ -60,7 +60,7 @@ if test -d (brew --prefix)"/share/fish/vendor_completions.d"
 end" >> ~/.config/fish/config.fish
 ```
 
-### Config
+## Config
 
 All configuration is done in the `$HOME/.canvas-sync/config.yaml` file.
 
@@ -70,13 +70,13 @@ All configuration is done in the `$HOME/.canvas-sync/config.yaml` file.
 - `data_dir`: directory to store downloaded canvas data, defaults to `$HOME/.canvas-sync/data`  
 - `canvas_url`: URL of your target canvas site, defaults to `https://canvas.nus.edu.sg`
 
-### Commands
+## Commands
 
-#### Pull
+### Pull
 
 Downloads data (files, videos, etc) from canvas, overwrites all existing data
 
-##### `pull files`
+#### `pull files`
 
 View documentation via `pull files -h`:
 
@@ -84,15 +84,15 @@ View documentation via `pull files -h`:
 
 ![pull files demo](examples/pull_files_all.gif)
 
-##### `pull videos`
+#### `pull videos`
 
 TBD!
 
-#### Update
+### Update
 
 Updates downloaded data (files, videos, etc) from canvas
 
-##### `update files`
+#### `update files`
 
 View documentation via `update files -h`:
 
@@ -100,10 +100,10 @@ View documentation via `update files -h`:
 
 ![update files demo](examples/update_files_all.gif)
 
-##### `update videos`
+#### `update videos`
 
 TBD!
 
-#### View
+### View
 
 Display data from canvas (deadlines, events, announcements, etc)
