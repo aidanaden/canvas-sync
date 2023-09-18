@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/aidanaden/canvas-sync/compare/v1.2.0...v1.3.0) (2023-09-18)
+
+
+### Features
+
+* auto-install autocomplete ([#28](https://github.com/aidanaden/canvas-sync/issues/28)) ([91c37df](https://github.com/aidanaden/canvas-sync/commit/91c37dfa52638a6101367ba5efd5279b687f1a77))
+
 ## [1.2.0](https://github.com/aidanaden/canvas-sync/compare/v1.1.3...v1.2.0) (2023-09-18)
 
 
