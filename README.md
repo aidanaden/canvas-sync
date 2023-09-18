@@ -1,29 +1,29 @@
+<!-- omit in toc -->
 # canvas-sync
 
 CLI to download (course files, videos, etc) & view (deadlines, events, announcements) from canvas
 
+<!-- omit in toc -->
 ## Table of Contents
 
-- [canvas-sync](#canvas-sync)
-  - [Table of Contents](#table-of-contents)
-  - [Install](#install)
-    - [Autocomplete](#autocomplete)
-      - [zsh](#zsh)
-      - [bash](#bash)
-      - [fish (not necessary if you installed fish via homebrew)](#fish-not-necessary-if-you-installed-fish-via-homebrew)
-  - [Config](#config)
-  - [Commands](#commands)
-    - [Pull](#pull)
-      - [Pull Files](#pull-files)
-      - [Pull Videos](#pull-videos)
-    - [Update](#update)
-      - [Update Files](#update-files)
-      - [Update Videos](#update-videos)
-    - [View](#view)
-      - [View Deadlines](#view-deadlines)
-      - [View Events (lectures/tutorials)](#view-events-lecturestutorials)
-      - [View Announcements](#view-announcements)
-  - [LICENSE](#license)
+- [Install](#install)
+  - [Autocomplete](#autocomplete)
+    - [zsh](#zsh)
+    - [bash](#bash)
+    - [fish (not necessary if you installed fish via homebrew)](#fish-not-necessary-if-you-installed-fish-via-homebrew)
+- [Config](#config)
+- [Commands](#commands)
+  - [Pull](#pull)
+    - [Pull Files](#pull-files)
+    - [Pull Videos](#pull-videos)
+  - [Update](#update)
+    - [Update Files](#update-files)
+    - [Update Videos](#update-videos)
+  - [View](#view)
+    - [View Deadlines](#view-deadlines)
+    - [View Events (lectures/tutorials)](#view-events-lecturestutorials)
+    - [View Announcements](#view-announcements)
+- [LICENSE](#license)
 
 ## Install
 
