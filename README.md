@@ -4,9 +4,10 @@
 CLI to download (course files, videos, etc) & view (deadlines, events, announcements) from canvas
 
 <!-- omit in toc -->
-## Table of Contents
+## Contents
 
 - [Install](#install)
+  - [Brew](#brew)
   - [Autocomplete](#autocomplete)
     - [zsh](#zsh)
     - [bash](#bash)
@@ -27,7 +28,7 @@ CLI to download (course files, videos, etc) & view (deadlines, events, announcem
 
 ## Install
 
-Brew:
+### Brew
 
 ```bash
 brew install aidanaden/tools/canvas-sync
