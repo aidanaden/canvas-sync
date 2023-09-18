@@ -58,6 +58,16 @@ brews:
       zsh_completion.install "completions/canvas-sync.zsh" => "_canvas-sync"
       fish_completion.install "completions/canvas-sync.fish"
 
+    # Custom post_install script for brew.
+    # Could be used to do any additional work after the "install" script
+    post_install: |
+      system "echo", "'if type brew &>/dev/null; then
+        FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+
+        autoload -Uz compinit
+        compinit
+      fi'", ">>", "~/.zshrc"
+
 # winget:
 #   - name: canvas-sync
 #     publisher: aidanaden
