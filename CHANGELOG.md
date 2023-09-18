@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/aidanaden/canvas-sync/compare/v1.4.3...v1.5.0) (2023-09-18)
+
+
+### Features
+
+* add init command, create config file automatically for all othe… ([#56](https://github.com/aidanaden/canvas-sync/issues/56)) ([80d59d9](https://github.com/aidanaden/canvas-sync/commit/80d59d9214b16418fdf75b5a34cb75b589c4a1e2))
+
 ## [1.4.3](https://github.com/aidanaden/canvas-sync/compare/v1.4.2...v1.4.3) (2023-09-18)
 
 
