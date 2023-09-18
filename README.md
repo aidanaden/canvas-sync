@@ -43,7 +43,7 @@ Add autocompletion for canvas-sync in your terminal:
 #### zsh
 
 ```bash
-# add autocomplete to .zsh
+# replace '~/.zshrc' with wherever your zsh config file is
 echo "\n\nif type brew &>/dev/null
 then
   FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
@@ -56,7 +56,7 @@ fi" >> ~/.zshrc && source ~/.zshrc
 #### bash
 
 ```bash
-# replace '~/.bash_profile' with wherever your bash file is
+# replace '~/.bash_profile' with wherever your bash config file is
 echo "if type brew &>/dev/null
 then
   HOMEBREW_PREFIX="$(brew --prefix)"
