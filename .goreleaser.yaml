@@ -65,6 +65,7 @@ brews:
 
 snapcrafts:
   - name_template: "{{ .ProjectName }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    name: canvas-sync
     summary: CLI to download & view data from Canvas
     description: |
       Canvas-sync is a  CLI to download (course files, videos, etc)
