@@ -65,4 +65,4 @@ Set CursorBlink false
 
 Type "canvas-sync pull files -h" Sleep 500ms  Enter
 
-Sleep 20s
+Sleep 25s
