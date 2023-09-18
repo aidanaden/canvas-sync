@@ -4,6 +4,7 @@ before:
   hooks:
     # You may remove this if you don't use go modules.
     - go mod tidy
+    - ./scripts/completions.sh
 builds:
   - env:
       - CGO_ENABLED=0
@@ -13,7 +14,11 @@ builds:
       - darwin
 
 archives:
-  - format: tar.gz
+  - files:
+      - README.md
+      - LICENSE
+      - completions/*
+    format: tar.gz
     # this name template makes the OS and Arch compatible with the results of uname.
     name_template: >-
       {{ .ProjectName }}_
@@ -47,3 +52,26 @@ brews:
     repository:
       owner: aidanaden
       name: homebrew-tools
+    install: |-
+      bin.install "canvas_sync"
+      bash_completion.install "completions/canvas_sync.bash" => "canvas_sync"
+      zsh_completion.install "completions/canvas_sync.zsh" => "_canvas_sync"
+      fish_completion.install "completions/canvas_sync.fish"
+
+# winget:
+#   - name: canvas-sync
+#     publisher: aidanaden
+#     license: mit
+#     homepage: https://github.com/aidanaden/canvas-sync
+#     short_description: CLI to download & view data from canvas
+#     repository:
+#       owner: aidanaden
+#       name: winget-pkgs
+#       branch: "goreleaser-pro-{{.Version}}"
+#       pull_request:
+#         enabled: true
+#         draft: true
+#         base:
+#           owner: microsoft
+#           name: winget-pkgs
+#           branch: master
