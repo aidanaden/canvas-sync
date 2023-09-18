@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/aidanaden/canvas-sync/compare/v1.1.2...v1.1.3) (2023-09-18)
+
+
+### Bug Fixes
+
+* expand tilde, use filepath.join for fpath concat ([#24](https://github.com/aidanaden/canvas-sync/issues/24)) ([075d65f](https://github.com/aidanaden/canvas-sync/commit/075d65fb2d7f98f499a104fcdd9a71bc890e2b98))
+
 ## [1.1.2](https://github.com/aidanaden/canvas-sync/compare/v1.1.1...v1.1.2) (2023-09-18)
 
 
