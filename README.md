@@ -14,6 +14,7 @@ CLI to download (course files, videos, etc) & view (deadlines, events, announcem
     - [fish (not necessary if you installed fish via homebrew)](#fish-not-necessary-if-you-installed-fish-via-homebrew)
 - [Config](#config)
 - [Commands](#commands)
+  - [Init](#init)
   - [Pull](#pull)
     - [Pull Files](#pull-files)
     - [Pull Videos](#pull-videos)
@@ -118,6 +119,10 @@ All configuration is done in the `$HOME/.canvas-sync/config.yaml` file.
 - `canvas_url`: URL of your target canvas site, defaults to `https://canvas.nus.edu.sg`
 
 ## Commands
+
+### Init
+
+Creates a new config file in the default directory `~/.canvas-sync`
 
 ### Pull
 
