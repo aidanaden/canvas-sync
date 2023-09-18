@@ -53,10 +53,10 @@ brews:
       owner: aidanaden
       name: homebrew-tools
     install: |-
-      bin.install "canvas_sync"
-      bash_completion.install "completions/canvas_sync.bash" => "canvas_sync"
-      zsh_completion.install "completions/canvas_sync.zsh" => "_canvas_sync"
-      fish_completion.install "completions/canvas_sync.fish"
+      bin.install "canvas-sync"
+      bash_completion.install "completions/canvas-sync.bash" => "canvas-sync"
+      zsh_completion.install "completions/canvas-sync.zsh" => "_canvas-sync"
+      fish_completion.install "completions/canvas-sync.fish"
 
 # winget:
 #   - name: canvas-sync
