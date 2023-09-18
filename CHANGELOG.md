@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/aidanaden/canvas-sync/compare/v1.4.1...v1.4.2) (2023-09-18)
+
+
+### Bug Fixes
+
+* remove snap name ([#53](https://github.com/aidanaden/canvas-sync/issues/53)) ([b1f99dc](https://github.com/aidanaden/canvas-sync/commit/b1f99dcd8837031f18bd49397b767477b951b40e))
+
 ## [1.4.1](https://github.com/aidanaden/canvas-sync/compare/v1.4.0...v1.4.1) (2023-09-18)
 
 
