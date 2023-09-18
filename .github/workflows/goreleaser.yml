@@ -28,8 +28,6 @@ jobs:
           sudo apt-get -yq --no-install-suggests --no-install-recommends install snapcraft
           mkdir -p $HOME/.cache/snapcraft/download
           mkdir -p $HOME/.cache/snapcraft/stage-packages
-      - name: snapcraft-login
-        run: snapcraft login --with <(echo "${{ secrets.SNAP_CREDS }}")
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
@@ -38,3 +36,4 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_CREDS }}
