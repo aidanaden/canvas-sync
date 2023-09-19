@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.1](https://github.com/aidanaden/canvas-sync/compare/v1.7.0...v1.7.1) (2023-09-19)
+
+
+### Bug Fixes
+
+* check for update nil noed ([9861818](https://github.com/aidanaden/canvas-sync/commit/9861818646aa0f177fbec125539144c82efc2552))
+
 ## [1.7.0](https://github.com/aidanaden/canvas-sync/compare/v1.6.0...v1.7.0) (2023-09-19)
 
 
