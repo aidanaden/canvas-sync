@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/aidanaden/canvas-sync/compare/v1.6.0...v1.7.0) (2023-09-19)
+
+
+### Features
+
+* view events ([#62](https://github.com/aidanaden/canvas-sync/issues/62)) ([0bd6b16](https://github.com/aidanaden/canvas-sync/commit/0bd6b16b299cd9a9c483f9dea189521e9d12634a))
+
 ## [1.6.0](https://github.com/aidanaden/canvas-sync/compare/v1.5.1...v1.6.0) (2023-09-18)
 
 
