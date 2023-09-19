@@ -158,6 +158,8 @@ To create a default config file, run `canvas-sync init`
 
 Creates a new config file in the default directory `~/.canvas-sync`
 
+![init](examples/init.gif)
+
 ### Pull
 
 Downloads data (files, videos, etc) from canvas, overwrites all existing data
