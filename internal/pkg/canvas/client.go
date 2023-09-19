@@ -282,7 +282,7 @@ func (c *CanvasClient) RecursiveCreateNode(node *nodes.DirectoryNode, updateNumD
 
 func (c *CanvasClient) RecursiveUpdateNode(node *nodes.DirectoryNode, updateNumDownloads func(numDownloads int)) error {
 	if node == nil {
-		return nil
+		return errors.New("cannot recurse nil directory node")
 	}
 	// create directory if doesnt exist
 	if _, err := os.Stat(node.Directory); os.IsNotExist(err) {
