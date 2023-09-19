@@ -7,11 +7,13 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/http/cookiejar"
 	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/aidanaden/canvas-sync/internal/pkg/nodes"
 	"github.com/aidanaden/canvas-sync/internal/pkg/utils"
@@ -20,12 +22,13 @@ import (
 const apiPath = "/api/v1"
 
 type CanvasClient struct {
-	client      *http.Client
-	apiPath     *url.URL
-	accessToken string
+	client          *http.Client
+	apiPath         *url.URL
+	accessToken     string
+	cookiesFilePath string
 }
 
-func NewClient(client *http.Client, rawUrl string, accessToken string) *CanvasClient {
+func NewClient(client *http.Client, rawUrl string, accessToken string, cookiesFilePath string) *CanvasClient {
 	schemas := []string{"http://", "https://"}
 	canvasHost := ""
 	for _, schema := range schemas {
@@ -44,19 +47,77 @@ func NewClient(client *http.Client, rawUrl string, accessToken string) *CanvasCl
 		Path:   apiPath,
 	}
 	return &CanvasClient{
-		client:      client,
-		accessToken: accessToken,
-		apiPath:     &apiPath,
+		client:          client,
+		accessToken:     accessToken,
+		apiPath:         &apiPath,
+		cookiesFilePath: cookiesFilePath,
 	}
 }
 
-func (c *CanvasClient) ExtractDomainBrowserCookies() {
+func (c *CanvasClient) ExtractBrowserCookies() {
 	baseUrl := url.URL{Scheme: c.apiPath.Scheme, Host: c.apiPath.Host}
 	cookieJar := utils.ExtractCanvasBrowserCookies(baseUrl.String())
 	c.client.Jar = cookieJar
 }
 
-func (c *CanvasClient) GetActiveEnrolledCourses() []nodes.CourseNode {
+func (c *CanvasClient) ExtractStoredBrowserCookies() error {
+	b, err := os.ReadFile(c.cookiesFilePath)
+	if err != nil {
+		return err
+	}
+	str := string(b)
+	splits := strings.Split(strings.Trim(str, " "), "\n")
+	cookies := make([]*http.Cookie, 0)
+	for _, split := range splits {
+		split = strings.Trim(split, " ")
+		if len(split) == 0 {
+			continue
+		}
+		subsplits := strings.Split(split, "=")
+		if len(subsplits) != 2 {
+			fmt.Printf("\nInvalid cookie %s, skipping...", split)
+			continue
+		}
+		cookies = append(cookies, &http.Cookie{
+			Name:  subsplits[0],
+			Value: subsplits[1],
+		})
+	}
+	cookieJar, err := cookiejar.New(nil)
+	if err != nil {
+		return err
+	}
+	baseUrl := url.URL{Scheme: c.apiPath.Scheme, Host: c.apiPath.Host}
+	cookieJar.SetCookies(&baseUrl, cookies)
+	c.client.Jar = cookieJar
+	return nil
+}
+
+func (c *CanvasClient) StoreDomainBrowserCookies() {
+	baseUrl := url.URL{Scheme: c.apiPath.Scheme, Host: c.apiPath.Host}
+	cookies := c.client.Jar.Cookies(&baseUrl)
+	cookiesStr := ""
+	for _, cookie := range cookies {
+		cookiesStr += fmt.Sprintf("%s=%s\n", cookie.Name, cookie.Value)
+	}
+	d1 := []byte(cookiesStr)
+	cookiesDir := filepath.Dir(c.cookiesFilePath)
+	if err := os.MkdirAll(cookiesDir, 0755); err != nil {
+		log.Fatalf("\nError creating cookie directory %s: %s", cookiesDir, err.Error())
+	}
+	if err := os.WriteFile(c.cookiesFilePath, d1, 0755); err != nil {
+		log.Fatalf("\nError storing browser cookies to %s: %s", c.cookiesFilePath, err.Error())
+	}
+}
+
+func (c *CanvasClient) ClearStoredBrowserCookies() error {
+	if err := os.Remove(c.cookiesFilePath); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *CanvasClient) GetActiveEnrolledCourses() ([]nodes.CourseNode, error) {
 	coursesUrl := url.URL{
 		Scheme: c.apiPath.Scheme,
 		Host:   c.apiPath.Host,
@@ -70,7 +131,7 @@ func (c *CanvasClient) GetActiveEnrolledCourses() []nodes.CourseNode {
 	req, err := http.NewRequest("GET", coursesUrl.String(), nil)
 	utils.SetQueryAccessToken(req, c.accessToken)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	resp, err := c.client.Do(req)
@@ -78,10 +139,12 @@ func (c *CanvasClient) GetActiveEnrolledCourses() []nodes.CourseNode {
 	var courses []nodes.CourseNode
 	json.Unmarshal([]byte(courseJson), &courses)
 	if strings.Contains(courseJson, "user authorisation required") {
-		panic(fmt.Errorf("\nerror querying '/api/v1/users/self/courses?enrollment_state=active' endpoint: %v\nTRY LAUNCHING https://canvas.nus.edu.sg in a chrome/safari/edge browser and try again!", courseJson))
+		// log.Fatalf("\nerror querying '/api/v1/users/self/courses?enrollment_state=active' endpoint: %v\nTRY LAUNCHING https://canvas.nus.edu.sg in a chrome/safari/edge browser and try again!", courseJson)
+		c.ExtractBrowserCookies()
+		c.StoreDomainBrowserCookies()
 	}
 
-	return courses
+	return courses, nil
 }
 
 func (c *CanvasClient) getCourseUrl(id int) url.URL {
@@ -93,32 +156,32 @@ func (c *CanvasClient) getCourseUrl(id int) url.URL {
 	return courseUrl
 }
 
-func (c *CanvasClient) GetCourseRootFolder(courseId int) nodes.DirectoryNode {
+func (c *CanvasClient) GetCourseRootFolder(courseId int) (*nodes.DirectoryNode, error) {
 	courseUrl := c.getCourseUrl(courseId)
 	req, err := http.NewRequest("GET", courseUrl.String(), nil)
 	utils.SetQueryAccessToken(req, c.accessToken)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	rootRes, err := c.client.Do(req)
 	if err != nil {
 		log.Fatalf("failed to query course %d root directory: %s", courseId, err.Error())
 	}
 	rootJson := utils.ExtractResponseToString(rootRes)
-	var rootNode nodes.DirectoryNode
+	var rootNode *nodes.DirectoryNode
 	if err := json.Unmarshal([]byte(rootJson), &rootNode); err != nil {
 		log.Fatalf("failed to extract course %d root directory: %s", courseId, err.Error())
 	}
-	return rootNode
+	return rootNode, nil
 }
 
-func (c *CanvasClient) RecurseDirectoryNode(node *nodes.DirectoryNode, parent *nodes.DirectoryNode) {
+func (c *CanvasClient) RecurseDirectoryNode(node *nodes.DirectoryNode, parent *nodes.DirectoryNode) error {
 	dir := ""
 	if parent != nil {
 		dir = filepath.Join(parent.Directory)
 	}
 	if node == nil {
-		panic("node is nil!")
+		return errors.New("cannot recurse nil directory node")
 	}
 	dir = filepath.Join(dir, node.Name)
 	node.Directory = dir
@@ -126,12 +189,12 @@ func (c *CanvasClient) RecurseDirectoryNode(node *nodes.DirectoryNode, parent *n
 	if node.FilesCount > 0 {
 		fileReq, err := http.NewRequest("GET", node.FilesUrl, nil)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		utils.SetQueryAccessToken(fileReq, c.accessToken)
 		filesRes, err := c.client.Do(fileReq)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		filesJson := utils.ExtractResponseToString(filesRes)
 		var files []*nodes.FileNode
@@ -145,12 +208,12 @@ func (c *CanvasClient) RecurseDirectoryNode(node *nodes.DirectoryNode, parent *n
 	if node.FoldersCount > 0 {
 		folderReq, err := http.NewRequest("GET", node.FoldersUrl, nil)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		utils.SetQueryAccessToken(folderReq, c.accessToken)
 		foldersRes, err := c.client.Do(folderReq)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		foldersJson := utils.ExtractResponseToString(foldersRes)
 		var folders []*nodes.DirectoryNode
@@ -160,6 +223,8 @@ func (c *CanvasClient) RecurseDirectoryNode(node *nodes.DirectoryNode, parent *n
 		}
 		node.FolderNodes = folders
 	}
+
+	return nil
 }
 
 func (c *CanvasClient) downloadFileNode(node *nodes.FileNode) error {
@@ -183,12 +248,12 @@ func (c *CanvasClient) downloadFileNode(node *nodes.FileNode) error {
 	return nil
 }
 
-func (c *CanvasClient) RecursiveCreateNode(node *nodes.DirectoryNode, updateNumDownloads func(numDownloads int)) {
+func (c *CanvasClient) RecursiveCreateNode(node *nodes.DirectoryNode, updateNumDownloads func(numDownloads int)) error {
 	if node == nil {
-		return
+		return errors.New("cannot recurse nil directory node")
 	}
-	if err := os.MkdirAll(node.Directory, 755); err != nil {
-		panic(err)
+	if err := os.MkdirAll(node.Directory, 0755); err != nil {
+		return err
 	}
 	var wg sync.WaitGroup
 	numDownloads := 0
@@ -212,16 +277,17 @@ func (c *CanvasClient) RecursiveCreateNode(node *nodes.DirectoryNode, updateNumD
 		}(d)
 	}
 	wg.Wait()
+	return nil
 }
 
-func (c *CanvasClient) RecursiveUpdateNode(node *nodes.DirectoryNode, updateNumDownloads func(numDownloads int)) {
+func (c *CanvasClient) RecursiveUpdateNode(node *nodes.DirectoryNode, updateNumDownloads func(numDownloads int)) error {
 	if node == nil {
-		return
+		return nil
 	}
 	// create directory if doesnt exist
 	if _, err := os.Stat(node.Directory); os.IsNotExist(err) {
-		if err := os.MkdirAll(node.Directory, 755); err != nil {
-			panic(err)
+		if err := os.MkdirAll(node.Directory, 0755); err != nil {
+			return err
 		}
 	}
 	var wg sync.WaitGroup
@@ -258,4 +324,142 @@ func (c *CanvasClient) RecursiveUpdateNode(node *nodes.DirectoryNode, updateNumD
 		}(d)
 	}
 	wg.Wait()
+	return nil
+}
+
+func extractEventFromString(rawJson string) ([]nodes.EventNode, error) {
+	var events []nodes.EventNode
+	json.Unmarshal([]byte(rawJson), &events)
+	if strings.Contains(rawJson, "user authorisation required") {
+		return nil, fmt.Errorf("\nerror querying '/api/v1/planner/items' endpoint: %v\nTRY LAUNCHING https://canvas.nus.edu.sg in a chrome/safari/edge browser and try again!", rawJson)
+	}
+	return events, nil
+}
+
+func (c *CanvasClient) GetRecentCalendarEvents() ([]nodes.EventNode, error) {
+	now := utils.TimestampToJavaScriptISO(time.Now())
+	eventsUrl := url.URL{
+		Scheme: c.apiPath.Scheme,
+		Host:   c.apiPath.Host,
+		Path:   c.apiPath.Path + "/planner/items",
+		RawQuery: url.Values{
+			"end_date": {now},
+			"order":    {"desc"},
+		}.Encode(),
+	}
+
+	// events request
+	req, err := http.NewRequest("GET", eventsUrl.String(), nil)
+	utils.SetQueryAccessToken(req, c.accessToken)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	eventsJson := utils.ExtractResponseToString(resp)
+	events, err := extractEventFromString(eventsJson)
+	if err != nil {
+		return nil, err
+	}
+	return events, nil
+}
+
+func (c *CanvasClient) GetIncomingCalendarEvents() ([]nodes.EventNode, error) {
+	now := utils.TimestampToJavaScriptISO(time.Now())
+	eventsUrl := url.URL{
+		Scheme: c.apiPath.Scheme,
+		Host:   c.apiPath.Host,
+		Path:   c.apiPath.Path + "/planner/items",
+		RawQuery: url.Values{
+			"start_date": {now},
+		}.Encode(),
+	}
+
+	// events request
+	req, err := http.NewRequest("GET", eventsUrl.String(), nil)
+	utils.SetQueryAccessToken(req, c.accessToken)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	eventsJson := utils.ExtractResponseToString(resp)
+	events, err := extractEventFromString(eventsJson)
+	if err != nil {
+		return nil, err
+	}
+	return events, nil
+}
+
+func extractPeopleFromString(rawJson string) ([]nodes.PersonNode, error) {
+	var people []nodes.PersonNode
+	json.Unmarshal([]byte(rawJson), &people)
+	if strings.Contains(rawJson, "user authorisation required") {
+		return nil, fmt.Errorf("\nerror querying '/api/v1/planner/items' endpoint: %v\nTRY LAUNCHING https://canvas.nus.edu.sg in a chrome/safari/edge browser and try again!", rawJson)
+	}
+	return people, nil
+}
+
+func (c *CanvasClient) GetCoursePeople(code string) ([]nodes.PersonNode, error) {
+	rawCourses, err := c.GetActiveEnrolledCourses()
+	if err != nil {
+		return nil, err
+	}
+	var courseId int
+	for _, raw := range rawCourses {
+		if strings.EqualFold(code, raw.CourseCode) {
+			courseId = raw.ID
+		}
+	}
+	if courseId == 0 {
+		return nil, errors.New("error: course not found")
+	}
+
+	peopleUrl := url.URL{
+		Scheme: c.apiPath.Scheme,
+		Host:   c.apiPath.Host,
+		Path:   c.apiPath.Path + "/courses/" + fmt.Sprintf("%d", courseId) + "/users",
+		RawQuery: url.Values{
+			"include[]": {"avatar_url", "observed_users"},
+			"per_page":  {"100"},
+			"page":      {"1"},
+		}.Encode(),
+	}
+
+	req, err := http.NewRequest("GET", peopleUrl.String(), nil)
+	utils.SetQueryAccessToken(req, c.accessToken)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	peopleJson := utils.ExtractResponseToString(resp)
+	people, err := extractPeopleFromString(peopleJson)
+	if err != nil {
+		return nil, err
+	}
+	return people, nil
+}
+
+func (c *CanvasClient) GetCourseGrades(code string) error {
+	// rawCourses, err := c.GetActiveEnrolledCourses()
+	// if err != nil {
+	// 	return err
+	// }
+	// var courseId int
+	// for _, raw := range rawCourses {
+	// 	if code == raw.CourseCode {
+	// 		courseId = raw.ID
+	// 	}
+	// }
+	return nil
 }

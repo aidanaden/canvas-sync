@@ -35,3 +35,58 @@ type DirectoryNode struct {
 	FolderNodes   []*DirectoryNode
 	FileNodes     []*FileNode
 }
+
+type BasePlannableNode struct {
+	Title string `json:"title"`
+}
+
+type AnnouncementPlannableNode struct {
+	ReadState   string `json:"read_state"`
+	UnreadCount int    `json:"unread_count"`
+}
+
+type AssignmentPlannableNode struct {
+	DueAt          time.Time `json:"due_at"`
+	PointsPossible int       `json:"points_possible"`
+}
+
+type LivePlannableNode struct {
+	LocationAddress string `json:"location_address"`
+}
+
+type ZoomPlannableNode struct {
+	OnlineMeetingUrl string `json:"online_meeting_url"`
+}
+
+type EventPlannableNode struct {
+	AllDay       bool      `json:"all_day"`
+	LocationName string    `json:"location_name"`
+	StartAt      time.Time `json:"start_at"`
+	Description  string    `json:"description"`
+	*LivePlannableNode
+	*ZoomPlannableNode
+}
+
+type PlannableNode struct {
+	BasePlannableNode
+	*AnnouncementPlannableNode
+	*AssignmentPlannableNode
+	*EventPlannableNode
+}
+
+type EventNode struct {
+	ContextName   string        `json:"context_name"`
+	ContextType   string        `json:"context_type"`
+	CourseId      string        `json:"course_id"`
+	HtmlUrl       string        `json:"html_url"`
+	NewActivity   bool          `json:"new_activity"`
+	Plannable     PlannableNode `json:"plannable"`
+	PlannableDate time.Time     `json:"plannable_date"`
+	PlannableType string        `json:"plannable_type"`
+}
+
+type PersonNode struct {
+	Name      string `json:"name"`
+	ShortName string `json:"short_name"`
+	AvatarUrl string `json:"avatar_url"`
+}
