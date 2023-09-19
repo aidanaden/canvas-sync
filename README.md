@@ -123,7 +123,7 @@ Canvas-sync requires logging in to your canvas account. There are 2 authenticati
 
 ### Access token (recommended for optimal performance)
 
-  1. Access tokens allow canvas-sync to interact with canvas without logging in. To create an access token, head to your [canvas settings](https://canvas.nus.edu.sg/profile/settings)(note: this link is for nus students, for non-nus students head to `<your school canvas website>/profile/settings`)
+  1. Access tokens allow canvas-sync to interact with canvas without logging in. To create an access token, head to your [canvas settings](https://canvas.nus.edu.sg/profile/settings) (note: this link is for nus students, for non-nus students head to `<your school canvas website>/profile/settings`)
   2. Click the "New access token" button and enter "canvas-sync" in the "Purpose" field. Make sure to leave the "Expires" field **blank**
 
   ![first](examples/access_token_walkthrough_1.png)
@@ -133,7 +133,8 @@ Canvas-sync requires logging in to your canvas account. There are 2 authenticati
   3. Copy the token value displayed and paste it in the `~/.canvas-sync/config.yaml` file as below
 
   ```bash
-    access_token: <paste your access token>
+   # paste your access token below
+   access_token: # <paste your access token>
    # replace with your preferred location to store canvas data
    data_dir: $HOME/.canvas-sync/data
    # replace with your canvas url
