@@ -392,3 +392,70 @@ func (c *CanvasClient) GetIncomingCalendarEvents() ([]nodes.EventNode, error) {
 	}
 	return events, nil
 }
+
+func extractPeopleFromString(rawJson string) ([]nodes.PersonNode, error) {
+	var people []nodes.PersonNode
+	json.Unmarshal([]byte(rawJson), &people)
+	if strings.Contains(rawJson, "user authorisation required") {
+		return nil, fmt.Errorf("\nerror querying '/api/v1/planner/items' endpoint: %v\nTRY LAUNCHING https://canvas.nus.edu.sg in a chrome/safari/edge browser and try again!", rawJson)
+	}
+	return people, nil
+}
+
+func (c *CanvasClient) GetCoursePeople(code string) ([]nodes.PersonNode, error) {
+	rawCourses, err := c.GetActiveEnrolledCourses()
+	if err != nil {
+		return nil, err
+	}
+	var courseId int
+	for _, raw := range rawCourses {
+		if strings.EqualFold(code, raw.CourseCode) {
+			courseId = raw.ID
+		}
+	}
+	if courseId == 0 {
+		return nil, errors.New("error: course not found")
+	}
+
+	peopleUrl := url.URL{
+		Scheme: c.apiPath.Scheme,
+		Host:   c.apiPath.Host,
+		Path:   c.apiPath.Path + "/courses/" + fmt.Sprintf("%d", courseId) + "/users",
+		RawQuery: url.Values{
+			"include[]": {"avatar_url", "observed_users"},
+			"per_page":  {"100"},
+			"page":      {"1"},
+		}.Encode(),
+	}
+
+	req, err := http.NewRequest("GET", peopleUrl.String(), nil)
+	utils.SetQueryAccessToken(req, c.accessToken)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	peopleJson := utils.ExtractResponseToString(resp)
+	people, err := extractPeopleFromString(peopleJson)
+	if err != nil {
+		return nil, err
+	}
+	return people, nil
+}
+
+func (c *CanvasClient) GetCourseGrades(code string) error {
+	// rawCourses, err := c.GetActiveEnrolledCourses()
+	// if err != nil {
+	// 	return err
+	// }
+	// var courseId int
+	// for _, raw := range rawCourses {
+	// 	if code == raw.CourseCode {
+	// 		courseId = raw.ID
+	// 	}
+	// }
+	return nil
+}

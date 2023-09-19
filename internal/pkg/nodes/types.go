@@ -84,3 +84,9 @@ type EventNode struct {
 	PlannableDate time.Time     `json:"plannable_date"`
 	PlannableType string        `json:"plannable_type"`
 }
+
+type PersonNode struct {
+	Name      string `json:"name"`
+	ShortName string `json:"short_name"`
+	AvatarUrl string `json:"avatar_url"`
+}

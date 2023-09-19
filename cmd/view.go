@@ -29,7 +29,13 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		initConfig()
-		view.RunViewPeople(cmd, args)
+		view.RunViewCoursePeople(cmd, args)
+	},
+	Args: func(cmd *cobra.Command, args []string) error {
+		if err := cobra.MinimumNArgs(1)(cmd, args); err != nil {
+			return err
+		}
+		return nil
 	},
 }
 
