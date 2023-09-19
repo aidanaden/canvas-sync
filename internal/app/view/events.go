@@ -17,8 +17,9 @@ func RunViewEvents(cmd *cobra.Command, args []string) {
 	canvasUrl := fmt.Sprintf("%v", viper.Get("canvas_url"))
 	canvasClient := canvas.NewClient(http.DefaultClient, canvasUrl, accessToken, cookiesFile)
 	if accessToken == "" {
-		fmt.Printf("\nno cookies found, getting auth cookies from browser...\n\n")
+		fmt.Printf("\nno cookies found, using stored browser cookies...\n\n")
 		if err := canvasClient.ExtractStoredBrowserCookies(); err != nil {
+			fmt.Printf("no stored cookies found, extracting browser cookies...\n\n")
 			canvasClient.ExtractBrowserCookies()
 			canvasClient.StoreDomainBrowserCookies()
 		}
@@ -34,7 +35,7 @@ func RunViewEvents(cmd *cobra.Command, args []string) {
 		}
 	}
 	for i, raw := range pastEvents {
-		fmt.Printf("\n\nrecent %d: %v", i+1, raw)
+		fmt.Printf("recent %d: %v\n\n", i+1, raw)
 	}
 
 	incomingEvents, err := canvasClient.GetIncomingCalendarEvents()
@@ -47,7 +48,11 @@ func RunViewEvents(cmd *cobra.Command, args []string) {
 		} else if raw.Plannable.AssignmentPlannableNode != nil {
 			fmt.Printf("\n\nincoming assignment %d: %v, due at %s", i+1, raw.Plannable, raw.Plannable.AssignmentPlannableNode.DueAt)
 		} else if raw.Plannable.EventPlannableNode != nil {
-			fmt.Printf("\n\nincoming event %d: %v, %v", i+1, raw.Plannable, raw.Plannable.EventPlannableNode)
+			if raw.Plannable.ZoomPlannableNode != nil {
+				fmt.Printf("\n\nincoming zoom event %d: %v, %v", i+1, raw.Plannable, raw.Plannable.EventPlannableNode)
+			} else {
+				fmt.Printf("\n\nincoming live event %d: %v, %v", i+1, raw.Plannable, raw.Plannable.EventPlannableNode)
+			}
 		}
 	}
 
