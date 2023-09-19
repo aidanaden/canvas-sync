@@ -101,6 +101,10 @@ func (c *CanvasClient) StoreDomainBrowserCookies() {
 		cookiesStr += fmt.Sprintf("%s=%s\n", cookie.Name, cookie.Value)
 	}
 	d1 := []byte(cookiesStr)
+	cookiesDir := filepath.Dir(c.cookiesFilePath)
+	if err := os.MkdirAll(cookiesDir, 0755); err != nil {
+		log.Fatalf("\nError creating cookie directory %s: %s", cookiesDir, err.Error())
+	}
 	if err := os.WriteFile(c.cookiesFilePath, d1, 0755); err != nil {
 		log.Fatalf("\nError storing browser cookies to %s: %s", c.cookiesFilePath, err.Error())
 	}
@@ -248,7 +252,7 @@ func (c *CanvasClient) RecursiveCreateNode(node *nodes.DirectoryNode, updateNumD
 	if node == nil {
 		return errors.New("cannot recurse nil directory node")
 	}
-	if err := os.MkdirAll(node.Directory, 755); err != nil {
+	if err := os.MkdirAll(node.Directory, 0755); err != nil {
 		return err
 	}
 	var wg sync.WaitGroup
@@ -282,7 +286,7 @@ func (c *CanvasClient) RecursiveUpdateNode(node *nodes.DirectoryNode, updateNumD
 	}
 	// create directory if doesnt exist
 	if _, err := os.Stat(node.Directory); os.IsNotExist(err) {
-		if err := os.MkdirAll(node.Directory, 755); err != nil {
+		if err := os.MkdirAll(node.Directory, 0755); err != nil {
 			return err
 		}
 	}
