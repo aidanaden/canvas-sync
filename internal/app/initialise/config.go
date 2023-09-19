@@ -13,7 +13,7 @@ func initConfigFile(path string) {
 	configDir := filepath.Dir(path)
 	dataDir := filepath.Join(configDir, "data")
 	d1 := []byte(
-		fmt.Sprintf("access_token: \ndata_dir: %s\ncanvas_url: %s\n", dataDir, "https://canvas.nus.edu.sg"),
+		fmt.Sprintf("# paste your access token below\naccess_token: \n# replace with your preferred location to store canvas data\ndata_dir: %s\n# replace with your own canvas url if not from nus\ncanvas_url: %s\n", dataDir, "https://canvas.nus.edu.sg"),
 	)
 	if err := os.WriteFile(path, d1, 0755); err != nil {
 		log.Fatalf("\nError creating config file: %s", err.Error())
