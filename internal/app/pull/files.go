@@ -2,6 +2,7 @@ package pull
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"path/filepath"
 	"strings"
@@ -18,21 +19,28 @@ import (
 func RunPullFiles(cmd *cobra.Command, args []string) {
 	targetDir := filepath.Join(fmt.Sprintf("%s", viper.Get("data_dir")), "files")
 	targetDir = utils.GetExpandedHomeDirectoryPath(targetDir)
+	cookiesFile := filepath.Join(fmt.Sprintf("%s", viper.Get("data_dir")), "cookies")
 	accessToken := fmt.Sprintf("%v", viper.Get("access_token"))
 	canvasUrl := fmt.Sprintf("%v", viper.Get("canvas_url"))
 	providedCodes := utils.GetCourseCodesFromArgs(args)
 
-	fmt.Printf("Files will be downloaded to:\n%s\n", targetDir)
+	log.Printf("Files will be downloaded to:\n%s\n", targetDir)
 
-	canvasClient := canvas.NewClient(http.DefaultClient, canvasUrl, accessToken)
+	canvasClient := canvas.NewClient(http.DefaultClient, canvasUrl, accessToken, cookiesFile)
 	if accessToken == "" {
-		fmt.Printf("\nno cookies found, getting auth cookies from browser...")
-		canvasClient.ExtractDomainBrowserCookies()
+		log.Printf("\nno cookies found, getting auth cookies from browser...\n")
+		if err := canvasClient.ExtractStoredBrowserCookies(); err != nil {
+			canvasClient.ExtractBrowserCookies()
+			canvasClient.StoreDomainBrowserCookies()
+		}
 	} else {
-		fmt.Printf("\nUsing access token starting with: %s", accessToken[:5])
+		log.Printf("\nUsing access token starting with: %s", accessToken[:5])
 	}
 
-	rawCourses := canvasClient.GetActiveEnrolledCourses()
+	rawCourses, err := canvasClient.GetActiveEnrolledCourses()
+	if err != nil {
+		log.Fatalf("\nError: failed to fetch actively enrolled courses: %s", err.Error())
+	}
 	courses := make([]nodes.CourseNode, 0)
 	for _, raw := range rawCourses {
 		if raw.CourseCode == "" {
@@ -62,15 +70,18 @@ func RunPullFiles(cmd *cobra.Command, args []string) {
 			id := courses[i].ID
 			code := courses[i].CourseCode
 
-			rootNode := canvasClient.GetCourseRootFolder(id)
+			rootNode, err := canvasClient.GetCourseRootFolder(id)
+			if err != nil {
+				log.Fatalf("\nError: failed to fetch course root folder: %s", err.Error())
+			}
 			rootNode.Name = fmt.Sprintf("%s/%s", targetDir, code)
 
 			sp.UpdateMessagef("Pulling files info for %s", code)
-			canvasClient.RecurseDirectoryNode(&rootNode, nil)
+			canvasClient.RecurseDirectoryNode(rootNode, nil)
 
 			sp.UpdateMessagef("Downloading files for %s", code)
 			totalFileDownloads := 0
-			canvasClient.RecursiveCreateNode(&rootNode, func(numDownloads int) {
+			canvasClient.RecursiveCreateNode(rootNode, func(numDownloads int) {
 				totalFileDownloads += numDownloads
 				sp.UpdateMessagef("Downloading %d files for %s", totalFileDownloads, code)
 			})
@@ -82,5 +93,5 @@ func RunPullFiles(cmd *cobra.Command, args []string) {
 	sm.Start()
 	wg.Wait()
 	sm.Stop()
-	fmt.Printf("\nDownloaded files:\n%s\n", targetDir)
+	log.Printf("\nDownloaded files:\n%s\n", targetDir)
 }
