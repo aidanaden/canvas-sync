@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/aidanaden/canvas-sync/compare/v1.7.1...v1.8.0) (2023-09-19)
+
+
+### Features
+
+* add usage docs ([#65](https://github.com/aidanaden/canvas-sync/issues/65)) ([a0b38d3](https://github.com/aidanaden/canvas-sync/commit/a0b38d390f44d4c3e0ab4816db3a0ff0a8887b7d))
+
 ## [1.7.1](https://github.com/aidanaden/canvas-sync/compare/v1.7.0...v1.7.1) (2023-09-19)
 
 
