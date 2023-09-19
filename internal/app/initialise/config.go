@@ -39,29 +39,29 @@ func RunInit(isInitCommand bool) string {
 		}
 		initConfigFile(cfgFilePath)
 		if isInitCommand {
-			log.Printf("\nSuccessfully created config file.")
+			fmt.Printf("\nSuccessfully created config file.")
 		}
 	} else {
 		_, err = os.Stat(cfgFilePath)
 		// overwrite existing
 		if err == nil && isInitCommand {
-			log.Printf("Existing config file found - confirm create new config file? (y/N): ")
+			fmt.Printf("Existing config file found - confirm create new config file? (y/N): ")
 			res := input.GetYesOrNoFromUser()
 			if res {
 				initConfigFile(cfgFilePath)
 				if isInitCommand {
-					log.Printf("\nSuccessfully created config file.")
+					fmt.Printf("\nSuccessfully created config file.")
 				}
 			} else {
 				fmt.Println("Init command cancelled.")
 			}
 		} else if os.IsNotExist(err) {
 			if !isInitCommand {
-				log.Printf("\nNo config file found, creating default config...\n\n")
+				fmt.Printf("\nNo config file found, creating default config...\n\n")
 			}
 			initConfigFile(cfgFilePath)
 			if isInitCommand {
-				log.Printf("\nSuccessfully created config file.")
+				fmt.Printf("\nSuccessfully created config file.")
 			}
 		} else if err != nil {
 			log.Fatalf("\nError getting config file info: %s", err.Error())

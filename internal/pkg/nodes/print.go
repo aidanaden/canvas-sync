@@ -2,7 +2,6 @@ package nodes
 
 import (
 	"fmt"
-	"log"
 )
 
 func recursivePrintNode(node *DirectoryNode, depth int) {
@@ -14,7 +13,7 @@ func recursivePrintNode(node *DirectoryNode, depth int) {
 		dirPrint += " "
 	}
 	dirPrint += fmt.Sprintf("%s", node.Directory)
-	log.Printf(dirPrint)
+	fmt.Printf(dirPrint)
 	for j := range node.FileNodes {
 		if node.FileNodes[j] == nil {
 			continue
@@ -24,7 +23,7 @@ func recursivePrintNode(node *DirectoryNode, depth int) {
 			filePrint += " "
 		}
 		filePrint += fmt.Sprintf("%s", node.FileNodes[j].Directory)
-		log.Printf(filePrint)
+		fmt.Printf(filePrint)
 	}
 	for d := range node.FolderNodes {
 		recursivePrintNode(node.FolderNodes[d], depth+1)

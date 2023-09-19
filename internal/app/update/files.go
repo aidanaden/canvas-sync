@@ -24,22 +24,22 @@ func RunUpdateFiles(cmd *cobra.Command, args []string) {
 	canvasUrl := fmt.Sprintf("%v", viper.Get("canvas_url"))
 	providedCodes := utils.GetCourseCodesFromArgs(args)
 
-	log.Printf("Files will be downloaded to:\n%s\n", targetDir)
+	fmt.Printf("Files will be downloaded to:\n%s\n", targetDir)
 
 	canvasClient := canvas.NewClient(http.DefaultClient, canvasUrl, accessToken, cookiesFile)
 	if accessToken == "" {
-		log.Printf("\nno cookies found, getting auth cookies from browser...\n")
+		fmt.Printf("\nno cookies found, getting auth cookies from browser...\n\n")
 		if err := canvasClient.ExtractStoredBrowserCookies(); err != nil {
 			canvasClient.ExtractBrowserCookies()
 			canvasClient.StoreDomainBrowserCookies()
 		}
 	} else {
-		log.Printf("\nUsing access token starting with: %s", accessToken[:5])
+		fmt.Printf("\nUsing access token starting with: %s", accessToken[:5])
 	}
 
 	rawCourses, err := canvasClient.GetActiveEnrolledCourses()
 	if err != nil {
-		log.Printf("\nError: failed to fetch all actively enrolled courses: %s", err.Error())
+		fmt.Printf("\nError: failed to fetch all actively enrolled courses: %s", err.Error())
 		if err := canvasClient.ClearStoredBrowserCookies(); err != nil {
 			log.Fatalf("\nError: failed to delete stored cookies in %s: %s", cookiesFile, err.Error())
 		}
@@ -75,7 +75,7 @@ func RunUpdateFiles(cmd *cobra.Command, args []string) {
 
 			rootNode, err := canvasClient.GetCourseRootFolder(id)
 			if err != nil {
-				log.Printf("\nError: failed to fetch course root folder: %s", err.Error())
+				fmt.Printf("\nError: failed to fetch course root folder: %s", err.Error())
 				if err := canvasClient.ClearStoredBrowserCookies(); err != nil {
 					log.Fatalf("\nError: failed to delete stored cookies in %s: %s", cookiesFile, err.Error())
 				}
@@ -100,5 +100,5 @@ func RunUpdateFiles(cmd *cobra.Command, args []string) {
 	sm.Start()
 	wg.Wait()
 	sm.Stop()
-	log.Printf("\nUpdated files:\n%s\n", targetDir)
+	fmt.Printf("\nUpdated files:\n%s\n", targetDir)
 }

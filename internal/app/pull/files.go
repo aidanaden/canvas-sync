@@ -24,17 +24,17 @@ func RunPullFiles(cmd *cobra.Command, args []string) {
 	canvasUrl := fmt.Sprintf("%v", viper.Get("canvas_url"))
 	providedCodes := utils.GetCourseCodesFromArgs(args)
 
-	log.Printf("Files will be downloaded to:\n%s\n", targetDir)
+	fmt.Printf("Files will be downloaded to:\n%s\n", targetDir)
 
 	canvasClient := canvas.NewClient(http.DefaultClient, canvasUrl, accessToken, cookiesFile)
 	if accessToken == "" {
-		log.Printf("\nno cookies found, getting auth cookies from browser...\n")
+		fmt.Printf("\nno cookies found, getting auth cookies from browser...\n\n")
 		if err := canvasClient.ExtractStoredBrowserCookies(); err != nil {
 			canvasClient.ExtractBrowserCookies()
 			canvasClient.StoreDomainBrowserCookies()
 		}
 	} else {
-		log.Printf("\nUsing access token starting with: %s", accessToken[:5])
+		fmt.Printf("\nUsing access token starting with: %s", accessToken[:5])
 	}
 
 	rawCourses, err := canvasClient.GetActiveEnrolledCourses()
@@ -93,5 +93,5 @@ func RunPullFiles(cmd *cobra.Command, args []string) {
 	sm.Start()
 	wg.Wait()
 	sm.Stop()
-	log.Printf("\nDownloaded files:\n%s\n", targetDir)
+	fmt.Printf("\nDownloaded files:\n%s\n", targetDir)
 }

@@ -57,7 +57,6 @@ func NewClient(client *http.Client, rawUrl string, accessToken string, cookiesFi
 func (c *CanvasClient) ExtractBrowserCookies() {
 	baseUrl := url.URL{Scheme: c.apiPath.Scheme, Host: c.apiPath.Host}
 	cookieJar := utils.ExtractCanvasBrowserCookies(baseUrl.String())
-	log.Printf("\ncookies: %v", cookieJar.Cookies(&baseUrl))
 	c.client.Jar = cookieJar
 }
 
@@ -68,7 +67,6 @@ func (c *CanvasClient) ExtractStoredBrowserCookies() error {
 	}
 	str := string(b)
 	splits := strings.Split(strings.Trim(str, " "), "\n")
-	fmt.Printf("\nraw cookies from file: %s", splits)
 	cookies := make([]*http.Cookie, 0)
 	for _, split := range splits {
 		split = strings.Trim(split, " ")
@@ -77,7 +75,7 @@ func (c *CanvasClient) ExtractStoredBrowserCookies() error {
 		}
 		subsplits := strings.Split(split, "=")
 		if len(subsplits) != 2 {
-			log.Printf("\nInvalid cookie %s, skipping...", split)
+			fmt.Printf("\nInvalid cookie %s, skipping...", split)
 			continue
 		}
 		cookies = append(cookies, &http.Cookie{
