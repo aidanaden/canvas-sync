@@ -2,8 +2,8 @@ package update
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -12,6 +12,7 @@ import (
 	"github.com/aidanaden/canvas-sync/internal/pkg/nodes"
 	"github.com/aidanaden/canvas-sync/internal/pkg/utils"
 	"github.com/chelnak/ysmrr"
+	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -24,24 +25,25 @@ func RunUpdateFiles(cmd *cobra.Command, args []string) {
 	canvasUrl := fmt.Sprintf("%v", viper.Get("canvas_url"))
 	providedCodes := utils.GetCourseCodesFromArgs(args)
 
-	fmt.Printf("Files will be downloaded to:\n%s\n", targetDir)
+	pterm.Info.Printfln("Downloading files to: %s", targetDir)
 
 	canvasClient := canvas.NewClient(http.DefaultClient, canvasUrl, accessToken, cookiesFile)
 	if accessToken == "" {
-		fmt.Printf("\nno cookies found, getting auth cookies from browser...\n\n")
+		pterm.Info.Printfln("No cookies found, getting auth cookies from browser...")
 		if err := canvasClient.ExtractStoredBrowserCookies(); err != nil {
 			canvasClient.ExtractBrowserCookies()
 			canvasClient.StoreDomainBrowserCookies()
 		}
 	} else {
-		fmt.Printf("\nUsing access token starting with: %s", accessToken[:5])
+		pterm.Info.Printfln("Using access token starting with: %s", accessToken[:5])
 	}
 
 	rawCourses, err := canvasClient.GetActiveEnrolledCourses()
 	if err != nil {
-		fmt.Printf("\nError: failed to fetch all actively enrolled courses: %s", err.Error())
+		pterm.Error.Printfln("Error: failed to fetch all actively enrolled courses: %s", err.Error())
 		if err := canvasClient.ClearStoredBrowserCookies(); err != nil {
-			log.Fatalf("\nError: failed to delete stored cookies in %s: %s", cookiesFile, err.Error())
+			pterm.Error.Printfln("Error: failed to delete stored cookies in %s: %s", cookiesFile, err.Error())
+			os.Exit(1)
 		}
 	}
 	courses := make([]nodes.CourseNode, 0)
@@ -62,6 +64,7 @@ func RunUpdateFiles(cmd *cobra.Command, args []string) {
 		}
 	}
 
+	pterm.Println()
 	var wg sync.WaitGroup
 	sm := ysmrr.NewSpinnerManager()
 
@@ -75,30 +78,32 @@ func RunUpdateFiles(cmd *cobra.Command, args []string) {
 
 			rootNode, err := canvasClient.GetCourseRootFolder(id)
 			if err != nil {
-				fmt.Printf("\nError: failed to fetch course root folder: %s", err.Error())
+				pterm.Error.Printfln("Error: failed to fetch course root folder: %s", err.Error())
 				if err := canvasClient.ClearStoredBrowserCookies(); err != nil {
-					log.Fatalf("\nError: failed to delete stored cookies in %s: %s", cookiesFile, err.Error())
+					pterm.Error.Printfln("Error: failed to delete stored cookies in %s: %s", cookiesFile, err.Error())
+					os.Exit(1)
 				}
 			}
 			rootNode.Name = fmt.Sprintf("%s/%s", targetDir, code)
 
-			sp.UpdateMessagef("Pulling files info for %s", code)
+			sp.UpdateMessagef(pterm.FgCyan.Sprintf("Pulling files info for %s", code))
 			canvasClient.RecurseDirectoryNode(rootNode, nil)
 
-			sp.UpdateMessagef("Updating files for %s", code)
+			sp.UpdateMessagef(pterm.FgCyan.Sprintf("Updating files for %s", code))
 			totalFileDownloads := 0
 
 			canvasClient.RecursiveUpdateNode(rootNode, func(numDownloads int) {
 				totalFileDownloads += numDownloads
-				sp.UpdateMessagef("Downloading %d files for %s", totalFileDownloads, code)
+				sp.UpdateMessagef(pterm.FgCyan.Sprintf("Downloading %d files for %s", totalFileDownloads, code))
 			})
 
-			sp.UpdateMessagef("Downloaded %d files for %s", totalFileDownloads, code)
+			sp.UpdateMessagef(pterm.FgGreen.Sprintf("Downloaded %d files for %s", totalFileDownloads, code))
 			sp.Complete()
 		}(ci, sp)
 	}
 	sm.Start()
 	wg.Wait()
 	sm.Stop()
-	fmt.Printf("\nUpdated files:\n%s\n", targetDir)
+	pterm.Println()
+	pterm.Success.Printfln("Updated files: %s\n", targetDir)
 }

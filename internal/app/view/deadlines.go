@@ -1,11 +1,10 @@
 package view
 
 import (
-	"fmt"
-
+	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 )
 
 func RunViewDeadlines(cmd *cobra.Command, args []string) {
-	fmt.Println("viewing deadlines soon bro")
+	pterm.Error.Printfln("viewing deadlines soon bro")
 }
