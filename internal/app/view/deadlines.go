@@ -6,5 +6,5 @@ import (
 )
 
 func RunViewDeadlines(cmd *cobra.Command, args []string) {
-	pterm.Error.Printfln("viewing deadlines soon bro")
+	pterm.Error.Printfln("Viewing deadlines soon bro")
 }

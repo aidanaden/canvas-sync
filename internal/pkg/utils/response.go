@@ -3,6 +3,9 @@ package utils
 import (
 	"io"
 	"net/http"
+	"os"
+
+	"github.com/pterm/pterm"
 )
 
 func SetQueryAccessToken(req *http.Request, accessToken string) {
@@ -18,7 +21,8 @@ func ExtractResponseToString(res *http.Response) string {
 	defer res.Body.Close()
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		panic(err)
+		pterm.Error.Printfln("Error: failed to extract response: %s", err.Error())
+		os.Exit(1)
 	}
 	json := string(body)
 	return json

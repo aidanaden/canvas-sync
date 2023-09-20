@@ -7,5 +7,5 @@ import (
 
 func RunViewGrades(cmd *cobra.Command, args []string) {
 	// https://canvas.nus.edu.sg/courses/45767/grades
-	pterm.Error.Printfln("viewing grades soon bro")
+	pterm.Error.Printfln("Viewing grades soon bro")
 }
