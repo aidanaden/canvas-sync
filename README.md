@@ -12,6 +12,7 @@ CLI to download (course files, videos, etc) & view (deadlines, events, announcem
     - [zsh](#zsh)
     - [bash](#bash)
     - [fish (not necessary if you installed fish via homebrew)](#fish-not-necessary-if-you-installed-fish-via-homebrew)
+  - [Updating](#updating)
 - [Usage](#usage)
   - [Log in (recommended for beginners)](#log-in-recommended-for-beginners)
   - [Access token (recommended for optimal performance)](#access-token-recommended-for-optimal-performance)
@@ -25,9 +26,9 @@ CLI to download (course files, videos, etc) & view (deadlines, events, announcem
     - [Update Files](#update-files)
     - [Update Videos](#update-videos)
   - [View](#view)
-    - [View Deadlines](#view-deadlines)
-    - [View Events (lectures/tutorials)](#view-events-lecturestutorials)
-    - [View Announcements](#view-announcements)
+    - [View Deadlines (assignments)](#view-deadlines-assignments)
+    - [View Events (Announcements/lectures/tutorials)](#view-events-announcementslecturestutorials)
+    - [View People (from a given course)](#view-people-from-a-given-course)
 - [LICENSE](#license)
 
 ## Install
@@ -110,6 +111,16 @@ Add autocompletion for canvas-sync in your terminal:
   ```
 
 </details>
+
+### Updating
+
+If you installed using brew, simply run:
+
+```bash
+brew update && brew upgrade
+```
+
+You can also download the latest version directly from the [releases](https://github.com/aidanaden/canvas-sync/releases) page
 
 ## Usage
 
@@ -203,17 +214,23 @@ WIP
 
 Display data from canvas (deadlines, events, announcements, etc)
 
-#### View Deadlines
+#### View Deadlines (assignments)
 
-WIP
+Display past/future assignment deadlines
 
-#### View Events (lectures/tutorials)
+![view deadlines demo](examples/view_deadlines.gif)
 
-WIP
+#### View Events (Announcements/lectures/tutorials)
 
-#### View Announcements
+Display past/future lectures/announcements
 
-WIP
+![view events demo](examples/view_events.gif)
+
+#### View People (from a given course)
+
+Display people from a given course code
+
+![view people demo](examples/view_people.gif)
 
 ## LICENSE
 
