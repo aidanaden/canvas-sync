@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/aidanaden/canvas-sync/compare/v1.10.0...v1.11.0) (2023-09-20)
+
+
+### Features
+
+* update view ui ([#72](https://github.com/aidanaden/canvas-sync/issues/72)) ([0bec912](https://github.com/aidanaden/canvas-sync/commit/0bec912d03e635329a48a45a8789ecf89bf84276))
+
 ## [1.10.0](https://github.com/aidanaden/canvas-sync/compare/v1.9.0...v1.10.0) (2023-09-20)
 
 
