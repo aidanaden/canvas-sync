@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.1](https://github.com/aidanaden/canvas-sync/compare/v1.12.0...v1.12.1) (2023-09-20)
+
+
+### Bug Fixes
+
+* scoop releaser ([#77](https://github.com/aidanaden/canvas-sync/issues/77)) ([334d09c](https://github.com/aidanaden/canvas-sync/commit/334d09c473537b6e8e4fb98c0dc452044288c9fe))
+
 ## [1.12.0](https://github.com/aidanaden/canvas-sync/compare/v1.11.0...v1.12.0) (2023-09-20)
 
 
