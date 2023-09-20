@@ -25,7 +25,7 @@ func RunPullFiles(cmd *cobra.Command, args []string) {
 	canvasUrl := fmt.Sprintf("%v", viper.Get("canvas_url"))
 	providedCodes := utils.GetCourseCodesFromArgs(args)
 
-	pterm.Info.Printfln("Downloading files to: %s\n", targetDir)
+	pterm.Info.Printfln("Downloading files to: %s", targetDir)
 
 	canvasClient := canvas.NewClient(http.DefaultClient, canvasUrl, accessToken, cookiesFile)
 	if accessToken == "" {
