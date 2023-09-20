@@ -2,12 +2,13 @@ package view
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 
 	"github.com/aidanaden/canvas-sync/internal/pkg/canvas"
 	"github.com/aidanaden/canvas-sync/internal/pkg/nodes"
+	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -18,14 +19,14 @@ func RunViewEvents(cmd *cobra.Command, args []string, isPast bool) {
 	canvasUrl := fmt.Sprintf("%v", viper.Get("canvas_url"))
 	canvasClient := canvas.NewClient(http.DefaultClient, canvasUrl, accessToken, cookiesFile)
 	if accessToken == "" {
-		fmt.Printf("\nno cookies found, using stored browser cookies...\n\n")
+		pterm.Info.Printfln("No cookies found, using stored browser cookies...")
 		if err := canvasClient.ExtractStoredBrowserCookies(); err != nil {
-			fmt.Printf("no stored cookies found, extracting browser cookies...\n\n")
+			pterm.Info.Printfln("No stored cookies found, extracting browser cookies...")
 			canvasClient.ExtractBrowserCookies()
 			canvasClient.StoreDomainBrowserCookies()
 		}
 	} else {
-		fmt.Printf("\nUsing access token starting with: %s", accessToken[:5])
+		pterm.Info.Printfln("Using access token starting with: %s", accessToken[:5])
 	}
 
 	var events []nodes.EventNode
@@ -33,15 +34,17 @@ func RunViewEvents(cmd *cobra.Command, args []string, isPast bool) {
 	if isPast {
 		events, err = canvasClient.GetRecentCalendarEvents()
 		if err != nil {
-			fmt.Printf("\nError: failed to fetch all recent calendar events: %s", err.Error())
+			pterm.Error.Printfln("Error: failed to fetch all recent calendar events: %s", err.Error())
 			if err := canvasClient.ClearStoredBrowserCookies(); err != nil {
-				log.Fatalf("\nError: failed to clear stale cookies in %s: %s", cookiesFile, err.Error())
+				pterm.Error.Printfln("Error: failed to clear stale cookies in %s: %s", cookiesFile, err.Error())
+				os.Exit(1)
 			}
 		}
 	} else {
 		events, err = canvasClient.GetIncomingCalendarEvents()
 		if err != nil {
-			log.Fatalf("\nError: failed to fetch all upcoming calendar events: %s", err.Error())
+			pterm.Error.Printfln("Error: failed to fetch all upcoming calendar events: %s", err.Error())
+			os.Exit(1)
 		}
 	}
 

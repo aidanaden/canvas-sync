@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/aidanaden/canvas-sync/internal/app/initialise"
+	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -72,6 +72,7 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, fmt.Sprintf("Using config file:\n%s\n", viper.ConfigFileUsed()))
+		pterm.Println()
+		pterm.Info.Printfln("Using config file: %s", viper.ConfigFileUsed())
 	}
 }

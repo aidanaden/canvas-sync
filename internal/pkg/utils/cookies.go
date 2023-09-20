@@ -1,12 +1,13 @@
 package utils
 
 import (
-	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
+	"os"
 
 	"github.com/pkg/browser"
+	"github.com/pterm/pterm"
 	"github.com/zellyn/kooky"
 	_ "github.com/zellyn/kooky/browser/all" // register cookie store finders!
 )
@@ -26,24 +27,27 @@ func ExtractCookies(domainSuffix string) []*http.Cookie {
 func ExtractCanvasBrowserCookies(rawUrl string) http.CookieJar {
 	url, err := url.Parse(rawUrl)
 	if err != nil {
-		panic(err)
+		pterm.Error.Printfln("Error parsing canvas url: %s", err.Error())
+		os.Exit(1)
 	}
 	var rawCookies []*http.Cookie
 	rawCookies = ExtractCookies(url.Host)
-	if rawCookies == nil || len(rawCookies) == 0 {
+	if len(rawCookies) == 0 {
 		if err := browser.OpenURL(rawUrl); err != nil {
-			panic(err)
+			pterm.Error.Printfln("Error opening url in browser: %s", err.Error())
+			os.Exit(1)
 		}
 		for {
 			rawCookies = ExtractCookies(url.Host)
-			if rawCookies != nil && len(rawCookies) > 0 {
+			if len(rawCookies) > 0 {
 				break
 			}
 		}
 	}
 	jar, err := cookiejar.New(nil)
 	if err != nil {
-		log.Fatalf("Got error while creating cookie jar %s", err.Error())
+		pterm.Error.Printfln("Error creating cookie jar: %s", err.Error())
+		os.Exit(1)
 	}
 
 	jar.SetCookies(url, rawCookies)

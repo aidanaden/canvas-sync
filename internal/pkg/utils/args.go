@@ -4,6 +4,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/pterm/pterm"
 )
 
 func GetCourseCodesFromArgs(rawArgs []string) []string {
@@ -24,7 +26,8 @@ func GetCourseCodesFromArgs(rawArgs []string) []string {
 func GetExpandedHomeDirectoryPath(path string) string {
 	home, err := os.UserHomeDir()
 	if err != nil {
-		panic(err)
+		pterm.Error.Printfln("Error expanding home directory: %s", err.Error())
+		os.Exit(1)
 	}
 	if strings.HasPrefix(path, "~") {
 		return filepath.Join(home, path[2:])
