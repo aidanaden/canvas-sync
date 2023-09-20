@@ -12,25 +12,25 @@ var PAST_ALIASES = []string{"completed", "done"}
 var viewCmd = &cobra.Command{
 	Use:     "view",
 	Aliases: []string{"display", "print"},
-	Short:   "View data from canvas (upcoming lectures, deadlines, etc)",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short:   "View data from canvas (events, deadlines, people)",
+	// 	Long: `A longer description that spans multiple lines and likely contains examples
+	// and usage of using your command. For example:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	// Cobra is a CLI library for Go that empowers applications.
+	// This application is a tool to generate the needed files
+	// to quickly create a Cobra application.`,
 }
 
 // represents the view people command
 var peopleCmd = &cobra.Command{
 	Use:   "people",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "View people from a given course",
+	// 	Long: `A longer description that spans multiple lines and likely contains examples
+	// and usage of using your command. For example:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	// Cobra is a CLI library for Go that empowers applications.
+	// This application is a tool to generate the needed files
+	// to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		initConfig()
 		view.RunViewCoursePeople(cmd, args)
@@ -46,26 +46,26 @@ to quickly create a Cobra application.`,
 // represents the view events command
 var viewEventsCmd = &cobra.Command{
 	Use:   "events",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "View upcoming/past events",
+	// 	Long: `A longer description that spans multiple lines and likely contains examples
+	// and usage of using your command. For example:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	// Cobra is a CLI library for Go that empowers applications.
+	// This application is a tool to generate the needed files
+	// to quickly create a Cobra application.`,
 }
 
 // view upcoming events command
 var viewUpcomingEventsCmd = &cobra.Command{
 	Use:     "upcoming",
 	Aliases: FUTURE_ALIASES,
-	Short:   "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short:   "View upcoming events",
+	// 	Long: `A longer description that spans multiple lines and likely contains examples
+	// and usage of using your command. For example:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	// Cobra is a CLI library for Go that empowers applications.
+	// This application is a tool to generate the needed files
+	// to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		initConfig()
 		view.RunViewEvents(cmd, args, false)
@@ -76,13 +76,13 @@ to quickly create a Cobra application.`,
 var viewPastEventsCmd = &cobra.Command{
 	Use:     "past",
 	Aliases: PAST_ALIASES,
-	Short:   "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short:   "View past/completed events",
+	// 	Long: `A longer description that spans multiple lines and likely contains examples
+	// and usage of using your command. For example:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	// Cobra is a CLI library for Go that empowers applications.
+	// This application is a tool to generate the needed files
+	// to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		initConfig()
 		view.RunViewEvents(cmd, args, true)
@@ -93,26 +93,26 @@ to quickly create a Cobra application.`,
 var deadlinesCmd = &cobra.Command{
 	Use:     "deadlines",
 	Aliases: []string{"assignments"},
-	Short:   "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short:   "View past/future assignment deadlines",
+	// 	Long: `A longer description that spans multiple lines and likely contains examples
+	// and usage of using your command. For example:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	// Cobra is a CLI library for Go that empowers applications.
+	// This application is a tool to generate the needed files
+	// to quickly create a Cobra application.`,
 }
 
 // view upcoming deadlines command
 var viewUpcomingDeadlinesCmd = &cobra.Command{
 	Use:     "upcoming",
 	Aliases: FUTURE_ALIASES,
-	Short:   "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short:   "View upcoming/future assignment deadlines",
+	// 	Long: `A longer description that spans multiple lines and likely contains examples
+	// and usage of using your command. For example:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	// Cobra is a CLI library for Go that empowers applications.
+	// This application is a tool to generate the needed files
+	// to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		initConfig()
 		view.RunViewDeadlines(cmd, args, false)
@@ -123,13 +123,13 @@ to quickly create a Cobra application.`,
 var viewPastDeadlinesCmd = &cobra.Command{
 	Use:     "past",
 	Aliases: PAST_ALIASES,
-	Short:   "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short:   "View completed/past assignment deadlines",
+	// 	Long: `A longer description that spans multiple lines and likely contains examples
+	// and usage of using your command. For example:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	// Cobra is a CLI library for Go that empowers applications.
+	// This application is a tool to generate the needed files
+	// to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		initConfig()
 		view.RunViewDeadlines(cmd, args, true)
