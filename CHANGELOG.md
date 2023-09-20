@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.12.2](https://github.com/aidanaden/canvas-sync/compare/v1.12.1...v1.12.2) (2023-09-20)
+
+
+### Bug Fixes
+
+* bucket ([#81](https://github.com/aidanaden/canvas-sync/issues/81)) ([594797a](https://github.com/aidanaden/canvas-sync/commit/594797ae76558c61b5208adcf0816f9f0979aa43))
+* move scoop json to bucket folder ([#79](https://github.com/aidanaden/canvas-sync/issues/79)) ([8b9f80f](https://github.com/aidanaden/canvas-sync/commit/8b9f80f66762687bd8fd0e82cbc30b14fe45ce5d))
+
 ## [1.12.1](https://github.com/aidanaden/canvas-sync/compare/v1.12.0...v1.12.1) (2023-09-20)
 
 
