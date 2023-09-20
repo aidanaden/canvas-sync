@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.0](https://github.com/aidanaden/canvas-sync/compare/v1.12.3...v1.13.0) (2023-09-20)
+
+
+### Features
+
+* user-configurable init ([#86](https://github.com/aidanaden/canvas-sync/issues/86)) ([f43df91](https://github.com/aidanaden/canvas-sync/commit/f43df912346c265ce4b41e8b98a37af71b0194d4))
+
 ## [1.12.3](https://github.com/aidanaden/canvas-sync/compare/v1.12.2...v1.12.3) (2023-09-20)
 
 
