@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.0](https://github.com/aidanaden/canvas-sync/compare/v1.11.0...v1.12.0) (2023-09-20)
+
+
+### Features
+
+* add scoop goreleaser ([#75](https://github.com/aidanaden/canvas-sync/issues/75)) ([95d533e](https://github.com/aidanaden/canvas-sync/commit/95d533e09858c725e6570011ef7f6efc93a53833))
+
 ## [1.11.0](https://github.com/aidanaden/canvas-sync/compare/v1.10.0...v1.11.0) (2023-09-20)
 
 
