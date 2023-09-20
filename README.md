@@ -9,7 +9,7 @@ CLI to download (course files, videos, etc) & view (deadlines, events, announcem
 - [Install](#install)
   - [Brew (mac/linux/wsl)](#brew-maclinuxwsl)
   - [Scoop (windows)](#scoop-windows)
-  - [Autocomplete (for advanced users)](#autocomplete-for-advanced-users)
+  - [Autocomplete (mac/linux/wsl)](#autocomplete-maclinuxwsl)
     - [zsh](#zsh)
     - [bash](#bash)
     - [fish (not necessary if you installed fish via homebrew)](#fish-not-necessary-if-you-installed-fish-via-homebrew)
@@ -49,9 +49,11 @@ scoop install canvas-sync
 
 You can also download directly from the [releases](https://github.com/aidanaden/canvas-sync/releases) page
 
-### Autocomplete (for advanced users)
+### Autocomplete (mac/linux/wsl)
 
-Add autocompletion for canvas-sync in your terminal:
+*Warning: skip if you don't know what zsh is*
+
+Adds autocompletion for canvas-sync to your shell.
 
 #### zsh
 
