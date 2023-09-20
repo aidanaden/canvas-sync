@@ -73,9 +73,7 @@ scoops:
       name: scoop-bucket
     commit_msg_template: "Scoop update for {{ .ProjectName }} version {{ .Tag }}"
     homepage: https://github.com/aidanaden/canvas-sync
-    description: |
-      Canvas-sync is a  CLI to download (course files, videos, etc)
-      & view (deadlines, events, announcements) from Canvas
+    description: Canvas-sync is a  CLI to download (course files, videos, etc) & view (deadlines, events, announcements) from Canvas
     license: MIT
 
 snapcrafts:
