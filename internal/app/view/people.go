@@ -19,12 +19,8 @@ func RunViewCoursePeople(cmd *cobra.Command, args []string) {
 	canvasUrl := fmt.Sprintf("%v", viper.Get("canvas_url"))
 	canvasClient := canvas.NewClient(http.DefaultClient, canvasUrl, accessToken, cookiesFile)
 	if accessToken == "" {
-		pterm.Info.Printfln("No cookies found, using stored browser cookies...")
-		if err := canvasClient.ExtractStoredBrowserCookies(); err != nil {
-			pterm.Info.Printfln("No stored cookies found, extracting browser cookies...")
-			canvasClient.ExtractBrowserCookies()
-			canvasClient.StoreDomainBrowserCookies()
-		}
+		pterm.Info.Printfln("No access token found, getting stored cookies...")
+		canvasClient.ExtractCookies()
 	} else {
 		pterm.Info.Printfln("Using access token starting with: %s", accessToken[:5])
 	}

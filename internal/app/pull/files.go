@@ -29,11 +29,8 @@ func RunPullFiles(cmd *cobra.Command, args []string) {
 
 	canvasClient := canvas.NewClient(http.DefaultClient, canvasUrl, accessToken, cookiesFile)
 	if accessToken == "" {
-		pterm.Info.Printfln("No cookies found, getting auth cookies from browser...")
-		if err := canvasClient.ExtractStoredBrowserCookies(); err != nil {
-			canvasClient.ExtractBrowserCookies()
-			canvasClient.StoreDomainBrowserCookies()
-		}
+		pterm.Info.Printfln("No access token found, getting stored cookies...")
+		canvasClient.ExtractCookies()
 	} else {
 		pterm.Info.Printfln("Using access token starting with: %s", accessToken[:5])
 	}
