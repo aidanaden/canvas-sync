@@ -8,8 +8,9 @@ import (
 
 // represents the pull command
 var pullCmd = &cobra.Command{
-	Use:   "pull",
-	Short: "Downloads course data from canvas",
+	Use:     "pull",
+	Aliases: []string{"download", "get"},
+	Short:   "Downloads course data from canvas",
 	Long: `
 Download course data from canvas to a target directory (defaults to $HOME/.canvas-sync/data/files)
 Specify target directory in the $HOME/.canvas-sync/config.yml file
