@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/aidanaden/canvas-sync/compare/v1.8.0...v1.9.0) (2023-09-20)
+
+
+### Features
+
+* aliases for pull, view ([#67](https://github.com/aidanaden/canvas-sync/issues/67)) ([d314f96](https://github.com/aidanaden/canvas-sync/commit/d314f965edae97296d30426f1af0d1bab48e027f))
+
 ## [1.8.0](https://github.com/aidanaden/canvas-sync/compare/v1.7.1...v1.8.0) (2023-09-19)
 
 
