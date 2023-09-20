@@ -75,8 +75,7 @@ func (c *CanvasClient) ExtractStoredBrowserCookies() error {
 		}
 		subsplits := strings.Split(split, "=")
 		if len(subsplits) != 2 {
-			pterm.Error.Printfln("Invalid cookie %s, skipping...", split)
-			continue
+			return errors.New("no valid cookies found")
 		}
 		cookies = append(cookies, &http.Cookie{
 			Name:  subsplits[0],
@@ -91,6 +90,15 @@ func (c *CanvasClient) ExtractStoredBrowserCookies() error {
 	cookieJar.SetCookies(&baseUrl, cookies)
 	c.client.Jar = cookieJar
 	return nil
+}
+
+// extract stored cookies, if none found extract browser cookies
+func (c *CanvasClient) ExtractCookies() {
+	if err := c.ExtractStoredBrowserCookies(); err != nil {
+		pterm.Info.Printfln("No stored cookies found, using browser cookies...")
+		c.ExtractBrowserCookies()
+		c.StoreDomainBrowserCookies()
+	}
 }
 
 func (c *CanvasClient) StoreDomainBrowserCookies() {
