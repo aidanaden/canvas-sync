@@ -97,10 +97,16 @@ func RunUpdateFiles(cmd *cobra.Command, args []string) {
 				sp.UpdateMessagef(pterm.FgCyan.Sprintf("Downloading %d files for %s", totalFileDownloads, code))
 			})
 
-			sp.UpdateMessagef(pterm.FgGreen.Sprintf("Downloaded %d files for %s", totalFileDownloads, code))
+			if totalFileDownloads > 0 {
+				sp.UpdateMessagef(pterm.FgGreen.Sprintf("Downloaded %d files for %s", totalFileDownloads, code))
+			} else {
+				sp.UpdateMessagef(pterm.FgGreen.Sprintf("All files are up-to-date"))
+			}
+
 			sp.Complete()
 		}(ci, sp)
 	}
+
 	sm.Start()
 	wg.Wait()
 	sm.Stop()

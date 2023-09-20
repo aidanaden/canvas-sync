@@ -41,7 +41,7 @@ func RunInit(isInitCommand bool) string {
 		}
 		initConfigFile(cfgFilePath)
 		if isInitCommand {
-			pterm.Success.Printfln("Successfully created config file: %s", cfgFilePath)
+			pterm.Success.Printfln("Successfully created config file: %s\n", cfgFilePath)
 		}
 		return cfgDir
 	}
@@ -49,6 +49,7 @@ func RunInit(isInitCommand bool) string {
 	_, err = os.Stat(cfgFilePath)
 	// overwrite existing
 	if err == nil && isInitCommand {
+		pterm.Println()
 		pterm.Info.Println("Existing config file found - create new config file?")
 		res, err := pterm.DefaultInteractiveConfirm.Show()
 		if err != nil {
@@ -58,10 +59,12 @@ func RunInit(isInitCommand bool) string {
 		if res {
 			initConfigFile(cfgFilePath)
 			if isInitCommand {
+				pterm.Println()
 				pterm.Success.Printfln("Successfully created config file: %s", cfgFilePath)
 			}
 		} else {
-			pterm.Warning.Println("Init command cancelled.")
+			pterm.Println()
+			pterm.Error.Println("Init command cancelled.")
 		}
 	} else if os.IsNotExist(err) {
 		if !isInitCommand {
@@ -69,6 +72,7 @@ func RunInit(isInitCommand bool) string {
 		}
 		initConfigFile(cfgFilePath)
 		if isInitCommand {
+			pterm.Println()
 			pterm.Success.Println("Successfully created config file.")
 		}
 	} else if err != nil {
