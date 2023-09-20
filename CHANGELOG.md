@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/aidanaden/canvas-sync/compare/v1.9.0...v1.10.0) (2023-09-20)
+
+
+### Features
+
+* pterm ui styling ([#69](https://github.com/aidanaden/canvas-sync/issues/69)) ([70e03fc](https://github.com/aidanaden/canvas-sync/commit/70e03fc0344296452fc80ccb78b4ec786a28061d))
+
 ## [1.9.0](https://github.com/aidanaden/canvas-sync/compare/v1.8.0...v1.9.0) (2023-09-20)
 
 
