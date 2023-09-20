@@ -130,15 +130,21 @@ Canvas-sync requires logging in to your canvas account. There are 2 authenticati
   ![second](examples/access_token_walkthrough_2.png)
   ![third](examples/access_token_walkthrough_3.png)
 
-  3. Copy the token value displayed and paste it in the `~/.canvas-sync/config.yaml` file as below
+  3. Create a config file with
 
   ```bash
-   # paste your access token below
-   access_token: # <paste your access token>
-   # replace with your preferred location to store canvas data
-   data_dir: $HOME/.canvas-sync/data
-   # replace with your canvas url
-   canvas_url: https://canvas.nus.edu.sg
+  canvas-sync init
+  ```
+  
+  4. Copy the token value displayed and paste it in the `~/.canvas-sync/config.yaml` file as below
+
+  ```bash
+  # paste your access token below
+  access_token: # <paste your access token>
+  # replace with your preferred location to store canvas data
+  data_dir: $HOME/.canvas-sync/data
+  # replace with your canvas url
+  canvas_url: https://canvas.nus.edu.sg
   ```
 
 ## Config
