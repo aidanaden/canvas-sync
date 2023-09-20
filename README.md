@@ -43,7 +43,7 @@ brew install aidanaden/tools/canvas-sync
 ### Scoop (windows)
 
 ```bash
-scoop bucket add https://github.com/aidanaden/scoop-bucket.git
+scoop bucket add scoop-bucket https://github.com/aidanaden/scoop-bucket.git
 scoop install canvas-sync
 ```
 
