@@ -63,7 +63,7 @@ Set Height 700
 Set PlaybackSpeed 0.5 # Make output 2 times slower
 Set CursorBlink false
 
-Type "canvas-sync init" Sleep 500ms  Enter  Enter
+Type "canvas-sync init" Sleep 500ms  Enter
 
 Sleep 1s
 
@@ -76,7 +76,7 @@ Type "clear"  Enter
 Sleep 1s
 
 Type "canvas-sync init" Sleep 500ms  Enter
-Type "y" Sleep 500ms  Enter  Enter
+Type "y" Sleep 500ms
 
 Sleep 1s
 
