@@ -7,7 +7,8 @@ CLI to download (course files, videos, etc) & view (deadlines, events, announcem
 ## Contents
 
 - [Install](#install)
-  - [Brew](#brew)
+  - [Brew (mac/linux/wsl)](#brew-maclinuxwsl)
+  - [Scoop (windows)](#scoop-windows)
   - [Autocomplete (for advanced users)](#autocomplete-for-advanced-users)
     - [zsh](#zsh)
     - [bash](#bash)
@@ -33,10 +34,17 @@ CLI to download (course files, videos, etc) & view (deadlines, events, announcem
 
 ## Install
 
-### Brew
+### Brew (mac/linux/wsl)
 
 ```bash
 brew install aidanaden/tools/canvas-sync
+```
+
+### Scoop (windows)
+
+```bash
+scoop bucket add https://github.com/aidanaden/scoop-bucket.git
+scoop install canvas-sync
 ```
 
 You can also download directly from the [releases](https://github.com/aidanaden/canvas-sync/releases) page
