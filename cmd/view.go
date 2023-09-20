@@ -97,18 +97,52 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
+}
+
+// view upcoming deadlines command
+var viewUpcomingDeadlinesCmd = &cobra.Command{
+	Use:     "upcoming",
+	Aliases: []string{"future"},
+	Short:   "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		initConfig()
-		view.RunViewDeadlines(cmd, args)
+		view.RunViewDeadlines(cmd, args, false)
+	},
+}
+
+// view past deadlines command
+var viewPastDeadlinesCmd = &cobra.Command{
+	Use:     "past",
+	Aliases: []string{"completed"},
+	Short:   "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		initConfig()
+		view.RunViewDeadlines(cmd, args, true)
 	},
 }
 
 func init() {
 	viewEventsCmd.AddCommand(viewUpcomingEventsCmd)
 	viewEventsCmd.AddCommand(viewPastEventsCmd)
-	viewCmd.AddCommand(peopleCmd)
 	viewCmd.AddCommand(viewEventsCmd)
+
+	deadlinesCmd.AddCommand(viewUpcomingDeadlinesCmd)
+	deadlinesCmd.AddCommand(viewPastDeadlinesCmd)
 	viewCmd.AddCommand(deadlinesCmd)
+
+	viewCmd.AddCommand(peopleCmd)
 	rootCmd.AddCommand(viewCmd)
 
 	// Here you will define your flags and configuration settings.

@@ -8,6 +8,7 @@ import (
 
 	"github.com/aidanaden/canvas-sync/internal/pkg/canvas"
 	"github.com/aidanaden/canvas-sync/internal/pkg/nodes"
+	"github.com/aidanaden/canvas-sync/internal/pkg/utils"
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -48,17 +49,37 @@ func RunViewEvents(cmd *cobra.Command, args []string, isPast bool) {
 		}
 	}
 
-	for i, event := range events {
+	tableData := pterm.TableData{
+		{"Event Type", "Name", "Start date", "Location"},
+	}
+
+	for _, event := range events {
 		if event.Plannable.AnnouncementPlannableNode != nil {
-			fmt.Printf("\n\nincoming announcement %d: %v, %v", i+1, event.Plannable, event.Plannable.AnnouncementPlannableNode)
-		} else if event.Plannable.AssignmentPlannableNode != nil {
-			fmt.Printf("\n\nincoming assignment %d: %v, due at %s", i+1, event.Plannable, event.Plannable.AssignmentPlannableNode.DueAt)
+			tableData = append(tableData, []string{
+				"Announcement", event.Plannable.Title, "",
+			})
 		} else if event.Plannable.EventPlannableNode != nil {
+			startAt, err := utils.SGTfromUTC(event.Plannable.EventPlannableNode.StartAt)
+			if err != nil {
+				pterm.Error.Printfln("Error loading event start date: %s", err.Error())
+				continue
+			}
+			startAtStr := utils.FormatEventDate(*startAt)
 			if event.Plannable.ZoomPlannableNode != nil {
-				fmt.Printf("\n\nincoming zoom event %d: %v, %v", i+1, event.Plannable, event.Plannable.EventPlannableNode)
+				tableData = append(tableData, []string{
+					"Zoom", event.Plannable.Title, startAtStr, event.Plannable.ZoomPlannableNode.OnlineMeetingUrl,
+				})
 			} else {
-				fmt.Printf("\n\nincoming live event %d: %v, %v", i+1, event.Plannable, event.Plannable.EventPlannableNode)
+				tableData = append(tableData, []string{
+					"Live", event.Plannable.Title, startAtStr, event.Plannable.LocationName,
+				})
 			}
 		}
+	}
+
+	pterm.Println()
+	if err := pterm.DefaultTable.WithHasHeader().WithData(tableData).Render(); err != nil {
+		pterm.Error.Printfln("Error rendering events: %s", err.Error())
+		os.Exit(1)
 	}
 }
