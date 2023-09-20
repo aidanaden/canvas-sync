@@ -7,8 +7,9 @@ import (
 
 // represents the view command
 var viewCmd = &cobra.Command{
-	Use:   "view",
-	Short: "View data from canvas (upcoming lectures, deadlines, etc)",
+	Use:     "view",
+	Aliases: []string{"display", "print"},
+	Short:   "View data from canvas (upcoming lectures, deadlines, etc)",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -49,16 +50,47 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
+}
+
+// view upcoming events command
+var viewUpcomingEventsCmd = &cobra.Command{
+	Use:     "upcoming",
+	Aliases: []string{"future"},
+	Short:   "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		initConfig()
-		view.RunViewEvents(cmd, args)
+		view.RunViewEvents(cmd, args, false)
+	},
+}
+
+// view past events command
+var viewPastEventsCmd = &cobra.Command{
+	Use:     "past",
+	Aliases: []string{"completed"},
+	Short:   "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		initConfig()
+		view.RunViewEvents(cmd, args, true)
 	},
 }
 
 // deadlinesCmd represents the deadlines command
 var deadlinesCmd = &cobra.Command{
-	Use:   "deadlines",
-	Short: "A brief description of your command",
+	Use:     "deadlines",
+	Aliases: []string{"assignments"},
+	Short:   "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -72,6 +104,8 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
+	viewEventsCmd.AddCommand(viewUpcomingEventsCmd)
+	viewEventsCmd.AddCommand(viewPastEventsCmd)
 	viewCmd.AddCommand(peopleCmd)
 	viewCmd.AddCommand(viewEventsCmd)
 	viewCmd.AddCommand(deadlinesCmd)
