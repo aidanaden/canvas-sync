@@ -5,6 +5,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var FUTURE_ALIASES = []string{"future", "coming", "next"}
+var PAST_ALIASES = []string{"completed", "done"}
+
 // represents the view command
 var viewCmd = &cobra.Command{
 	Use:     "view",
@@ -55,7 +58,7 @@ to quickly create a Cobra application.`,
 // view upcoming events command
 var viewUpcomingEventsCmd = &cobra.Command{
 	Use:     "upcoming",
-	Aliases: []string{"future"},
+	Aliases: FUTURE_ALIASES,
 	Short:   "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -72,7 +75,7 @@ to quickly create a Cobra application.`,
 // view past events command
 var viewPastEventsCmd = &cobra.Command{
 	Use:     "past",
-	Aliases: []string{"completed"},
+	Aliases: PAST_ALIASES,
 	Short:   "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -102,7 +105,7 @@ to quickly create a Cobra application.`,
 // view upcoming deadlines command
 var viewUpcomingDeadlinesCmd = &cobra.Command{
 	Use:     "upcoming",
-	Aliases: []string{"future"},
+	Aliases: FUTURE_ALIASES,
 	Short:   "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -119,7 +122,7 @@ to quickly create a Cobra application.`,
 // view past deadlines command
 var viewPastDeadlinesCmd = &cobra.Command{
 	Use:     "past",
-	Aliases: []string{"completed"},
+	Aliases: PAST_ALIASES,
 	Short:   "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
