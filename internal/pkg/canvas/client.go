@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
@@ -17,6 +16,7 @@ import (
 
 	"github.com/aidanaden/canvas-sync/internal/pkg/nodes"
 	"github.com/aidanaden/canvas-sync/internal/pkg/utils"
+	"github.com/pterm/pterm"
 )
 
 const apiPath = "/api/v1"
@@ -75,7 +75,7 @@ func (c *CanvasClient) ExtractStoredBrowserCookies() error {
 		}
 		subsplits := strings.Split(split, "=")
 		if len(subsplits) != 2 {
-			fmt.Printf("\nInvalid cookie %s, skipping...", split)
+			pterm.Error.Printfln("Invalid cookie %s, skipping...", split)
 			continue
 		}
 		cookies = append(cookies, &http.Cookie{
@@ -103,10 +103,12 @@ func (c *CanvasClient) StoreDomainBrowserCookies() {
 	d1 := []byte(cookiesStr)
 	cookiesDir := filepath.Dir(c.cookiesFilePath)
 	if err := os.MkdirAll(cookiesDir, 0755); err != nil {
-		log.Fatalf("\nError creating cookie directory %s: %s", cookiesDir, err.Error())
+		pterm.Error.Printfln("Error creating cookie directory %s: %s", cookiesDir, err.Error())
+		os.Exit(1)
 	}
 	if err := os.WriteFile(c.cookiesFilePath, d1, 0755); err != nil {
-		log.Fatalf("\nError storing browser cookies to %s: %s", c.cookiesFilePath, err.Error())
+		pterm.Error.Printfln("\nError storing browser cookies to %s: %s", c.cookiesFilePath, err.Error())
+		os.Exit(1)
 	}
 }
 
@@ -135,11 +137,15 @@ func (c *CanvasClient) GetActiveEnrolledCourses() ([]nodes.CourseNode, error) {
 	}
 
 	resp, err := c.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
 	courseJson := utils.ExtractResponseToString(resp)
 	var courses []nodes.CourseNode
 	json.Unmarshal([]byte(courseJson), &courses)
 	if strings.Contains(courseJson, "user authorisation required") {
-		// log.Fatalf("\nerror querying '/api/v1/users/self/courses?enrollment_state=active' endpoint: %v\nTRY LAUNCHING https://canvas.nus.edu.sg in a chrome/safari/edge browser and try again!", courseJson)
+		pterm.Warning.Printfln("Existing auth cookies/access token invalid, attempting to extract cookies from browser...")
 		c.ExtractBrowserCookies()
 		c.StoreDomainBrowserCookies()
 	}
@@ -165,12 +171,14 @@ func (c *CanvasClient) GetCourseRootFolder(courseId int) (*nodes.DirectoryNode, 
 	}
 	rootRes, err := c.client.Do(req)
 	if err != nil {
-		log.Fatalf("failed to query course %d root directory: %s", courseId, err.Error())
+		pterm.Error.Printfln("Failed to query course %d root directory: %s", courseId, err.Error())
+		os.Exit(1)
 	}
 	rootJson := utils.ExtractResponseToString(rootRes)
 	var rootNode *nodes.DirectoryNode
 	if err := json.Unmarshal([]byte(rootJson), &rootNode); err != nil {
-		log.Fatalf("failed to extract course %d root directory: %s", courseId, err.Error())
+		pterm.Error.Printfln("Failed to extract course %d root directory: %s", courseId, err.Error())
+		os.Exit(1)
 	}
 	return rootNode, nil
 }
@@ -331,7 +339,7 @@ func extractEventFromString(rawJson string) ([]nodes.EventNode, error) {
 	var events []nodes.EventNode
 	json.Unmarshal([]byte(rawJson), &events)
 	if strings.Contains(rawJson, "user authorisation required") {
-		return nil, fmt.Errorf("\nerror querying '/api/v1/planner/items' endpoint: %v\nTRY LAUNCHING https://canvas.nus.edu.sg in a chrome/safari/edge browser and try again!", rawJson)
+		return nil, errors.New("invalid auth cookies/access token, request unauthorized")
 	}
 	return events, nil
 }
@@ -401,7 +409,7 @@ func extractPeopleFromString(rawJson string) ([]nodes.PersonNode, error) {
 	var people []nodes.PersonNode
 	json.Unmarshal([]byte(rawJson), &people)
 	if strings.Contains(rawJson, "user authorisation required") {
-		return nil, fmt.Errorf("\nerror querying '/api/v1/planner/items' endpoint: %v\nTRY LAUNCHING https://canvas.nus.edu.sg in a chrome/safari/edge browser and try again!", rawJson)
+		return nil, errors.New("invalid auth cookies/access token, request unauthorized")
 	}
 	return people, nil
 }
