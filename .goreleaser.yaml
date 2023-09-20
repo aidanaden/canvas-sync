@@ -67,7 +67,8 @@ brews:
     #   system "echo", "\nif type brew &>/dev/null; then FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH && autoload -Uz compinit && compinit; fi", ">>", "~/.zshrc"
 
 scoops:
-  - bucket:
+  - folder: "bucket"
+    repository:
       owner: aidanaden
       name: scoop-bucket
     commit_msg_template: "Scoop update for {{ .ProjectName }} version {{ .Tag }}"
