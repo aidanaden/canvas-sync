@@ -3,6 +3,7 @@ package view
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"path/filepath"
 
 	"github.com/aidanaden/canvas-sync/internal/pkg/canvas"
@@ -32,7 +33,20 @@ func RunViewCoursePeople(cmd *cobra.Command, args []string) {
 	if err != nil {
 		pterm.Error.Printfln("Error: failed to fetch all upcoming calendar events: %s", err.Error())
 	}
-	for _, people := range coursePeople {
-		pterm.Info.Printfln("Name: %s\nImage url: %s", people.ShortName, people.AvatarUrl)
+
+	tableData := pterm.TableData{
+		{"Name"},
 	}
+
+	for _, person := range coursePeople {
+		tableData = append(tableData, []string{
+			person.Name,
+		})
+	}
+	pterm.Println()
+	if err := pterm.DefaultTable.WithHasHeader().WithData(tableData).Render(); err != nil {
+		pterm.Error.Printfln("Error rendering events: %s", err.Error())
+		os.Exit(1)
+	}
+	pterm.Info.Printfln("Showing %d people from %s", len(coursePeople), courseCode)
 }
