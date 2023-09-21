@@ -67,6 +67,8 @@ github.com/alessio/shellescape v1.4.1/go.mod h1:PZAiSCk0LJaZkiCSkPv8qIobYglO3FPp
 github.com/atomicgo/cursor v0.0.1/go.mod h1:cBON2QmmrysudxNBFthvMtN32r3jxVRIvzkUiF/RuIk=
 github.com/bobesa/go-domain-util v0.0.0-20190911083921-4033b5f7dd89 h1:2pkAuIM8OF1fy4ToFpMnI4oE+VeUNRbGrpSLKshK0oQ=
 github.com/bobesa/go-domain-util v0.0.0-20190911083921-4033b5f7dd89/go.mod h1:/09nEjna1UMoasyyQDhOrIn8hi2v2kiJglPWed1idck=
+github.com/carlmjohnson/versioninfo v0.22.5 h1:O00sjOLUAFxYQjlN/bzYTuZiS0y6fWDQjMRvwtKgwwc=
+github.com/carlmjohnson/versioninfo v0.22.5/go.mod h1:QT9mph3wcVfISUKd0i9sZfVrPviHuSF+cUtLjm2WSf8=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/chelnak/ysmrr v0.3.0 h1:eBm6PvNnjAV920MOEwCzCG3gLn+EFGUf4Go+t+T2/Ps=
 github.com/chelnak/ysmrr v0.3.0/go.mod h1:HedVxtqeGSPnSS7qDRtq4vPVGoz8DXcCr9jvjF263rQ=

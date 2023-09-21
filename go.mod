@@ -18,6 +18,7 @@ require (
 	github.com/Velocidex/ordereddict v0.0.0-20220411103415-79032cf99b1d // indirect
 	github.com/Velocidex/yaml/v2 v2.2.8 // indirect
 	github.com/bobesa/go-domain-util v0.0.0-20190911083921-4033b5f7dd89 // indirect
+	github.com/carlmjohnson/versioninfo v0.22.5 // indirect
 	github.com/containerd/console v1.0.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fatih/color v1.15.0 // indirect

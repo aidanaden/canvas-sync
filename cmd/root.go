@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/aidanaden/canvas-sync/internal/app/initialise"
@@ -22,6 +23,10 @@ Features:
   - display canvas info (deadlines, announcements, etc)
   - upload/submit assignments (only if i get > 10 stars on github)
   - more to come (tm)...`,
+}
+
+func SetVersionInfo(version, commit, date string) {
+	rootCmd.Version = fmt.Sprintf("%s (Built on %s from Git SHA %s)", version, date, commit)
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
