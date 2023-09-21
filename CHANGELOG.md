@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.1](https://github.com/aidanaden/canvas-sync/compare/v1.14.0...v1.14.1) (2023-09-21)
+
+
+### Bug Fixes
+
+* deadline points possible ([#107](https://github.com/aidanaden/canvas-sync/issues/107)) ([a0d2645](https://github.com/aidanaden/canvas-sync/commit/a0d2645b0dccc6ca3ddf644dc749f647bdcd98d1))
+
 ## [1.14.0](https://github.com/aidanaden/canvas-sync/compare/v1.13.0...v1.14.0) (2023-09-21)
 
 
