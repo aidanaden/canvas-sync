@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"github.com/aidanaden/canvas-sync/internal/pkg/canvas"
 	"github.com/aidanaden/canvas-sync/internal/pkg/nodes"
@@ -57,8 +58,9 @@ func RunViewDeadlines(cmd *cobra.Command, args []string, isPast bool) {
 				continue
 			}
 			dueStr := utils.FormatEventDate(*due)
+			pointsStr := strconv.Itoa(int(event.Plannable.AssignmentPlannableNode.PointsPossible))
 			tableData = append(tableData, []string{
-				event.Plannable.Title, dueStr, fmt.Sprintf("%d", event.Plannable.AssignmentPlannableNode.PointsPossible),
+				event.Plannable.Title, dueStr, pointsStr,
 			})
 		}
 	}
