@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.2](https://github.com/aidanaden/canvas-sync/compare/v1.14.1...v1.14.2) (2023-09-21)
+
+
+### Bug Fixes
+
+* view 100 events at a time ([#113](https://github.com/aidanaden/canvas-sync/issues/113)) ([8b0282b](https://github.com/aidanaden/canvas-sync/commit/8b0282b4d9ffdfbfc8296aa5b99469b19a493ef7))
+
 ## [1.14.1](https://github.com/aidanaden/canvas-sync/compare/v1.14.0...v1.14.1) (2023-09-21)
 
 
