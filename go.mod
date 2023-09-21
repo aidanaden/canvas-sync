@@ -5,6 +5,7 @@ go 1.21.1
 require (
 	github.com/chelnak/ysmrr v0.3.0
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
+	github.com/pterm/pterm v0.12.69
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
 	github.com/zellyn/kooky v0.0.0-20230814063115-d4b42194bf0b
@@ -18,7 +19,6 @@ require (
 	github.com/Velocidex/ordereddict v0.0.0-20220411103415-79032cf99b1d // indirect
 	github.com/Velocidex/yaml/v2 v2.2.8 // indirect
 	github.com/bobesa/go-domain-util v0.0.0-20190911083921-4033b5f7dd89 // indirect
-	github.com/carlmjohnson/versioninfo v0.22.5 // indirect
 	github.com/containerd/console v1.0.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fatih/color v1.15.0 // indirect
@@ -38,7 +38,6 @@ require (
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
-	github.com/pterm/pterm v0.12.69 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/spf13/afero v1.9.5 // indirect
 	github.com/spf13/cast v1.5.1 // indirect

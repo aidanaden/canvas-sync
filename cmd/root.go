@@ -43,9 +43,9 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().String("access_token", "", "canvas access token; configurable in $HOME/.canvas-sync/config.yaml")
+	rootCmd.PersistentFlags().String("access_token", "", "canvas access token")
 	viper.BindPFlag("access_token", rootCmd.PersistentFlags().Lookup("access_token"))
-	rootCmd.PersistentFlags().String("canvas_url", "", "canvas url e.g. canvas.nus.edu.sg; configurable in $HOME/.canvas-sync/config.yaml")
+	rootCmd.PersistentFlags().String("canvas_url", "", "canvas url e.g. canvas.nus.edu.sg")
 	viper.BindPFlag("canvas_url", rootCmd.PersistentFlags().Lookup("canvas_url"))
 
 	viper.SetDefault("author", "ryan aidan aidan@u.nus.edu")
