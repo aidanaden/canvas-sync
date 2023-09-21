@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/aidanaden/canvas-sync/internal/app/update"
+	"github.com/aidanaden/canvas-sync/internal/pkg/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -28,6 +29,9 @@ Examples:
 		initConfig()
 		update.RunUpdateFiles(cmd, args)
 	},
+    PersistentPostRun: func(cmd *cobra.Command, args []string) {
+        utils.MotivationalAndStarMessage()
+    },
 }
 
 func init() {
