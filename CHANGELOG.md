@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.14.0](https://github.com/aidanaden/canvas-sync/compare/v1.13.0...v1.14.0) (2023-09-21)
+
+
+### Features
+
+* request access token generation on init ([#104](https://github.com/aidanaden/canvas-sync/issues/104)) ([b5517a1](https://github.com/aidanaden/canvas-sync/commit/b5517a1de3951b556d09a6cd188f80f0faadcef8))
+
+
+### Bug Fixes
+
+* remove old stored cookie file before storing new cookies ([#105](https://github.com/aidanaden/canvas-sync/issues/105)) ([359e5fd](https://github.com/aidanaden/canvas-sync/commit/359e5fd7d749b0f86dd7b5ec4d6d8ce335c5c808))
+
 ## [1.13.0](https://github.com/aidanaden/canvas-sync/compare/v1.12.3...v1.13.0) (2023-09-20)
 
 
