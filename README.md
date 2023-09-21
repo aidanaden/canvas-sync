@@ -14,9 +14,11 @@ CLI to download (course files, videos, etc) & view (deadlines, events, announcem
     - [bash](#bash)
     - [fish (not necessary if you installed fish via homebrew)](#fish-not-necessary-if-you-installed-fish-via-homebrew)
   - [Updating](#updating)
+    - [Brew](#brew)
+    - [Scoop](#scoop)
 - [Usage](#usage)
-  - [Log in (recommended for beginners)](#log-in-recommended-for-beginners)
-  - [Access token (recommended for optimal performance)](#access-token-recommended-for-optimal-performance)
+  - [Access token (stable, recommended for most users)](#access-token-stable-recommended-for-most-users)
+  - [Log in (unstable)](#log-in-unstable)
 - [Config](#config)
 - [Commands](#commands)
   - [Init](#init)
@@ -124,10 +126,20 @@ Adds autocompletion for canvas-sync to your shell.
 
 ### Updating
 
-If you installed using brew, simply run:
+#### Brew
+
+If installed using brew, simply run:
 
 ```bash
 brew update && brew upgrade
+```
+
+#### Scoop
+
+If installed using scoop, simply run:
+
+```bash
+scoop update canvas-sync
 ```
 
 You can also download the latest version directly from the [releases](https://github.com/aidanaden/canvas-sync/releases) page
@@ -136,13 +148,7 @@ You can also download the latest version directly from the [releases](https://gi
 
 Canvas-sync requires logging in to your canvas account. There are 2 authentication methods:
 
-### Log in (recommended for beginners)
-
-  1. Log in to your canvas account on your browser (chrome preferred)
-  2. That's it! You can run one of the command from [here](#commands)
-  3. Note: you might be prompted to log in to your canvas account from time to time
-
-### Access token (recommended for optimal performance)
+### Access token (stable, recommended for most users)
 
   1. Access tokens allow canvas-sync to interact with canvas without logging in. To create an access token, head to your [canvas settings](https://canvas.nus.edu.sg/profile/settings) (note: this link is for nus students, for non-nus students head to `<your school canvas website>/profile/settings`)
   2. Click the "New access token" button and enter "canvas-sync" in the "Purpose" field. Make sure to leave the "Expires" field **blank**
@@ -167,6 +173,12 @@ Canvas-sync requires logging in to your canvas account. There are 2 authenticati
   # replace with your canvas url
   canvas_url: https://canvas.nus.edu.sg
   ```
+
+### Log in (unstable)
+
+  1. Log in to your canvas account on your browser (chrome preferred)
+  2. That's it! You can run one of the command from [here](#commands)
+  3. Note: you might be prompted to log in to your canvas account from time to time
 
 ## Config
 
