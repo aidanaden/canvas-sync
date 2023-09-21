@@ -21,8 +21,17 @@ THE SOFTWARE.
 */
 package main
 
-import "github.com/aidanaden/canvas-sync/cmd"
+import (
+	"github.com/aidanaden/canvas-sync/cmd"
+)
+
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+)
 
 func main() {
+	cmd.SetVersionInfo(version, commit, date)
 	cmd.Execute()
 }

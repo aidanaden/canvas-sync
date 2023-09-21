@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/aidanaden/canvas-sync/internal/app/initialise"
@@ -24,6 +25,10 @@ Features:
   - more to come (tm)...`,
 }
 
+func SetVersionInfo(version, commit, date string) {
+	rootCmd.Version = fmt.Sprintf("%s (Built on %s from Git SHA %s)", version, date, commit)
+}
+
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
@@ -38,9 +43,9 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().String("access_token", "", "canvas access token; configurable in $HOME/.canvas-sync/config.yaml")
+	rootCmd.PersistentFlags().String("access_token", "", "canvas access token")
 	viper.BindPFlag("access_token", rootCmd.PersistentFlags().Lookup("access_token"))
-	rootCmd.PersistentFlags().String("canvas_url", "", "canvas url e.g. canvas.nus.edu.sg; configurable in $HOME/.canvas-sync/config.yaml")
+	rootCmd.PersistentFlags().String("canvas_url", "", "canvas url e.g. canvas.nus.edu.sg")
 	viper.BindPFlag("canvas_url", rootCmd.PersistentFlags().Lookup("canvas_url"))
 
 	viper.SetDefault("author", "ryan aidan aidan@u.nus.edu")
