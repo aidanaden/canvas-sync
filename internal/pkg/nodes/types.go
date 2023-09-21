@@ -47,7 +47,7 @@ type AnnouncementPlannableNode struct {
 
 type AssignmentPlannableNode struct {
 	DueAt          time.Time `json:"due_at"`
-	PointsPossible int       `json:"points_possible"`
+	PointsPossible float64   `json:"points_possible"`
 }
 
 type LivePlannableNode struct {
