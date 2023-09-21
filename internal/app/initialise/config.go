@@ -2,10 +2,12 @@ package initialise
 
 import (
 	"bytes"
+	"net/url"
 	"os"
 	"path/filepath"
 	"text/template"
 
+	"github.com/pkg/browser"
 	"github.com/pterm/pterm"
 )
 
@@ -45,28 +47,62 @@ func initConfigFile(path string) {
 	var err error
 
 	pterm.Println()
-	dataDir, err = pterm.DefaultInteractiveTextInput.WithMultiLine(false).Show("Enter location to store downloaded canvas data (default: ~/.canvas-sync/data)")
-	if err != nil {
-		pterm.Error.Printfln("Error getting input for data location: %s", err.Error())
-		os.Exit(1)
+	for err != nil || dataDir == "" {
+		dataDir, err = pterm.DefaultInteractiveTextInput.WithMultiLine(false).Show("Enter location to store downloaded canvas data (default: ~/.canvas-sync/data)")
+		if err != nil {
+			pterm.Error.Printfln("Error getting input for data location: %s", err.Error())
+		}
+		// set default data dir
+		if dataDir == "" {
+			dataDir = filepath.Join(configDir, "data")
+		}
 	}
-	canvasUrl, err = pterm.DefaultInteractiveTextInput.WithMultiLine(false).Show("Enter canvas url (default: https://canvas.nus.edu.sg)")
-	if err != nil {
-		pterm.Error.Printfln("Error getting input for canvas url: %s", err.Error())
-		os.Exit(1)
+
+	var parsedCanvasUrl *url.URL
+	for err != nil || parsedCanvasUrl == nil {
+		canvasUrl, err = pterm.DefaultInteractiveTextInput.WithMultiLine(false).Show("Enter canvas url (default: https://canvas.nus.edu.sg)")
+		if err != nil {
+			pterm.Error.Printfln("Error getting input for canvas url: %s", err.Error())
+		}
+		// set default canvas url
+		if canvasUrl == "" {
+			canvasUrl = "canvas.nus.edu.sg"
+		}
+		parsedCanvasUrl, err = url.Parse(canvasUrl)
+		if err != nil {
+			pterm.Error.Printfln("Invalid canvas url: %s", err.Error())
+		}
+		if parsedCanvasUrl.Scheme == "" {
+			parsedCanvasUrl.Scheme = "https"
+		}
+		// re-parse url to ensure host and schema values are populated
+		parsedCanvasUrl, err = url.Parse(parsedCanvasUrl.String())
+		if err != nil {
+			pterm.Error.Printfln("Invalid canvas url: %s", err.Error())
+		}
 	}
-	accessToken, err = pterm.DefaultInteractiveTextInput.WithMultiLine(false).Show("Enter access token (optional, skip if u dont have one)")
+
+	pterm.Info.Println("Would you like to generate a canvas access token? (recommended for increased security)")
+	shouldGenerateToken, err := pterm.DefaultInteractiveConfirm.Show()
+	if err != nil {
+		pterm.Error.Printfln("Error getting input for whether you want to generate an access token: %s", err.Error())
+	}
+	if shouldGenerateToken {
+		profileUrl := url.URL{
+			Host:   parsedCanvasUrl.Host,
+			Scheme: parsedCanvasUrl.Scheme,
+			Path:   "/profile/settings",
+		}
+		if err = browser.OpenURL(profileUrl.String()); err != nil {
+			pterm.Error.Printfln("Error launching access token url: %s", err.Error())
+		}
+	}
+
+	pterm.Println()
+	accessToken, err = pterm.DefaultInteractiveTextInput.WithMask("*").WithMultiLine(false).Show("Enter access token (optional, skip if u dont have one)")
 	if err != nil {
 		pterm.Error.Printfln("Error getting input for access token: %s", err.Error())
 		os.Exit(1)
-	}
-
-	// set defaults
-	if dataDir == "" {
-		dataDir = filepath.Join(configDir, "data")
-	}
-	if canvasUrl == "" {
-		canvasUrl = "https://canvas.nus.edu.sg"
 	}
 
 	d1 := []byte(generate(&Config{
@@ -85,7 +121,7 @@ func initConfigFile(path string) {
 	pterm.Println()
 	td := [][]string{
 		{pterm.FgCyan.Sprint("data_dir"), pterm.FgGreen.Sprint(dataDir)},
-		{pterm.FgCyan.Sprint("canvas_url"), pterm.FgGreen.Sprint(canvasUrl)},
+		{pterm.FgCyan.Sprint("canvas_url"), pterm.FgGreen.Sprint(parsedCanvasUrl.String())},
 		{pterm.FgCyan.Sprint("access_token"), pterm.FgGreen.Sprint(accessToken)},
 	}
 	tablePrint, err := pterm.DefaultTable.WithHasHeader().WithData(td).Srender()
