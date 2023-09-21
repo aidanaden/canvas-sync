@@ -80,7 +80,6 @@ func initConfigFile(path string) {
 		if err != nil {
 			pterm.Error.Printfln("Invalid canvas url: %s", err.Error())
 		}
-		pterm.Printfln("parsed canvas url %s", parsedCanvasUrl.String())
 	}
 
 	pterm.Info.Println("Would you like to generate a canvas access token? (recommended for increased security)")
