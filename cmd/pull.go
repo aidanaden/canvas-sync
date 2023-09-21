@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/aidanaden/canvas-sync/internal/app/pull"
+	"github.com/aidanaden/canvas-sync/internal/pkg/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -32,6 +33,9 @@ Examples:
 		initConfig()
 		pull.RunPullFiles(cmd, args)
 	},
+    PersistentPostRun: func(cmd *cobra.Command, args []string) {
+        utils.MotivationalAndStarMessage()
+    },
 }
 
 // represents the pull videos command
