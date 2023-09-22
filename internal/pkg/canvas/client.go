@@ -114,12 +114,8 @@ func (c *CanvasClient) StoreDomainBrowserCookies() {
 		pterm.Error.Printfln("Error creating cookie directory %s: %s", cookiesDir, err.Error())
 		os.Exit(1)
 	}
-	if err := os.Remove(c.cookiesFilePath); err != nil {
-		pterm.Error.Printfln("\nError removing invalid stored cookies from %s: %s", c.cookiesFilePath, err.Error())
-		os.Exit(1)
-	}
 	if err := os.WriteFile(c.cookiesFilePath, d1, 0755); err != nil {
-		pterm.Error.Printfln("\nError storing browser cookies to %s: %s", c.cookiesFilePath, err.Error())
+		pterm.Error.Printfln("Error storing browser cookies to %s: %s", c.cookiesFilePath, err.Error())
 		os.Exit(1)
 	}
 }
