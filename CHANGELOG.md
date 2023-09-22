@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.3](https://github.com/aidanaden/canvas-sync/compare/v1.17.2...v1.17.3) (2023-09-22)
+
+
+### Bug Fixes
+
+* remove cookies, print version str if no hash ([#132](https://github.com/aidanaden/canvas-sync/issues/132)) ([4dafc68](https://github.com/aidanaden/canvas-sync/commit/4dafc687341d368a6338e70144bb95f58eb858c3))
+
 ## [1.17.2](https://github.com/aidanaden/canvas-sync/compare/v1.17.1...v1.17.2) (2023-09-22)
 
 
