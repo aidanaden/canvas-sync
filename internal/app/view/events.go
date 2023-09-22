@@ -26,8 +26,13 @@ func RunViewEvents(cmd *cobra.Command, args []string, isPast bool) {
 		pterm.Info.Printfln("Using access token starting with: %s", accessToken[:5])
 	}
 
+	courses, err := canvasClient.GetActiveEnrolledCourses()
+	if err != nil {
+		pterm.Error.Printfln("Error: failed to get actively enrolled courses: %s", err.Error())
+		os.Exit(1)
+	}
+
 	var events []nodes.EventNode
-	var err error
 	if isPast {
 		events, err = canvasClient.GetRecentCalendarEvents()
 		if err != nil {
@@ -46,13 +51,20 @@ func RunViewEvents(cmd *cobra.Command, args []string, isPast bool) {
 	}
 
 	tableData := pterm.TableData{
-		{"Event Type", "Name", "Start date", "Location"},
+		{"Course", "Event Type", "Name", "Start date", "Location"},
 	}
 
 	for _, event := range events {
+		var eventCourseCode string
+		for _, c := range courses {
+			if c.ID == event.CourseId {
+				eventCourseCode = c.CourseCode
+				break
+			}
+		}
 		if event.Plannable.AnnouncementPlannableNode != nil {
 			tableData = append(tableData, []string{
-				"Announcement", event.Plannable.Title, "",
+				eventCourseCode, "Announcement", event.Plannable.Title, "",
 			})
 		} else if event.Plannable.EventPlannableNode != nil {
 			startAt, err := utils.SGTfromUTC(event.Plannable.EventPlannableNode.StartAt)
@@ -63,11 +75,11 @@ func RunViewEvents(cmd *cobra.Command, args []string, isPast bool) {
 			startAtStr := utils.FormatEventDate(*startAt)
 			if event.Plannable.ZoomPlannableNode != nil {
 				tableData = append(tableData, []string{
-					"Zoom", event.Plannable.Title, startAtStr, event.Plannable.ZoomPlannableNode.OnlineMeetingUrl,
+					eventCourseCode, "Zoom", event.Plannable.Title, startAtStr, event.Plannable.ZoomPlannableNode.OnlineMeetingUrl,
 				})
 			} else {
 				tableData = append(tableData, []string{
-					"Live", event.Plannable.Title, startAtStr, event.Plannable.LocationName,
+					eventCourseCode, "Live", event.Plannable.Title, startAtStr, event.Plannable.LocationName,
 				})
 			}
 		}

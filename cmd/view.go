@@ -1,17 +1,21 @@
 package cmd
 
 import (
+	"errors"
+
 	"github.com/aidanaden/canvas-sync/internal/app/view"
 	"github.com/spf13/cobra"
 )
 
 var FUTURE_ALIASES = []string{"future", "coming", "next"}
 var PAST_ALIASES = []string{"completed", "done"}
+var VIEW_ALIASES = []string{"display", "print"}
+var VIEW_PEOPLE_ALIASES = []string{"classmates", "class", "students"}
 
 // represents the view command
 var viewCmd = &cobra.Command{
 	Use:     "view",
-	Aliases: []string{"display", "print"},
+	Aliases: VIEW_ALIASES,
 	Short:   "View data from canvas (events, deadlines, people)",
 	// 	Long: `A longer description that spans multiple lines and likely contains examples
 	// and usage of using your command. For example:
@@ -22,25 +26,22 @@ var viewCmd = &cobra.Command{
 }
 
 // represents the view people command
-var peopleCmd = &cobra.Command{
-	Use:   "people",
-	Short: "View people from a given course",
-	// 	Long: `A longer description that spans multiple lines and likely contains examples
-	// and usage of using your command. For example:
-
-	// Cobra is a CLI library for Go that empowers applications.
-	// This application is a tool to generate the needed files
-	// to quickly create a Cobra application.`,
+var viewPeopleCmd = &cobra.Command{
+	Use:     "people",
+	Aliases: VIEW_PEOPLE_ALIASES,
+	Short:   "View people from a given course",
+	Long:    `View all students from a given course code (case-insensitive).`,
 	Run: func(cmd *cobra.Command, args []string) {
 		preRun(cmd)
 		view.RunViewCoursePeople(cmd, args)
 	},
 	Args: func(cmd *cobra.Command, args []string) error {
-		if err := cobra.MinimumNArgs(1)(cmd, args); err != nil {
-			return err
+		if len(args) != 1 {
+			return errors.New("no valid course code provided")
 		}
 		return nil
 	},
+	Example: "  canvas-sync view people cs3230",
 }
 
 // represents the view events command
@@ -90,7 +91,7 @@ var viewPastEventsCmd = &cobra.Command{
 }
 
 // deadlinesCmd represents the deadlines command
-var deadlinesCmd = &cobra.Command{
+var viewDeadlinesCmd = &cobra.Command{
 	Use:     "deadlines",
 	Aliases: []string{"assignments"},
 	Short:   "View past/future assignment deadlines",
@@ -141,11 +142,11 @@ func init() {
 	viewEventsCmd.AddCommand(viewPastEventsCmd)
 	viewCmd.AddCommand(viewEventsCmd)
 
-	deadlinesCmd.AddCommand(viewUpcomingDeadlinesCmd)
-	deadlinesCmd.AddCommand(viewPastDeadlinesCmd)
-	viewCmd.AddCommand(deadlinesCmd)
+	viewDeadlinesCmd.AddCommand(viewUpcomingDeadlinesCmd)
+	viewDeadlinesCmd.AddCommand(viewPastDeadlinesCmd)
+	viewCmd.AddCommand(viewDeadlinesCmd)
 
-	viewCmd.AddCommand(peopleCmd)
+	viewCmd.AddCommand(viewPeopleCmd)
 	rootCmd.AddCommand(viewCmd)
 
 	// Here you will define your flags and configuration settings.

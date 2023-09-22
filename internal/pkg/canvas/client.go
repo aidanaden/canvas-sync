@@ -361,7 +361,7 @@ func (c *CanvasClient) GetRecentCalendarEvents() ([]nodes.EventNode, error) {
 		RawQuery: url.Values{
 			"end_date": {now},
 			"order":    {"asc"},
-			"per_page": {"100"},
+			"per_page": {"50"},
 		}.Encode(),
 	}
 
@@ -392,7 +392,7 @@ func (c *CanvasClient) GetIncomingCalendarEvents() ([]nodes.EventNode, error) {
 		Path:   c.apiPath.Path + "/planner/items",
 		RawQuery: url.Values{
 			"start_date": {now},
-			"per_page":   {"100"},
+			"per_page":   {"50"},
 		}.Encode(),
 	}
 

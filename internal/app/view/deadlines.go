@@ -27,8 +27,13 @@ func RunViewDeadlines(cmd *cobra.Command, args []string, isPast bool) {
 		pterm.Info.Printfln("Using access token starting with: %s", accessToken[:5])
 	}
 
+	courses, err := canvasClient.GetActiveEnrolledCourses()
+	if err != nil {
+		pterm.Error.Printfln("Error: failed to get actively enrolled courses: %s", err.Error())
+		os.Exit(1)
+	}
+
 	var events []nodes.EventNode
-	var err error
 	if isPast {
 		events, err = canvasClient.GetRecentCalendarEvents()
 		if err != nil {
@@ -47,7 +52,7 @@ func RunViewDeadlines(cmd *cobra.Command, args []string, isPast bool) {
 	}
 
 	tableData := pterm.TableData{
-		{"Assignment name", "Due date", "Points possible"},
+		{"Course", "Assignment name", "Due date", "Points possible"},
 	}
 
 	for _, event := range events {
@@ -59,8 +64,15 @@ func RunViewDeadlines(cmd *cobra.Command, args []string, isPast bool) {
 			}
 			dueStr := utils.FormatEventDate(*due)
 			pointsStr := strconv.Itoa(int(event.Plannable.AssignmentPlannableNode.PointsPossible))
+			var eventCourseCode string
+			for _, c := range courses {
+				if c.ID == event.CourseId {
+					eventCourseCode = c.CourseCode
+					break
+				}
+			}
 			tableData = append(tableData, []string{
-				event.Plannable.Title, dueStr, pointsStr,
+				eventCourseCode, event.Plannable.Title, dueStr, pointsStr,
 			})
 		}
 	}

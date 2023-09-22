@@ -77,7 +77,7 @@ type PlannableNode struct {
 type EventNode struct {
 	ContextName   string        `json:"context_name"`
 	ContextType   string        `json:"context_type"`
-	CourseId      string        `json:"course_id"`
+	CourseId      int           `json:"course_id"`
 	HtmlUrl       string        `json:"html_url"`
 	NewActivity   bool          `json:"new_activity"`
 	Plannable     PlannableNode `json:"plannable"`

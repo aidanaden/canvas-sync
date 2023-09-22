@@ -22,12 +22,9 @@ Specify target directory in the $HOME/.canvas-sync/config.yml file
 var pullFilesCmd = &cobra.Command{
 	Use:   "files",
 	Short: "Downloads files for a given course (all if none specified)",
-	Long: `Downloads files for the given course code(s) case insensitive. If none is specified, all will be downloaded.
-
-Examples:
-  canvas-sync pull files - downloads files for all courses
+	Long:  `Downloads files for the given course code(s) case insensitive. If none is specified, all will be downloaded.`,
+	Example: `  canvas-sync pull files - downloads files for all courses
   canvas-sync pull files --data_dir /Users/test - downloads files for all courses in the /Users/test/files directory
-  canvas-sync pull files CS3219 - downloads files for course with course code "CS3219"
   canvas-sync pull files CS3219 CS3230 - downloads files for courses with course codes "CS3219" or "CS3230"`,
 	Run: func(cmd *cobra.Command, args []string) {
 		preRun(cmd)
@@ -42,11 +39,8 @@ Examples:
 var pullVideosCmd = &cobra.Command{
 	Use:   "videos",
 	Short: "Downloads videos for a given course (all if none specified)",
-	Long: `Downloads videos for the given course code(s) case insensitive. If none is specified, all will be downloaded.
-
-Examples:
-  canvas-sync pull videos - downloads videos for all courses
-  canvas-sync pull videos CS3219 - downloads videos for course with course code "CS3219"
+	Long:  `Downloads videos for the given course code(s) case insensitive. If none is specified, all will be downloaded.`,
+	Example: `  canvas-sync pull videos - downloads videos for all courses
   canvas-sync pull videos CS3219 CS3230 - downloads videos for courses with course codes "CS3219" or "CS3230"`,
 	Run: func(cmd *cobra.Command, args []string) {
 		preRun(cmd)
