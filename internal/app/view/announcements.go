@@ -40,11 +40,11 @@ func RunViewCourseAnnouncements(cmd *cobra.Command, args []string) {
 		announcement := courseAnnouncements[i]
 		postedAtStr := utils.FormatEventDate(announcement.PostedAt)
 		tableData = append(tableData, []string{
-			announcement.Title, postedAtStr, announcement.PosterName, pterm.DefaultParagraph.WithMaxWidth(80).Sprint(strip.StripTags(announcement.Message)),
+			pterm.DefaultParagraph.WithMaxWidth(30).Sprint(announcement.Title), postedAtStr, announcement.PosterName, pterm.DefaultParagraph.WithMaxWidth(70).Sprint(strip.StripTags(announcement.Message)),
 		})
 	}
 	pterm.Println()
-	if err := pterm.DefaultTable.WithHasHeader().WithData(tableData).Render(); err != nil {
+	if err := pterm.DefaultTable.WithHasHeader().WithRowSeparator("-").WithHeaderRowSeparator("-").WithData(tableData).Render(); err != nil {
 		pterm.Error.Printfln("Error rendering events: %s", err.Error())
 		os.Exit(1)
 	}
