@@ -38,11 +38,32 @@ CLI to download (course files, videos, etc) & view (deadlines, events, announcem
 
 ### Brew (mac/linux/wsl)
 
+Brew is a package manager for macOS (or linux) that helps you install packages easily - more info [here](https://brew.sh/)
+
+To install Brew:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+To install canvas-sync with Brew:
+
 ```bash
 brew install aidanaden/tools/canvas-sync
 ```
 
 ### Scoop (windows)
+
+Scoop is a package manager for windows that helps you install programs from the command line (Brew but for windows) - more info [here](https://scoop.sh/)
+
+To install Scoop, launch powershell and run:
+
+```bash
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+irm get.scoop.sh | iex
+```
+
+To install canvas-sync with Scoop:
 
 ```bash
 scoop bucket add scoop-bucket https://github.com/aidanaden/scoop-bucket.git
