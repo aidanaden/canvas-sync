@@ -64,7 +64,10 @@ func verifyHash(versionStr string) {
 	latestReleaseInfo, err := utils.GetCavasSyncLatestVersionHash()
 	if err != nil {
 		pterm.Error.Printfln("Error: failed to get latest canvas-sync version: %s", err.Error())
-	} else if currHash != "" && currHash != latestReleaseInfo.CommitHash {
+	} else if currHash == "" {
+		fmt.Printf("versionStr: %v", versionStr)
+	} else if currHash != latestReleaseInfo.CommitHash {
+		pterm.Println()
 		pterm.Warning.Printfln("New version %s of canvas-sync available, update now!", latestReleaseInfo.TagName)
 		pterm.Info.Printfln("Current hash: %s", currHash[:10])
 		pterm.Info.Printfln("New hash: %s", latestReleaseInfo.CommitHash[:10])
