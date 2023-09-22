@@ -174,7 +174,6 @@ func RunInit(isInitCommand bool) string {
 		if res {
 			initConfigFile(cfgFilePath)
 		} else {
-			pterm.Println()
 			pterm.Error.Println("Init command cancelled.")
 		}
 	} else if os.IsNotExist(err) {
