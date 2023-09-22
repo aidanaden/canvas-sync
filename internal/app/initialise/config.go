@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"github.com/pkg/browser"
@@ -49,6 +50,8 @@ func initConfigFile(path string) {
 	pterm.Println()
 	for err != nil || dataDir == "" {
 		dataDir, err = pterm.DefaultInteractiveTextInput.WithMultiLine(false).Show("Enter location to store downloaded canvas data (default: ~/.canvas-sync/data)")
+		r := strings.NewReplacer(`"`, "", `'`, "")
+		dataDir = r.Replace(dataDir)
 		if err != nil {
 			pterm.Error.Printfln("Error getting input for data location: %s", err.Error())
 		}
