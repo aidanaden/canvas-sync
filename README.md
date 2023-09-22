@@ -157,7 +157,8 @@ brew update && brew upgrade
 If installed using scoop, simply run:
 
 ```bash
-scoop update && scoop update canvas-sync
+scoop update
+scoop update canvas-sync
 ```
 
 You can also download the latest version directly from the [releases](https://github.com/aidanaden/canvas-sync/releases) page
