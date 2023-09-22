@@ -21,12 +21,14 @@ func RunUpdateFiles(cmd *cobra.Command, args []string) {
 	targetDir := filepath.Join(fmt.Sprintf("%s", viper.Get("data_dir")), "files")
 	cookiesFile := filepath.Join(fmt.Sprintf("%s", viper.Get("data_dir")), "cookies")
 	targetDir = utils.GetExpandedHomeDirectoryPath(targetDir)
+
 	accessToken := fmt.Sprintf("%v", viper.Get("access_token"))
 	canvasUrl := fmt.Sprintf("%v", viper.Get("canvas_url"))
+	updateStaleFiles := viper.Get("force").(bool)
+
 	providedCodes := utils.GetCourseCodesFromArgs(args)
 
 	pterm.Info.Printfln("Downloading files to: %s", targetDir)
-
 	canvasClient := canvas.NewClient(http.DefaultClient, canvasUrl, accessToken, cookiesFile)
 	if accessToken == "" {
 		pterm.Info.Printfln("No access token found, getting stored cookies...")
@@ -68,7 +70,7 @@ func RunUpdateFiles(cmd *cobra.Command, args []string) {
 	for ci := range courses {
 		wg.Add(1)
 		sp := sm.AddSpinner(fmt.Sprintf("Starting files update for %s...", courses[ci].CourseCode))
-		go func(i int, sp *ysmrr.Spinner) {
+		go func(i int, sp *ysmrr.Spinner, updateStaleFiles bool) {
 			defer wg.Done()
 			id := courses[i].ID
 			code := courses[i].CourseCode
@@ -89,7 +91,7 @@ func RunUpdateFiles(cmd *cobra.Command, args []string) {
 			sp.UpdateMessagef(pterm.FgCyan.Sprintf("Updating files for %s", code))
 			totalFileDownloads := 0
 
-			canvasClient.RecursiveUpdateNode(rootNode, func(numDownloads int) {
+			canvasClient.RecursiveUpdateNode(rootNode, updateStaleFiles, func(numDownloads int) {
 				totalFileDownloads += numDownloads
 				sp.UpdateMessagef(pterm.FgCyan.Sprintf("Downloading %d files for %s", totalFileDownloads, code))
 			})
@@ -101,7 +103,7 @@ func RunUpdateFiles(cmd *cobra.Command, args []string) {
 			}
 
 			sp.Complete()
-		}(ci, sp)
+		}(ci, sp, updateStaleFiles)
 	}
 
 	sm.Start()

@@ -4,6 +4,7 @@ import (
 	"github.com/aidanaden/canvas-sync/internal/app/update"
 	"github.com/aidanaden/canvas-sync/internal/pkg/utils"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // represents the update command
@@ -29,9 +30,9 @@ Examples:
 		initConfig()
 		update.RunUpdateFiles(cmd, args)
 	},
-    PersistentPostRun: func(cmd *cobra.Command, args []string) {
-        utils.MotivationalAndStarMessage()
-    },
+	PersistentPostRun: func(cmd *cobra.Command, args []string) {
+		utils.MotivationalAndStarMessage()
+	},
 }
 
 func init() {
@@ -43,8 +44,10 @@ func init() {
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// updateCmd.PersistentFlags().String("foo", "", "A help for foo")
+	updateCmd.PersistentFlags().BoolP("force", "f", false, "overwrite downloaded files if there's a newer version on canvas")
+	viper.BindPFlag("force", updateCmd.PersistentFlags().Lookup("force"))
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// updateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// updateCmd.Flags().BoolP("force", "f", false, "Overwrite downloaded files if there's a newer version on canvas")
 }
