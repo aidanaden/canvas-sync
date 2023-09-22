@@ -65,7 +65,6 @@ func verifyHash(versionStr string) {
 	if err != nil {
 		pterm.Error.Printfln("Error: failed to get latest canvas-sync version: %s", err.Error())
 	} else if currHash != "" && currHash != latestReleaseInfo.CommitHash {
-		pterm.Println()
 		pterm.Warning.Printfln("New version %s of canvas-sync available, update now!", latestReleaseInfo.TagName)
 		pterm.Info.Printfln("Current hash: %s", currHash[:10])
 		pterm.Info.Printfln("New hash: %s", latestReleaseInfo.CommitHash[:10])
@@ -95,7 +94,6 @@ func preRun(cmd *cobra.Command) {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		pterm.Println()
 		pterm.Info.Printfln("Using config file: %s", viper.ConfigFileUsed())
 	} else {
 		pterm.Error.Printfln("error reading config: %s", err.Error())
