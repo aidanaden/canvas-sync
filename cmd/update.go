@@ -27,7 +27,7 @@ Examples:
   canvas-sync update files CS3219 CS3230 - updates all files for courses with course codes "CS3219" or "CS3230"
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		initConfig()
+		preRun(cmd)
 		update.RunUpdateFiles(cmd, args)
 	},
 	PersistentPostRun: func(cmd *cobra.Command, args []string) {
