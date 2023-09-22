@@ -137,6 +137,24 @@ var viewPastDeadlinesCmd = &cobra.Command{
 	},
 }
 
+// represents the view announcements command
+var viewAnnouncementsCmd = &cobra.Command{
+	Use:   "announcements",
+	Short: "View announcements from a given course",
+	Long:  "View all announcements from a given course code (case-insensitive).",
+	Run: func(cmd *cobra.Command, args []string) {
+		preRun(cmd)
+		view.RunViewCourseAnnouncements(cmd, args)
+	},
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) != 1 {
+			return errors.New("no valid course code provided")
+		}
+		return nil
+	},
+	Example: "  canvas-sync view announcements cs3230",
+}
+
 func init() {
 	viewEventsCmd.AddCommand(viewUpcomingEventsCmd)
 	viewEventsCmd.AddCommand(viewPastEventsCmd)
@@ -147,6 +165,8 @@ func init() {
 	viewCmd.AddCommand(viewDeadlinesCmd)
 
 	viewCmd.AddCommand(viewPeopleCmd)
+	viewCmd.AddCommand(viewAnnouncementsCmd)
+
 	rootCmd.AddCommand(viewCmd)
 
 	// Here you will define your flags and configuration settings.

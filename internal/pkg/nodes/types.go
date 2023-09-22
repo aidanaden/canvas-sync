@@ -90,3 +90,10 @@ type PersonNode struct {
 	ShortName string `json:"short_name"`
 	AvatarUrl string `json:"avatar_url"`
 }
+
+type AnnouncementNode struct {
+	Title      string    `json:"title"`
+	PostedAt   time.Time `json:"posted_at"`
+	PosterName string    `json:"user_name"`
+	Message    string    `json:"message"`
+}
