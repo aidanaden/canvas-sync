@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.0](https://github.com/aidanaden/canvas-sync/compare/v1.15.0...v1.16.0) (2023-09-22)
+
+
+### Features
+
+* flag to update existing files if newer version on canvas ([#122](https://github.com/aidanaden/canvas-sync/issues/122)) ([bc0cb03](https://github.com/aidanaden/canvas-sync/commit/bc0cb03160bce50baeb696fa470ebda0bc5a21d3))
+
 ## [1.15.0](https://github.com/aidanaden/canvas-sync/compare/v1.14.2...v1.15.0) (2023-09-21)
 
 
