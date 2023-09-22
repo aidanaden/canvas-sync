@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.1](https://github.com/aidanaden/canvas-sync/compare/v1.16.0...v1.16.1) (2023-09-22)
+
+
+### Bug Fixes
+
+* replace quotes from user input data dir ([#124](https://github.com/aidanaden/canvas-sync/issues/124)) ([724fcfb](https://github.com/aidanaden/canvas-sync/commit/724fcfb42347be980e59c44578a6a116feda19e6))
+
 ## [1.16.0](https://github.com/aidanaden/canvas-sync/compare/v1.15.0...v1.16.0) (2023-09-22)
 
 
