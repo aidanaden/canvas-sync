@@ -165,7 +165,6 @@ func RunInit(isInitCommand bool) string {
 	_, err = os.Stat(cfgFilePath)
 	// overwrite existing
 	if err == nil && isInitCommand {
-		pterm.Println()
 		pterm.Info.Println("Existing config file found - create new config file?")
 		res, err := pterm.DefaultInteractiveConfirm.Show()
 		if err != nil {
