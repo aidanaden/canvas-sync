@@ -65,7 +65,6 @@ Adds autocompletion for canvas-sync to your shell.
   </summary>
 
   ```bash
-  # replace '~/.zshrc' with wherever your zsh config file is
   echo "\n\nif type brew &>/dev/null
   then
     FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
@@ -82,11 +81,10 @@ Adds autocompletion for canvas-sync to your shell.
 
 <details>
   <summary>
-    Code for bash autocomplete
+    Code for bash autocomplete (replace "~/.bash_profile" with your bash config file)
   </summary>
 
   ```bash
-  # replace '~/.bash_profile' with wherever your bash config file is
   echo "if type brew &>/dev/null
   then
     HOMEBREW_PREFIX="$(brew --prefix)"
@@ -112,7 +110,6 @@ Adds autocompletion for canvas-sync to your shell.
   </summary>
 
   ```bash
-  # replace '~/.config/fish/config.fish' with wherever your fish config file is
   echo "if test -d (brew --prefix)"/share/fish/completions"
       set -gx fish_complete_path $fish_complete_path (brew --prefix)/share/fish/completions
   end
