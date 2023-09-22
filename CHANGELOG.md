@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.1](https://github.com/aidanaden/canvas-sync/compare/v1.20.0...v1.20.1) (2023-09-22)
+
+
+### Bug Fixes
+
+* query pages for file/folders till current page less than max page (100) ([#146](https://github.com/aidanaden/canvas-sync/issues/146)) ([b35b4a9](https://github.com/aidanaden/canvas-sync/commit/b35b4a95caf050b4304de8f9ab5dd47a2f41e92e))
+
 ## [1.20.0](https://github.com/aidanaden/canvas-sync/compare/v1.19.0...v1.20.0) (2023-09-22)
 
 
