@@ -77,7 +77,7 @@ type PlannableNode struct {
 type EventNode struct {
 	ContextName   string        `json:"context_name"`
 	ContextType   string        `json:"context_type"`
-	CourseId      string        `json:"course_id"`
+	CourseId      int           `json:"course_id"`
 	HtmlUrl       string        `json:"html_url"`
 	NewActivity   bool          `json:"new_activity"`
 	Plannable     PlannableNode `json:"plannable"`
@@ -89,4 +89,11 @@ type PersonNode struct {
 	Name      string `json:"name"`
 	ShortName string `json:"short_name"`
 	AvatarUrl string `json:"avatar_url"`
+}
+
+type AnnouncementNode struct {
+	Title      string    `json:"title"`
+	PostedAt   time.Time `json:"posted_at"`
+	PosterName string    `json:"user_name"`
+	Message    string    `json:"message"`
 }

@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -361,7 +362,7 @@ func (c *CanvasClient) GetRecentCalendarEvents() ([]nodes.EventNode, error) {
 		RawQuery: url.Values{
 			"end_date": {now},
 			"order":    {"asc"},
-			"per_page": {"100"},
+			"per_page": {"50"},
 		}.Encode(),
 	}
 
@@ -392,7 +393,7 @@ func (c *CanvasClient) GetIncomingCalendarEvents() ([]nodes.EventNode, error) {
 		Path:   c.apiPath.Path + "/planner/items",
 		RawQuery: url.Values{
 			"start_date": {now},
-			"per_page":   {"100"},
+			"per_page":   {"50"},
 		}.Encode(),
 	}
 
@@ -442,7 +443,7 @@ func (c *CanvasClient) GetCoursePeople(code string) ([]nodes.PersonNode, error) 
 	peopleUrl := url.URL{
 		Scheme: c.apiPath.Scheme,
 		Host:   c.apiPath.Host,
-		Path:   c.apiPath.Path + "/courses/" + fmt.Sprintf("%d", courseId) + "/users",
+		Path:   c.apiPath.Path + "/courses/" + strconv.Itoa(courseId) + "/users",
 		RawQuery: url.Values{
 			"include[]": {"avatar_url", "observed_users"},
 			"per_page":  {"100"},
@@ -466,6 +467,59 @@ func (c *CanvasClient) GetCoursePeople(code string) ([]nodes.PersonNode, error) 
 		return nil, err
 	}
 	return people, nil
+}
+
+func extractAnnouncementsFromString(rawJson string) ([]nodes.AnnouncementNode, error) {
+	var announcements []nodes.AnnouncementNode
+	json.Unmarshal([]byte(rawJson), &announcements)
+	if strings.Contains(rawJson, "user authorisation required") {
+		return nil, errors.New("invalid auth cookies/access token, request unauthorized")
+	}
+	return announcements, nil
+}
+
+func (c *CanvasClient) GetCourseAnnouncements(code string) ([]nodes.AnnouncementNode, error) {
+	rawCourses, err := c.GetActiveEnrolledCourses()
+	if err != nil {
+		return nil, err
+	}
+	var courseId int
+	for _, raw := range rawCourses {
+		if strings.EqualFold(code, raw.CourseCode) {
+			courseId = raw.ID
+		}
+	}
+	if courseId == 0 {
+		return nil, errors.New("error: course not found")
+	}
+
+	peopleUrl := url.URL{
+		Scheme: c.apiPath.Scheme,
+		Host:   c.apiPath.Host,
+		Path:   c.apiPath.Path + "/courses/" + strconv.Itoa(courseId) + "/discussion_topics",
+		RawQuery: url.Values{
+			"only_announcements": {"true"},
+			"per_page":           {"50"},
+			"page":               {"1"},
+		}.Encode(),
+	}
+
+	req, err := http.NewRequest("GET", peopleUrl.String(), nil)
+	utils.SetQueryAccessToken(req, c.accessToken)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	announcementsJson := utils.ExtractResponseToString(resp)
+	announcements, err := extractAnnouncementsFromString(announcementsJson)
+	if err != nil {
+		return nil, err
+	}
+	return announcements, nil
 }
 
 func (c *CanvasClient) GetCourseGrades(code string) error {
