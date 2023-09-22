@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"os"
@@ -26,4 +28,27 @@ func ExtractResponseToString(res *http.Response) string {
 	}
 	json := string(body)
 	return json
+}
+
+type GithubReleaseInfo struct {
+	TagName    string `json:"tag_name"`
+	CommitHash string `json:"target_commitish"`
+}
+
+func GetCavasSyncLatestVersionHash() (*GithubReleaseInfo, error) {
+	req, err := http.NewRequest("GET", "https://api.github.com/repos/aidanaden/canvas-sync/releases/latest", nil)
+	if err != nil {
+		return nil, err
+	}
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	jsonStr := ExtractResponseToString(res)
+	var releaseInfo GithubReleaseInfo
+	json.Unmarshal([]byte(jsonStr), &releaseInfo)
+	if releaseInfo.CommitHash == "" {
+		return nil, errors.New("error getting latest canvas-sync release version")
+	}
+	return &releaseInfo, nil
 }

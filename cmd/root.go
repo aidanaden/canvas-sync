@@ -3,8 +3,10 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/aidanaden/canvas-sync/internal/app/initialise"
+	"github.com/aidanaden/canvas-sync/internal/pkg/utils"
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -23,6 +25,18 @@ Features:
   - display canvas info (deadlines, announcements, etc)
   - upload/submit assignments (only if i get > 10 stars on github)
   - more to come (tm)...`,
+
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		splits := strings.Split(strings.ReplaceAll(cmd.Version, ")", ""), " ")
+		currHash := splits[len(splits)-1]
+		latestReleaseInfo, err := utils.GetCavasSyncLatestVersionHash()
+		if err != nil {
+			pterm.Error.Printfln("Error: failed to get latest canvas-sync version: %s", err.Error())
+		} else if currHash != latestReleaseInfo.CommitHash {
+			pterm.Println()
+			pterm.Warning.Printfln("New version %s of canvas-sync available, update now!", latestReleaseInfo.TagName)
+		}
+	},
 }
 
 func SetVersionInfo(version, commit, date string) {
