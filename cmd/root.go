@@ -76,7 +76,7 @@ func verifyHash(versionStr string) {
 
 // preRun reads in config file and ENV variables if set, verifies current app version
 func preRun(cmd *cobra.Command) {
-	verifyHash(cmd.Version)
+	verifyHash(rootCmd.Version)
 
 	if cfgFile != "" {
 		// Use config file from the flag.
