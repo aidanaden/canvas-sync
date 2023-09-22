@@ -18,7 +18,7 @@ the past week. Then a list of all time contributors sorted by number of commits 
 Examples:
   canvas-sync credits`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// initConfig()
+        println()
 
         // Past week contributors
         pterm.FgGreen.Println("Past week contributors:")
@@ -27,6 +27,7 @@ Examples:
         for _, c := range latestContributors {
             pterm.FgGreen.Printfln("- %s", c)
         }
+        println()
 
         // Top 500 contributors
         pterm.FgCyan.Println("All contributors:")
@@ -34,6 +35,7 @@ Examples:
         for _, c := range allContributors {
             pterm.FgCyan.Printfln("- %s", c)
         }
+        println()
 	},
 }
 
