@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.0](https://github.com/aidanaden/canvas-sync/compare/v1.18.0...v1.19.0) (2023-09-22)
+
+
+### Features
+
+* add 50 files max per page to file url queries ([#142](https://github.com/aidanaden/canvas-sync/issues/142)) ([6a34f92](https://github.com/aidanaden/canvas-sync/commit/6a34f92b8588e86b369a73e79ec3246b28555eb2))
+
 ## [1.18.0](https://github.com/aidanaden/canvas-sync/compare/v1.17.6...v1.18.0) (2023-09-22)
 
 
