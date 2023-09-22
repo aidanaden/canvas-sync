@@ -300,7 +300,7 @@ func (c *CanvasClient) RecursiveCreateNode(node *nodes.DirectoryNode, updateNumD
 	return nil
 }
 
-func (c *CanvasClient) RecursiveUpdateNode(node *nodes.DirectoryNode, updateNumDownloads func(numDownloads int)) error {
+func (c *CanvasClient) RecursiveUpdateNode(node *nodes.DirectoryNode, updateStaleFiles bool, updateNumDownloads func(numDownloads int)) error {
 	if node == nil {
 		return errors.New("cannot recurse nil directory node")
 	}
@@ -325,7 +325,7 @@ func (c *CanvasClient) RecursiveUpdateNode(node *nodes.DirectoryNode, updateNumD
 				c.downloadFileNode(node.FileNodes[i])
 			}(j)
 		} else {
-			if file.ModTime().Unix() < node.FileNodes[j].UpdatedAt.Unix() {
+			if updateStaleFiles && file.ModTime().Unix() < node.FileNodes[j].UpdatedAt.Unix() {
 				wg.Add(1)
 				numDownloads += 1
 				go func(i int) {
@@ -340,7 +340,7 @@ func (c *CanvasClient) RecursiveUpdateNode(node *nodes.DirectoryNode, updateNumD
 		wg.Add(1)
 		go func(i int) {
 			defer wg.Done()
-			c.RecursiveUpdateNode(node.FolderNodes[i], updateNumDownloads)
+			c.RecursiveUpdateNode(node.FolderNodes[i], updateStaleFiles, updateNumDownloads)
 		}(d)
 	}
 	wg.Wait()
