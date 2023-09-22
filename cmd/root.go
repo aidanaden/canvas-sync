@@ -64,7 +64,7 @@ func verifyHash(versionStr string) {
 	latestReleaseInfo, err := utils.GetCavasSyncLatestVersionHash()
 	if err != nil {
 		pterm.Error.Printfln("Error: failed to get latest canvas-sync version: %s", err.Error())
-	} else if currHash != latestReleaseInfo.CommitHash {
+	} else if currHash != "" && currHash != latestReleaseInfo.CommitHash {
 		pterm.Println()
 		pterm.Warning.Printfln("New version %s of canvas-sync available, update now!", latestReleaseInfo.TagName)
 		pterm.Info.Printfln("Current hash: %s", currHash[:10])
@@ -74,6 +74,8 @@ func verifyHash(versionStr string) {
 
 // preRun reads in config file and ENV variables if set, verifies current app version
 func preRun(cmd *cobra.Command) {
+	verifyHash(cmd.Version)
+
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
@@ -99,6 +101,4 @@ func preRun(cmd *cobra.Command) {
 		pterm.Error.Printfln("error reading config: %s", err.Error())
 		os.Exit(1)
 	}
-
-	verifyHash(cmd.Version)
 }
