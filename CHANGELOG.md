@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.18.0](https://github.com/aidanaden/canvas-sync/compare/v1.17.6...v1.18.0) (2023-09-22)
+
+
+### Features
+
+* simplify examples in usage, add course codes in view event/deadlines, add view course announcements ([#140](https://github.com/aidanaden/canvas-sync/issues/140)) ([2f5a3b0](https://github.com/aidanaden/canvas-sync/commit/2f5a3b0479616f35b6110b28bbb8c9c0db9bf830))
+
 ## [1.17.6](https://github.com/aidanaden/canvas-sync/compare/v1.17.5...v1.17.6) (2023-09-22)
 
 
