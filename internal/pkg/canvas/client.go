@@ -204,7 +204,19 @@ func (c *CanvasClient) RecurseDirectoryNode(node *nodes.DirectoryNode, parent *n
 	node.Directory = dir
 
 	if node.FilesCount > 0 {
-		fileReq, err := http.NewRequest("GET", node.FilesUrl, nil)
+		parsedFileUrl, err := url.Parse(node.FilesUrl)
+		if err != nil {
+			return err
+		}
+		nolimitFileUrl := url.URL{
+			Scheme: parsedFileUrl.Scheme,
+			Host:   parsedFileUrl.Host,
+			Path:   parsedFileUrl.Path,
+			RawQuery: url.Values{
+				"per_page": {"50"},
+			}.Encode(),
+		}
+		fileReq, err := http.NewRequest("GET", nolimitFileUrl.String(), nil)
 		if err != nil {
 			return err
 		}
@@ -223,7 +235,19 @@ func (c *CanvasClient) RecurseDirectoryNode(node *nodes.DirectoryNode, parent *n
 	}
 
 	if node.FoldersCount > 0 {
-		folderReq, err := http.NewRequest("GET", node.FoldersUrl, nil)
+		parsedFolderUrl, err := url.Parse(node.FoldersUrl)
+		if err != nil {
+			return err
+		}
+		nolimitFolderUrl := url.URL{
+			Scheme: parsedFolderUrl.Scheme,
+			Host:   parsedFolderUrl.Host,
+			Path:   parsedFolderUrl.Path,
+			RawQuery: url.Values{
+				"per_page": {"50"},
+			}.Encode(),
+		}
+		folderReq, err := http.NewRequest("GET", nolimitFolderUrl.String(), nil)
 		if err != nil {
 			return err
 		}
