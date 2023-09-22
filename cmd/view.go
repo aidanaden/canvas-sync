@@ -32,7 +32,7 @@ var peopleCmd = &cobra.Command{
 	// This application is a tool to generate the needed files
 	// to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		initConfig()
+		preRun(cmd)
 		view.RunViewCoursePeople(cmd, args)
 	},
 	Args: func(cmd *cobra.Command, args []string) error {
@@ -67,7 +67,7 @@ var viewUpcomingEventsCmd = &cobra.Command{
 	// This application is a tool to generate the needed files
 	// to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		initConfig()
+		preRun(cmd)
 		view.RunViewEvents(cmd, args, false)
 	},
 }
@@ -84,7 +84,7 @@ var viewPastEventsCmd = &cobra.Command{
 	// This application is a tool to generate the needed files
 	// to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		initConfig()
+		preRun(cmd)
 		view.RunViewEvents(cmd, args, true)
 	},
 }
@@ -114,7 +114,7 @@ var viewUpcomingDeadlinesCmd = &cobra.Command{
 	// This application is a tool to generate the needed files
 	// to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		initConfig()
+		preRun(cmd)
 		view.RunViewDeadlines(cmd, args, false)
 	},
 }
@@ -131,7 +131,7 @@ var viewPastDeadlinesCmd = &cobra.Command{
 	// This application is a tool to generate the needed files
 	// to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		initConfig()
+		preRun(cmd)
 		view.RunViewDeadlines(cmd, args, true)
 	},
 }

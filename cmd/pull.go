@@ -30,7 +30,7 @@ Examples:
   canvas-sync pull files CS3219 - downloads files for course with course code "CS3219"
   canvas-sync pull files CS3219 CS3230 - downloads files for courses with course codes "CS3219" or "CS3230"`,
 	Run: func(cmd *cobra.Command, args []string) {
-		initConfig()
+		preRun(cmd)
 		pull.RunPullFiles(cmd, args)
 	},
 	PersistentPostRun: func(cmd *cobra.Command, args []string) {
@@ -49,7 +49,7 @@ Examples:
   canvas-sync pull videos CS3219 - downloads videos for course with course code "CS3219"
   canvas-sync pull videos CS3219 CS3230 - downloads videos for courses with course codes "CS3219" or "CS3230"`,
 	Run: func(cmd *cobra.Command, args []string) {
-		initConfig()
+		preRun(cmd)
 		pull.RunPullVideos(cmd, args)
 	},
 }
