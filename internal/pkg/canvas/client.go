@@ -192,6 +192,8 @@ func (c *CanvasClient) GetCourseRootFolder(courseId int) (*nodes.DirectoryNode, 
 	return rootNode, nil
 }
 
+var PER_PAGE = 100
+
 func (c *CanvasClient) RecurseDirectoryNode(node *nodes.DirectoryNode, parent *nodes.DirectoryNode) error {
 	dir := ""
 	if parent != nil {
@@ -208,30 +210,42 @@ func (c *CanvasClient) RecurseDirectoryNode(node *nodes.DirectoryNode, parent *n
 		if err != nil {
 			return err
 		}
-		nolimitFileUrl := url.URL{
-			Scheme: parsedFileUrl.Scheme,
-			Host:   parsedFileUrl.Host,
-			Path:   parsedFileUrl.Path,
-			RawQuery: url.Values{
-				"per_page": {"100"},
-			}.Encode(),
+
+		var allFiles []*nodes.FileNode
+		page := 0
+		for {
+			page += 1
+			nolimitFileUrl := url.URL{
+				Scheme: parsedFileUrl.Scheme,
+				Host:   parsedFileUrl.Host,
+				Path:   parsedFileUrl.Path,
+				RawQuery: url.Values{
+					"page":     {strconv.Itoa(page)},
+					"per_page": {strconv.Itoa(PER_PAGE)},
+				}.Encode(),
+			}
+			fileReq, err := http.NewRequest("GET", nolimitFileUrl.String(), nil)
+			if err != nil {
+				return err
+			}
+			utils.SetQueryAccessToken(fileReq, c.accessToken)
+			filesRes, err := c.client.Do(fileReq)
+			if err != nil {
+				return err
+			}
+			filesJson := utils.ExtractResponseToString(filesRes)
+			var files []*nodes.FileNode
+			json.Unmarshal([]byte(filesJson), &files)
+			allFiles = append(allFiles, files...)
+			// break if less than 100 files, otherwise query next page
+			if len(files) < PER_PAGE {
+				break
+			}
 		}
-		fileReq, err := http.NewRequest("GET", nolimitFileUrl.String(), nil)
-		if err != nil {
-			return err
+		for f := range allFiles {
+			allFiles[f].Directory = filepath.Join(dir, allFiles[f].Display_name)
 		}
-		utils.SetQueryAccessToken(fileReq, c.accessToken)
-		filesRes, err := c.client.Do(fileReq)
-		if err != nil {
-			return err
-		}
-		filesJson := utils.ExtractResponseToString(filesRes)
-		var files []*nodes.FileNode
-		json.Unmarshal([]byte(filesJson), &files)
-		for f := range files {
-			files[f].Directory = filepath.Join(dir, files[f].Display_name)
-		}
-		node.FileNodes = files
+		node.FileNodes = allFiles
 	}
 
 	if node.FoldersCount > 0 {
@@ -239,30 +253,42 @@ func (c *CanvasClient) RecurseDirectoryNode(node *nodes.DirectoryNode, parent *n
 		if err != nil {
 			return err
 		}
-		nolimitFolderUrl := url.URL{
-			Scheme: parsedFolderUrl.Scheme,
-			Host:   parsedFolderUrl.Host,
-			Path:   parsedFolderUrl.Path,
-			RawQuery: url.Values{
-				"per_page": {"100"},
-			}.Encode(),
+
+		var allFolders []*nodes.DirectoryNode
+		page := 0
+		for {
+			page += 1
+			nolimitFolderUrl := url.URL{
+				Scheme: parsedFolderUrl.Scheme,
+				Host:   parsedFolderUrl.Host,
+				Path:   parsedFolderUrl.Path,
+				RawQuery: url.Values{
+					"page":     {strconv.Itoa(page)},
+					"per_page": {strconv.Itoa(PER_PAGE)},
+				}.Encode(),
+			}
+			folderReq, err := http.NewRequest("GET", nolimitFolderUrl.String(), nil)
+			if err != nil {
+				return err
+			}
+			utils.SetQueryAccessToken(folderReq, c.accessToken)
+			foldersRes, err := c.client.Do(folderReq)
+			if err != nil {
+				return err
+			}
+			foldersJson := utils.ExtractResponseToString(foldersRes)
+			var folders []*nodes.DirectoryNode
+			json.Unmarshal([]byte(foldersJson), &folders)
+			allFolders = append(allFolders, folders...)
+			// break if less than 100 folders, otherwise query next page
+			if len(folders) < PER_PAGE {
+				break
+			}
 		}
-		folderReq, err := http.NewRequest("GET", nolimitFolderUrl.String(), nil)
-		if err != nil {
-			return err
+		for fi := range allFolders {
+			c.RecurseDirectoryNode(allFolders[fi], node)
 		}
-		utils.SetQueryAccessToken(folderReq, c.accessToken)
-		foldersRes, err := c.client.Do(folderReq)
-		if err != nil {
-			return err
-		}
-		foldersJson := utils.ExtractResponseToString(foldersRes)
-		var folders []*nodes.DirectoryNode
-		json.Unmarshal([]byte(foldersJson), &folders)
-		for fi := range folders {
-			c.RecurseDirectoryNode(folders[fi], node)
-		}
-		node.FolderNodes = folders
+		node.FolderNodes = allFolders
 	}
 
 	return nil
