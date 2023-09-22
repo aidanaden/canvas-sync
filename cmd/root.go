@@ -65,12 +65,10 @@ func verifyHash(versionStr string) {
 	if err != nil {
 		pterm.Error.Printfln("Error: failed to get latest canvas-sync version: %s", err.Error())
 	} else if currHash == "" {
-		fmt.Printf("versionStr: %v", versionStr)
+		pterm.Error.Println("Error: current canvas-sync does not contain a version hash, please re-install via the instructions at https://github.com/aidanaden/canvas-sync")
 	} else if currHash != latestReleaseInfo.CommitHash {
-		pterm.Println()
 		pterm.Warning.Printfln("New version %s of canvas-sync available, update now!", latestReleaseInfo.TagName)
-		pterm.Info.Printfln("Current hash: %s", currHash[:10])
-		pterm.Info.Printfln("New hash: %s", latestReleaseInfo.CommitHash[:10])
+		pterm.Println()
 	}
 }
 
