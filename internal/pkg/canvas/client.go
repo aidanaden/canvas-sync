@@ -213,7 +213,7 @@ func (c *CanvasClient) RecurseDirectoryNode(node *nodes.DirectoryNode, parent *n
 			Host:   parsedFileUrl.Host,
 			Path:   parsedFileUrl.Path,
 			RawQuery: url.Values{
-				"per_page": {"50"},
+				"per_page": {"100"},
 			}.Encode(),
 		}
 		fileReq, err := http.NewRequest("GET", nolimitFileUrl.String(), nil)
@@ -244,7 +244,7 @@ func (c *CanvasClient) RecurseDirectoryNode(node *nodes.DirectoryNode, parent *n
 			Host:   parsedFolderUrl.Host,
 			Path:   parsedFolderUrl.Path,
 			RawQuery: url.Values{
-				"per_page": {"50"},
+				"per_page": {"100"},
 			}.Encode(),
 		}
 		folderReq, err := http.NewRequest("GET", nolimitFolderUrl.String(), nil)
