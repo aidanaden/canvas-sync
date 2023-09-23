@@ -2,7 +2,6 @@ package pull
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -27,7 +26,7 @@ func RunPullFiles(cmd *cobra.Command, args []string) {
 
 	pterm.Info.Printfln("Downloading files to: %s", targetDir)
 
-	canvasClient := canvas.NewClient(http.DefaultClient, canvasUrl, accessToken, cookiesFile)
+	canvasClient := canvas.NewClient(canvasUrl, accessToken, cookiesFile)
 	if accessToken == "" {
 		pterm.Info.Printfln("No access token found, using cookies...")
 		canvasClient.ExtractCookies()

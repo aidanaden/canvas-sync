@@ -2,7 +2,6 @@ package view
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 	"path/filepath"
 
@@ -17,7 +16,7 @@ func RunViewCoursePeople(cmd *cobra.Command, args []string) {
 	cookiesFile := filepath.Join(fmt.Sprintf("%s", viper.Get("data_dir")), "cookies")
 	courseCode := args[0]
 	canvasUrl := fmt.Sprintf("%v", viper.Get("canvas_url"))
-	canvasClient := canvas.NewClient(http.DefaultClient, canvasUrl, accessToken, cookiesFile)
+	canvasClient := canvas.NewClient(canvasUrl, accessToken, cookiesFile)
 	if accessToken == "" {
 		pterm.Info.Printfln("No access token found, using cookies...")
 		canvasClient.ExtractCookies()

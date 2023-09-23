@@ -2,7 +2,6 @@ package view
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -19,7 +18,7 @@ func RunViewDeadlines(cmd *cobra.Command, args []string, isPast bool) {
 	accessToken := fmt.Sprintf("%v", viper.Get("access_token"))
 	cookiesFile := filepath.Join(fmt.Sprintf("%s", viper.Get("data_dir")), "cookies")
 	canvasUrl := fmt.Sprintf("%v", viper.Get("canvas_url"))
-	canvasClient := canvas.NewClient(http.DefaultClient, canvasUrl, accessToken, cookiesFile)
+	canvasClient := canvas.NewClient(canvasUrl, accessToken, cookiesFile)
 	if accessToken == "" {
 		pterm.Info.Printfln("No access token found, using cookies...")
 		canvasClient.ExtractCookies()
@@ -38,7 +37,7 @@ func RunViewDeadlines(cmd *cobra.Command, args []string, isPast bool) {
 		events, err = canvasClient.GetRecentCalendarEvents()
 		if err != nil {
 			pterm.Error.Printfln("Error: failed to fetch all recent assignments: %s", err.Error())
-			if err := canvasClient.ClearStoredBrowserCookies(); err != nil {
+			if err := canvasClient.ClearStoredStoredCookies(); err != nil {
 				pterm.Error.Printfln("Error: failed to clear stale cookies in %s: %s", cookiesFile, err.Error())
 				os.Exit(1)
 			}

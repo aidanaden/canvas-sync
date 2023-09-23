@@ -8,7 +8,9 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/aidanaden/canvas-sync/internal/pkg/utils"
 	"github.com/pkg/browser"
+	"github.com/playwright-community/playwright-go"
 	"github.com/pterm/pterm"
 )
 
@@ -41,13 +43,16 @@ func generate(config *Config) string {
 }
 
 func initConfigFile(path string) {
+	if err := playwright.Install(); err != nil {
+		pterm.Warning.Println("Failed to install headless chrome, login via username/password disabled.")
+	}
+
 	configDir := filepath.Dir(path)
 	accessToken := ""
 	dataDir := ""
 	canvasUrl := ""
 	var err error
 
-	pterm.Println()
 	for err != nil || dataDir == "" {
 		dataDir, err = pterm.DefaultInteractiveTextInput.WithMultiLine(false).Show("Enter location to store downloaded canvas data (default: ~/.canvas-sync/data)")
 		r := strings.NewReplacer(`"`, "", `'`, "")
@@ -99,6 +104,10 @@ func initConfigFile(path string) {
 		if err = browser.OpenURL(profileUrl.String()); err != nil {
 			pterm.Error.Printfln("Error launching access token url: %s", err.Error())
 		}
+	} else {
+		pterm.Info.Println("Logging in to canvas...")
+		cookiesFilePath := filepath.Join(dataDir, "cookies")
+		utils.ExtractAndStoreCanvasCookies(parsedCanvasUrl.String(), cookiesFilePath)
 	}
 
 	pterm.Println()

@@ -24,12 +24,13 @@ const apiPath = "/api/v1"
 
 type CanvasClient struct {
 	client          *http.Client
+	canvasPath      *url.URL
 	apiPath         *url.URL
 	accessToken     string
 	cookiesFilePath string
 }
 
-func NewClient(client *http.Client, rawUrl string, accessToken string, cookiesFilePath string) *CanvasClient {
+func NewClient(rawUrl string, accessToken string, cookiesFilePath string) *CanvasClient {
 	schemas := []string{"http://", "https://"}
 	canvasHost := ""
 	for _, schema := range schemas {
@@ -42,94 +43,85 @@ func NewClient(client *http.Client, rawUrl string, accessToken string, cookiesFi
 	if canvasHost == "" {
 		canvasHost = rawUrl
 	}
-	apiPath := url.URL{
+	canvasPath := url.URL{
 		Scheme: "https",
 		Host:   canvasHost,
+	}
+	apiPath := url.URL{
+		Scheme: canvasPath.Scheme,
+		Host:   canvasPath.Host,
 		Path:   apiPath,
 	}
+	httpClient := http.Client{}
 	return &CanvasClient{
-		client:          client,
+		client:          &httpClient,
 		accessToken:     accessToken,
+		canvasPath:      &canvasPath,
 		apiPath:         &apiPath,
 		cookiesFilePath: cookiesFilePath,
 	}
 }
 
-func (c *CanvasClient) ExtractBrowserCookies() {
-	baseUrl := url.URL{Scheme: c.apiPath.Scheme, Host: c.apiPath.Host}
-	cookieJar := utils.ExtractCanvasBrowserCookies(baseUrl.String())
-	c.client.Jar = cookieJar
+func (c *CanvasClient) ExtractLiveCookies() {
+	loginUrl := url.URL{
+		Scheme: c.apiPath.Scheme,
+		Host:   c.apiPath.Host,
+		Path:   "/login/saml/105",
+	}
+	cookies := utils.ExtractAndStoreCanvasCookies(loginUrl.String(), c.cookiesFilePath)
+	jar, err := cookiejar.New(nil)
+	if err != nil {
+		pterm.Error.Printfln("Error creating jar: %s", err.Error())
+		os.Exit(1)
+	}
+	jar.SetCookies(c.canvasPath, cookies)
+	c.client.Jar = jar
 }
 
-func (c *CanvasClient) ExtractStoredBrowserCookies() error {
-	b, err := os.ReadFile(c.cookiesFilePath)
+func (c *CanvasClient) ExtractStoredCookies(cookiesFilePath string) error {
+	rawCookies, err := utils.ExtractCookiesFromFile(cookiesFilePath)
 	if err != nil {
 		return err
 	}
-	str := string(b)
-	splits := strings.Split(strings.Trim(str, " "), "\n")
+
 	cookies := make([]*http.Cookie, 0)
-	for _, split := range splits {
-		split = strings.Trim(split, " ")
-		if len(split) == 0 {
-			continue
-		}
-		subsplits := strings.Split(split, "=")
-		if len(subsplits) != 2 {
-			return errors.New("no valid cookies found")
-		}
+	for _, c := range rawCookies {
 		cookies = append(cookies, &http.Cookie{
-			Name:  subsplits[0],
-			Value: subsplits[1],
+			Domain: c.Domain,
+			Name:   c.Name,
+			Value:  c.Value,
+			Path:   c.Path,
 		})
 	}
-	cookieJar, err := cookiejar.New(nil)
+	jar, err := cookiejar.New(nil)
 	if err != nil {
 		return err
 	}
-	baseUrl := url.URL{Scheme: c.apiPath.Scheme, Host: c.apiPath.Host}
-	cookieJar.SetCookies(&baseUrl, cookies)
-	c.client.Jar = cookieJar
+	c.client.Jar = jar
+	c.client.Jar.SetCookies(c.canvasPath, cookies)
+	if len(c.client.Jar.Cookies(c.canvasPath)) == 0 {
+		return errors.New("error logging in to canvas")
+	}
 	return nil
 }
 
 // extract stored cookies, if none found extract browser cookies
 func (c *CanvasClient) ExtractCookies() {
-	if err := c.ExtractStoredBrowserCookies(); err != nil {
-		pterm.Info.Printfln("No stored cookies found, using browser cookies...")
-		c.ExtractBrowserCookies()
-		c.StoreDomainBrowserCookies()
+	if err := c.ExtractStoredCookies(c.cookiesFilePath); err != nil {
+		pterm.Info.Printfln("No stored cookies found, logging in...")
+		c.ExtractLiveCookies()
 	}
 }
 
-func (c *CanvasClient) StoreDomainBrowserCookies() {
-	baseUrl := url.URL{Scheme: c.apiPath.Scheme, Host: c.apiPath.Host}
-	cookies := c.client.Jar.Cookies(&baseUrl)
-	cookiesStr := ""
-	for _, cookie := range cookies {
-		cookiesStr += fmt.Sprintf("%s=%s\n", cookie.Name, cookie.Value)
-	}
-	d1 := []byte(cookiesStr)
-	cookiesDir := filepath.Dir(c.cookiesFilePath)
-	if err := os.MkdirAll(cookiesDir, 0755); err != nil {
-		pterm.Error.Printfln("Error creating cookie directory %s: %s", cookiesDir, err.Error())
-		os.Exit(1)
-	}
-	if err := os.WriteFile(c.cookiesFilePath, d1, 0755); err != nil {
-		pterm.Error.Printfln("Error storing browser cookies to %s: %s", c.cookiesFilePath, err.Error())
-		os.Exit(1)
-	}
-}
-
-func (c *CanvasClient) ClearStoredBrowserCookies() error {
+func (c *CanvasClient) ClearStoredStoredCookies() error {
 	if err := os.Remove(c.cookiesFilePath); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c *CanvasClient) GetActiveEnrolledCourses() ([]nodes.CourseNode, error) {
-	coursesUrl := url.URL{
+func (c *CanvasClient) GetActiveEnrolledCoursesURL() url.URL {
+	return url.URL{
 		Scheme: c.apiPath.Scheme,
 		Host:   c.apiPath.Host,
 		Path:   c.apiPath.Path + "/users/self/courses",
@@ -137,7 +129,10 @@ func (c *CanvasClient) GetActiveEnrolledCourses() ([]nodes.CourseNode, error) {
 			"enrollment_state": {"active"},
 		}.Encode(),
 	}
+}
 
+func (c *CanvasClient) GetActiveEnrolledCourses() ([]nodes.CourseNode, error) {
+	coursesUrl := c.GetActiveEnrolledCoursesURL()
 	// courses request
 	req, err := http.NewRequest("GET", coursesUrl.String(), nil)
 	utils.SetQueryAccessToken(req, c.accessToken)
@@ -154,9 +149,8 @@ func (c *CanvasClient) GetActiveEnrolledCourses() ([]nodes.CourseNode, error) {
 	var courses []nodes.CourseNode
 	json.Unmarshal([]byte(courseJson), &courses)
 	if strings.Contains(courseJson, "user authorisation required") {
-		pterm.Warning.Printfln("Existing auth cookies/access token invalid, attempting to extract cookies from browser...")
-		c.ExtractBrowserCookies()
-		c.StoreDomainBrowserCookies()
+		pterm.Warning.Printfln("Existing auth cookies/access token invalid, attempting to login...")
+		c.ExtractLiveCookies()
 	}
 
 	return courses, nil
