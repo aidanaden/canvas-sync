@@ -20,7 +20,7 @@ type Config struct {
 }
 
 const cfg_template = `
-# file directory to store canvas data e.g. ~/.canvas-sync/data
+# file directory to store canvas data e.g. $HOME/canvas-sync/data
 data_dir: {{ .DataDir }}
 # canvas website url e.g. https://canvas.nus.edu.sg
 canvas_url: {{ .CanvasUrl }}
@@ -76,7 +76,7 @@ func generateCanvasAccessToken(page playwright.Page, canvasUrl url.URL) (string,
 		if rawUsername == "" {
 			return "", fmt.Errorf("username cannot be empty")
 		}
-		rawPassword, err := pterm.DefaultInteractiveTextInput.Show("Please enter your canvas password")
+		rawPassword, err := pterm.DefaultInteractiveTextInput.WithMask("*").Show("Please enter your canvas password")
 		if err != nil {
 			return "", fmt.Errorf("failed to get password input: %s", err.Error())
 		}
@@ -182,7 +182,7 @@ func initConfigFile(path string) error {
 	var err error
 
 	for err != nil || dataDir == "" {
-		dataDir, err = pterm.DefaultInteractiveTextInput.WithMultiLine(false).Show("Enter location to store downloaded canvas data (default: ~/.canvas-sync/data)")
+		dataDir, err = pterm.DefaultInteractiveTextInput.WithMultiLine(false).Show("Enter location to store downloaded canvas data (default: $HOME/canvas-sync/data)")
 		r := strings.NewReplacer(`"`, "", `'`, "")
 		dataDir = r.Replace(dataDir)
 		if err != nil {
@@ -273,7 +273,7 @@ func initConfigFile(path string) error {
 	return nil
 }
 
-var DEFAULT_CONFIG_DIR = ".canvas-sync"
+var DEFAULT_CONFIG_DIR = "canvas-sync"
 var DEFAULT_CONFIG_FILE = "config.yaml"
 
 func RunInit(isInitCommand bool) string {

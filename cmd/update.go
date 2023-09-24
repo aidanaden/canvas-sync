@@ -11,14 +11,14 @@ import (
 var updateCmd = &cobra.Command{
 	Use:   "update",
 	Short: "Updates locally downloaded course data from canvas",
-	Long: `Updates downloaded course data from canvas in a target directory (defaults to $HOME/.canvas-sync/data/files)
+	Long: `Updates downloaded course data from canvas in a target directory (defaults to $HOME/canvas-sync/data/files)
 `,
 }
 
 var updateFilesCmd = &cobra.Command{
 	Use:   "files",
 	Short: "Updates locally downloaded course files from canvas",
-	Long:  `Updates downloaded files from canvas to a target directory (defaults to $HOME/.canvas-sync/data/files)`,
+	Long:  `Updates downloaded files from canvas to a target directory (defaults to $HOME/canvas-sync/data/files)`,
 	Example: `  canvas-sync update files - updates all downloaded files for all courses
   canvas-sync update files CS3219 - updates all files for course with course code "CS3219"
   canvas-sync update files CS3219 CS3230 - updates all files for courses with course codes "CS3219" or "CS3230"`,

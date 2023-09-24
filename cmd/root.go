@@ -85,7 +85,7 @@ func preRun(cmd *cobra.Command) {
 		cobra.CheckErr(err)
 		cfgDir := initialise.RunInit(false)
 
-		// Search config in home directory with name ".canvas-sync/config" (without extension).
+		// Search config in home directory with name "canvas-sync/config" (without extension).
 		viper.AddConfigPath(cfgDir)
 		viper.SetConfigType("yaml")
 		viper.SetConfigName("config")

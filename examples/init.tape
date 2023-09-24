@@ -67,7 +67,7 @@ Type "canvas-sync init" Sleep 500ms  Enter
 
 Sleep 1s
 
-Type "cat ~/.canvas-sync/config.yaml" Sleep 500ms  Enter
+Type "cat ~/canvas-sync/config.yaml" Sleep 500ms  Enter
 
 Sleep 3s
 
@@ -80,6 +80,6 @@ Type "y" Sleep 500ms
 
 Sleep 1s
 
-Type "cat ~/.canvas-sync/config.yaml" Sleep 500ms  Enter
+Type "cat ~/canvas-sync/config.yaml" Sleep 500ms  Enter
 
 Sleep 3s
