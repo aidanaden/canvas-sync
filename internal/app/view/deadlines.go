@@ -3,7 +3,6 @@ package view
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"strconv"
 
 	"github.com/aidanaden/canvas-sync/internal/pkg/canvas"
@@ -16,14 +15,11 @@ import (
 
 func RunViewDeadlines(cmd *cobra.Command, args []string, isPast bool) {
 	accessToken := fmt.Sprintf("%v", viper.Get("access_token"))
-	cookiesFile := filepath.Join(fmt.Sprintf("%s", viper.Get("data_dir")), "cookies")
 	canvasUrl := fmt.Sprintf("%v", viper.Get("canvas_url"))
-	canvasClient := canvas.NewClient(canvasUrl, accessToken, cookiesFile)
+	canvasClient := canvas.NewClient(canvasUrl, accessToken)
 	if accessToken == "" {
-		pterm.Info.Printfln("No access token found, using cookies...")
-		canvasClient.ExtractCookies()
-	} else {
-		pterm.Info.Printfln("Using access token starting with: %s", accessToken[:5])
+		pterm.Error.Printfln("Invalid config, please run 'canvas-sync init'")
+		os.Exit(1)
 	}
 
 	courses, err := canvasClient.GetActiveEnrolledCourses()
@@ -37,10 +33,7 @@ func RunViewDeadlines(cmd *cobra.Command, args []string, isPast bool) {
 		events, err = canvasClient.GetRecentCalendarEvents()
 		if err != nil {
 			pterm.Error.Printfln("Error: failed to fetch all recent assignments: %s", err.Error())
-			if err := canvasClient.ClearStoredStoredCookies(); err != nil {
-				pterm.Error.Printfln("Error: failed to clear stale cookies in %s: %s", cookiesFile, err.Error())
-				os.Exit(1)
-			}
+			os.Exit(1)
 		}
 	} else {
 		events, err = canvasClient.GetIncomingCalendarEvents()

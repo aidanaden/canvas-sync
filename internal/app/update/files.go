@@ -18,7 +18,6 @@ import (
 
 func RunUpdateFiles(cmd *cobra.Command, args []string) {
 	targetDir := filepath.Join(fmt.Sprintf("%s", viper.Get("data_dir")), "files")
-	cookiesFile := filepath.Join(fmt.Sprintf("%s", viper.Get("data_dir")), "cookies")
 	targetDir = utils.GetExpandedHomeDirectoryPath(targetDir)
 
 	accessToken := fmt.Sprintf("%v", viper.Get("access_token"))
@@ -28,21 +27,16 @@ func RunUpdateFiles(cmd *cobra.Command, args []string) {
 	providedCodes := utils.GetCourseCodesFromArgs(args)
 
 	pterm.Info.Printfln("Downloading files to: %s", targetDir)
-	canvasClient := canvas.NewClient(canvasUrl, accessToken, cookiesFile)
+	canvasClient := canvas.NewClient(canvasUrl, accessToken)
 	if accessToken == "" {
-		pterm.Info.Printfln("No access token found, using cookies...")
-		canvasClient.ExtractCookies()
-	} else {
-		pterm.Info.Printfln("Using access token starting with: %s", accessToken[:5])
+		pterm.Error.Printfln("Invalid config, please run 'canvas-sync init'")
+		os.Exit(1)
 	}
 
 	rawCourses, err := canvasClient.GetActiveEnrolledCourses()
 	if err != nil {
 		pterm.Error.Printfln("Error: failed to fetch all actively enrolled courses: %s", err.Error())
-		if err := canvasClient.ClearStoredStoredCookies(); err != nil {
-			pterm.Error.Printfln("Error: failed to delete stored cookies in %s: %s", cookiesFile, err.Error())
-			os.Exit(1)
-		}
+		os.Exit(1)
 	}
 	courses := make([]nodes.CourseNode, 0)
 	for _, raw := range rawCourses {
@@ -77,23 +71,26 @@ func RunUpdateFiles(cmd *cobra.Command, args []string) {
 			rootNode, err := canvasClient.GetCourseRootFolder(id)
 			if err != nil {
 				pterm.Error.Printfln("Error: failed to fetch course root folder: %s", err.Error())
-				if err := canvasClient.ClearStoredStoredCookies(); err != nil {
-					pterm.Error.Printfln("Error: failed to delete stored cookies in %s: %s", cookiesFile, err.Error())
-					os.Exit(1)
-				}
+				os.Exit(1)
 			}
 			rootNode.Name = fmt.Sprintf("%s/%s", targetDir, code)
 
 			sp.UpdateMessagef(pterm.FgCyan.Sprintf("Pulling files info for %s", code))
-			canvasClient.RecurseDirectoryNode(rootNode, nil)
+			if err := canvasClient.RecurseDirectoryNode(rootNode, nil); err != nil {
+				sp.UpdateMessagef(pterm.Error.Sprintf("Error: failed to recurse directories: %s", err.Error()))
+				sp.Error()
+			}
 
 			sp.UpdateMessagef(pterm.FgCyan.Sprintf("Updating files for %s", code))
 			totalFileDownloads := 0
 
-			canvasClient.RecursiveUpdateNode(rootNode, updateStaleFiles, func(numDownloads int) {
+			if err := canvasClient.RecursiveUpdateNode(rootNode, updateStaleFiles, func(numDownloads int) {
 				totalFileDownloads += numDownloads
 				sp.UpdateMessagef(pterm.FgCyan.Sprintf("Downloading %d files for %s", totalFileDownloads, code))
-			})
+			}); err != nil {
+				sp.UpdateMessagef(pterm.Error.Sprintf("Error: failed to recurse update files: %s", err.Error()))
+				sp.Error()
+			}
 
 			if totalFileDownloads > 0 {
 				sp.UpdateMessagef(pterm.FgGreen.Sprintf("Downloaded %d files for %s", totalFileDownloads, code))

@@ -3,7 +3,6 @@ package view
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
 	"github.com/aidanaden/canvas-sync/internal/pkg/canvas"
 	"github.com/pterm/pterm"
@@ -13,15 +12,12 @@ import (
 
 func RunViewCoursePeople(cmd *cobra.Command, args []string) {
 	accessToken := fmt.Sprintf("%v", viper.Get("access_token"))
-	cookiesFile := filepath.Join(fmt.Sprintf("%s", viper.Get("data_dir")), "cookies")
 	courseCode := args[0]
 	canvasUrl := fmt.Sprintf("%v", viper.Get("canvas_url"))
-	canvasClient := canvas.NewClient(canvasUrl, accessToken, cookiesFile)
+	canvasClient := canvas.NewClient(canvasUrl, accessToken)
 	if accessToken == "" {
-		pterm.Info.Printfln("No access token found, using cookies...")
-		canvasClient.ExtractCookies()
-	} else {
-		pterm.Info.Printfln("Using access token starting with: %s", accessToken[:5])
+		pterm.Error.Printfln("Invalid config, please run 'canvas-sync init'")
+		os.Exit(1)
 	}
 
 	coursePeople, err := canvasClient.GetCoursePeople(courseCode)

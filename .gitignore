@@ -2,4 +2,3 @@ bin
 .env
 dist/
 completions
-cookies

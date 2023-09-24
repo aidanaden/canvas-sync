@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/http/cookiejar"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -23,14 +22,13 @@ import (
 const apiPath = "/api/v1"
 
 type CanvasClient struct {
-	client          *http.Client
-	canvasPath      *url.URL
-	apiPath         *url.URL
-	accessToken     string
-	cookiesFilePath string
+	client      *http.Client
+	canvasPath  *url.URL
+	apiPath     *url.URL
+	accessToken string
 }
 
-func NewClient(rawUrl string, accessToken string, cookiesFilePath string) *CanvasClient {
+func NewClient(rawUrl string, accessToken string) *CanvasClient {
 	schemas := []string{"http://", "https://"}
 	canvasHost := ""
 	for _, schema := range schemas {
@@ -54,70 +52,11 @@ func NewClient(rawUrl string, accessToken string, cookiesFilePath string) *Canva
 	}
 	httpClient := http.Client{}
 	return &CanvasClient{
-		client:          &httpClient,
-		accessToken:     accessToken,
-		canvasPath:      &canvasPath,
-		apiPath:         &apiPath,
-		cookiesFilePath: cookiesFilePath,
+		client:      &httpClient,
+		accessToken: accessToken,
+		canvasPath:  &canvasPath,
+		apiPath:     &apiPath,
 	}
-}
-
-func (c *CanvasClient) ExtractLiveCookies() {
-	loginUrl := url.URL{
-		Scheme: c.apiPath.Scheme,
-		Host:   c.apiPath.Host,
-		Path:   "/login/saml/105",
-	}
-	cookies := utils.ExtractAndStoreCanvasCookies(loginUrl.String(), c.cookiesFilePath)
-	jar, err := cookiejar.New(nil)
-	if err != nil {
-		pterm.Error.Printfln("Error creating jar: %s", err.Error())
-		os.Exit(1)
-	}
-	jar.SetCookies(c.canvasPath, cookies)
-	c.client.Jar = jar
-}
-
-func (c *CanvasClient) ExtractStoredCookies(cookiesFilePath string) error {
-	rawCookies, err := utils.ExtractCookiesFromFile(cookiesFilePath)
-	if err != nil {
-		return err
-	}
-
-	cookies := make([]*http.Cookie, 0)
-	for _, c := range rawCookies {
-		cookies = append(cookies, &http.Cookie{
-			Domain: c.Domain,
-			Name:   c.Name,
-			Value:  c.Value,
-			Path:   c.Path,
-		})
-	}
-	jar, err := cookiejar.New(nil)
-	if err != nil {
-		return err
-	}
-	c.client.Jar = jar
-	c.client.Jar.SetCookies(c.canvasPath, cookies)
-	if len(c.client.Jar.Cookies(c.canvasPath)) == 0 {
-		return errors.New("error logging in to canvas")
-	}
-	return nil
-}
-
-// extract stored cookies, if none found extract browser cookies
-func (c *CanvasClient) ExtractCookies() {
-	if err := c.ExtractStoredCookies(c.cookiesFilePath); err != nil {
-		pterm.Info.Printfln("No stored cookies found, logging in...")
-		c.ExtractLiveCookies()
-	}
-}
-
-func (c *CanvasClient) ClearStoredStoredCookies() error {
-	if err := os.Remove(c.cookiesFilePath); err != nil {
-		return err
-	}
-	return nil
 }
 
 func (c *CanvasClient) GetActiveEnrolledCoursesURL() url.URL {
@@ -149,8 +88,7 @@ func (c *CanvasClient) GetActiveEnrolledCourses() ([]nodes.CourseNode, error) {
 	var courses []nodes.CourseNode
 	json.Unmarshal([]byte(courseJson), &courses)
 	if strings.Contains(courseJson, "user authorisation required") {
-		pterm.Warning.Printfln("Existing auth cookies/access token invalid, attempting to login...")
-		c.ExtractLiveCookies()
+		return nil, fmt.Errorf("existing config invalid, please run 'canvas-sync init'")
 	}
 
 	return courses, nil
@@ -174,14 +112,12 @@ func (c *CanvasClient) GetCourseRootFolder(courseId int) (*nodes.DirectoryNode, 
 	}
 	rootRes, err := c.client.Do(req)
 	if err != nil {
-		pterm.Error.Printfln("Failed to query course %d root directory: %s", courseId, err.Error())
-		os.Exit(1)
+		return nil, err
 	}
 	rootJson := utils.ExtractResponseToString(rootRes)
 	var rootNode *nodes.DirectoryNode
 	if err := json.Unmarshal([]byte(rootJson), &rootNode); err != nil {
-		pterm.Error.Printfln("Failed to extract course %d root directory: %s", courseId, err.Error())
-		os.Exit(1)
+		return nil, err
 	}
 	return rootNode, nil
 }
@@ -280,7 +216,9 @@ func (c *CanvasClient) RecurseDirectoryNode(node *nodes.DirectoryNode, parent *n
 			}
 		}
 		for fi := range allFolders {
-			c.RecurseDirectoryNode(allFolders[fi], node)
+			if err := c.RecurseDirectoryNode(allFolders[fi], node); err != nil {
+				return err
+			}
 		}
 		node.FolderNodes = allFolders
 	}
@@ -326,7 +264,9 @@ func (c *CanvasClient) RecursiveCreateNode(node *nodes.DirectoryNode, updateNumD
 		numDownloads += 1
 		go func(i int) {
 			defer wg.Done()
-			c.downloadFileNode(node.FileNodes[i])
+			if err := c.downloadFileNode(node.FileNodes[i]); err != nil {
+				pterm.Error.Printfln("Error downloading file %s: %s", node.FileNodes[i].Display_name, err.Error())
+			}
 		}(j)
 	}
 	updateNumDownloads(numDownloads)
@@ -334,7 +274,9 @@ func (c *CanvasClient) RecursiveCreateNode(node *nodes.DirectoryNode, updateNumD
 		wg.Add(1)
 		go func(i int) {
 			defer wg.Done()
-			c.RecursiveCreateNode(node.FolderNodes[i], updateNumDownloads)
+			if err := c.RecursiveCreateNode(node.FolderNodes[i], updateNumDownloads); err != nil {
+				pterm.Error.Printfln("Error downloading folder %s: %s", node.FileNodes[i].Display_name, err.Error())
+			}
 		}(d)
 	}
 	wg.Wait()
@@ -363,7 +305,9 @@ func (c *CanvasClient) RecursiveUpdateNode(node *nodes.DirectoryNode, updateStal
 			numDownloads += 1
 			go func(i int) {
 				defer wg.Done()
-				c.downloadFileNode(node.FileNodes[i])
+				if err := c.downloadFileNode(node.FileNodes[i]); err != nil {
+					pterm.Error.Printfln("Error downloading file %s: %s", node.FileNodes[i].Display_name, err.Error())
+				}
 			}(j)
 		} else {
 			if updateStaleFiles && file.ModTime().Unix() < node.FileNodes[j].UpdatedAt.Unix() {
@@ -371,7 +315,9 @@ func (c *CanvasClient) RecursiveUpdateNode(node *nodes.DirectoryNode, updateStal
 				numDownloads += 1
 				go func(i int) {
 					defer wg.Done()
-					c.downloadFileNode(node.FileNodes[i])
+					if err := c.downloadFileNode(node.FileNodes[i]); err != nil {
+						pterm.Error.Printfln("Error downloading file %s: %s", node.FileNodes[i].Display_name, err.Error())
+					}
 				}(j)
 			}
 		}
@@ -381,7 +327,9 @@ func (c *CanvasClient) RecursiveUpdateNode(node *nodes.DirectoryNode, updateStal
 		wg.Add(1)
 		go func(i int) {
 			defer wg.Done()
-			c.RecursiveUpdateNode(node.FolderNodes[i], updateStaleFiles, updateNumDownloads)
+			if err := c.RecursiveUpdateNode(node.FolderNodes[i], updateStaleFiles, updateNumDownloads); err != nil {
+				pterm.Error.Printfln("Error updating folder %s: %s", node.FileNodes[i].Display_name, err.Error())
+			}
 		}(d)
 	}
 	wg.Wait()
