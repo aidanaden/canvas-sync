@@ -12,10 +12,10 @@ import (
 var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "Initialise new config file with defaults",
-	Long: `Initialise directory '~/.canvas-sync' with default config '~/.canvas-sync/config.yaml'.
+	Long: `Initialise directory '$HOME/canvas-sync' with default config '$HOME/canvas-sync/config.yaml'.
 Default values:
   - access_token: ""
-  - data_dir: ~/.canvas-sync/data
+  - data_dir: $HOME/canvas-sync/data
   - canvas_url: https://canvas.nus.edu.sg`,
 	Run: func(cmd *cobra.Command, args []string) {
 		verifyHash(rootCmd.Version)

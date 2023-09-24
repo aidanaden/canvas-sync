@@ -13,8 +13,8 @@ var pullCmd = &cobra.Command{
 	Aliases: []string{"download", "get"},
 	Short:   "Downloads course data from canvas",
 	Long: `
-Download course data from canvas to a target directory (defaults to $HOME/.canvas-sync/data/files)
-Specify target directory in the $HOME/.canvas-sync/config.yml file
+Download course data from canvas to a target directory (defaults to $HOME/canvas-sync/data/files)
+Specify target directory in the $HOME/canvas-sync/config.yml file
 `,
 }
 
@@ -57,9 +57,9 @@ func init() {
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// rawTargetDir := flag.String("target-dir", ".canvas-sync", "target directory to store downloaded canvas files & directories")
+	// rawTargetDir := flag.String("target-dir", "canvas-sync", "target directory to store downloaded canvas files & directories")
 	// rawAccessToken := flag.String("access-token", "", "access token to bypass canvas oauth process")
-	rootCmd.PersistentFlags().StringP("data_dir", "d", "", "downloaded data directory")
+	rootCmd.PersistentFlags().StringP("data_dir", "d", "~/canvas-data", "downloaded data directory")
 	viper.BindPFlag("data_dir", rootCmd.PersistentFlags().Lookup("data_dir"))
 
 	// Cobra supports local flags which will only run when this command
