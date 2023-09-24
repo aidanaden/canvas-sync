@@ -47,7 +47,7 @@ func init() {
 
 	rootCmd.PersistentFlags().String("access_token", "", "canvas access token")
 	viper.BindPFlag("access_token", rootCmd.PersistentFlags().Lookup("access_token"))
-	rootCmd.PersistentFlags().String("canvas_url", "", "canvas url e.g. canvas.nus.edu.sg")
+	rootCmd.PersistentFlags().String("canvas_url", "https://canvas.nus.edu.sg", "canvas url e.g. canvas.nus.edu.sg")
 	viper.BindPFlag("canvas_url", rootCmd.PersistentFlags().Lookup("canvas_url"))
 
 	viper.SetDefault("author", "ryan aidan aidan@u.nus.edu")

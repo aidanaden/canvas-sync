@@ -264,8 +264,11 @@ func (c *CanvasClient) RecursiveCreateNode(node *nodes.DirectoryNode, updateNumD
 		numDownloads += 1
 		go func(i int) {
 			defer wg.Done()
-			if err := c.downloadFileNode(node.FileNodes[i]); err != nil {
+			var err error
+			err = c.downloadFileNode(node.FileNodes[i])
+			for err != nil {
 				pterm.Error.Printfln("Error downloading file %s: %s", node.FileNodes[i].Display_name, err.Error())
+				err = c.downloadFileNode(node.FileNodes[i])
 			}
 		}(j)
 	}
@@ -305,8 +308,11 @@ func (c *CanvasClient) RecursiveUpdateNode(node *nodes.DirectoryNode, updateStal
 			numDownloads += 1
 			go func(i int) {
 				defer wg.Done()
-				if err := c.downloadFileNode(node.FileNodes[i]); err != nil {
+				var err error
+				err = c.downloadFileNode(node.FileNodes[i])
+				for err != nil {
 					pterm.Error.Printfln("Error downloading file %s: %s", node.FileNodes[i].Display_name, err.Error())
+					err = c.downloadFileNode(node.FileNodes[i])
 				}
 			}(j)
 		} else {
