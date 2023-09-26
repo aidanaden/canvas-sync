@@ -23,7 +23,7 @@ func ExtractResponseToString(res *http.Response) string {
 	defer res.Body.Close()
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		pterm.Error.Printfln("Error: failed to extract response: %s", err.Error())
+		pterm.Error.Printfln("Failed to extract response: %s", err.Error())
 		os.Exit(1)
 	}
 	json := string(body)

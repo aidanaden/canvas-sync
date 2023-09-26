@@ -4,7 +4,6 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -47,25 +46,26 @@ var upgradeCmd = &cobra.Command{
 	Use:   "upgrade",
 	Short: "Upgrade canvas-sync to the latest available version",
 	Args:  cobra.NoArgs,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	Run: func(cmd *cobra.Command, args []string) {
 		if isLatestVersion(rootCmd.Version) {
 			pterm.Info.Printfln("Canvas-sync is up-to-date!")
-			return nil
+			return
 		}
 
 		cmdToRun := ""
 		if IsUnderHomebrew() {
 			cmdToRun = "brew upgrade canvas-sync"
 		} else {
-			return fmt.Errorf("only installs via brew can be upgraded via 'canvas-sync upgrade' :(")
+			pterm.Error.Printfln("Only installs via brew can be upgraded via 'canvas-sync upgrade' :(")
+			return
 		}
 
 		command := exec.Command("sh", "-c", cmdToRun)
 		command.Stdout = os.Stdout
 		command.Stderr = os.Stderr
 		if err := command.Run(); err != nil {
-			return fmt.Errorf("failed to upgrade canvas-sync with command: %w", err)
+			pterm.Error.Printfln("Failed to upgrade canvas-sync with command: %s", err.Error())
+			return
 		}
-		return nil
 	},
 }

@@ -35,7 +35,7 @@ func RunUpdateFiles(cmd *cobra.Command, args []string) {
 
 	rawCourses, err := canvasClient.GetActiveEnrolledCourses()
 	if err != nil {
-		pterm.Error.Printfln("Error: failed to fetch all actively enrolled courses: %s", err.Error())
+		pterm.Error.Printfln("Failed to fetch all actively enrolled courses: %s", err.Error())
 		os.Exit(1)
 	}
 	courses := make([]nodes.CourseNode, 0)
@@ -70,14 +70,14 @@ func RunUpdateFiles(cmd *cobra.Command, args []string) {
 
 			rootNode, err := canvasClient.GetCourseRootFolder(id)
 			if err != nil {
-				pterm.Error.Printfln("Error: failed to fetch course root folder: %s", err.Error())
+				pterm.Error.Printfln("Failed to fetch course root folder: %s", err.Error())
 				os.Exit(1)
 			}
 			rootNode.Name = fmt.Sprintf("%s/%s", targetDir, code)
 
 			sp.UpdateMessagef(pterm.FgCyan.Sprintf("Pulling files info for %s", code))
 			if err := canvasClient.RecurseDirectoryNode(rootNode, nil); err != nil {
-				sp.UpdateMessagef(pterm.Error.Sprintf("Error: failed to recurse directories: %s", err.Error()))
+				sp.UpdateMessagef(pterm.Error.Sprintf("Failed to recurse directories: %s", err.Error()))
 				sp.Error()
 			}
 
@@ -88,7 +88,7 @@ func RunUpdateFiles(cmd *cobra.Command, args []string) {
 				totalFileDownloads += numDownloads
 				sp.UpdateMessagef(pterm.FgCyan.Sprintf("Downloading %d files for %s", totalFileDownloads, code))
 			}); err != nil {
-				sp.UpdateMessagef(pterm.Error.Sprintf("Error: failed to recurse update files: %s", err.Error()))
+				sp.UpdateMessagef(pterm.Error.Sprintf("Failed to recurse update files: %s", err.Error()))
 				sp.Error()
 			}
 

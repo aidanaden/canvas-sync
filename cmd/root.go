@@ -106,7 +106,7 @@ func preRun(cmd *cobra.Command) {
 	if err := viper.ReadInConfig(); err == nil {
 		pterm.Info.Printfln("Using config file: %s", viper.ConfigFileUsed())
 	} else {
-		pterm.Error.Printfln("error reading config: %s", err.Error())
+		pterm.Error.Printfln("Error reading config: %s", err.Error())
 		os.Exit(1)
 	}
 }
