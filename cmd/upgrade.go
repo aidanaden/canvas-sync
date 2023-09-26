@@ -48,13 +48,13 @@ var upgradeCmd = &cobra.Command{
 	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		if isLatestVersion(rootCmd.Version) {
-			pterm.Info.Printfln("Canvas-sync is up-to-date!")
+			pterm.Success.Printfln("Canvas-sync is up-to-date!")
 			return
 		}
 
 		cmdToRun := ""
 		if IsUnderHomebrew() {
-			cmdToRun = "brew upgrade canvas-sync"
+			cmdToRun = "brew update && brew upgrade canvas-sync"
 		} else {
 			pterm.Error.Printfln("Only installs via brew can be upgraded via 'canvas-sync upgrade' :(")
 			return
@@ -65,7 +65,8 @@ var upgradeCmd = &cobra.Command{
 		command.Stderr = os.Stderr
 		if err := command.Run(); err != nil {
 			pterm.Error.Printfln("Failed to upgrade canvas-sync with command: %s", err.Error())
-			return
+		} else {
+			pterm.Success.Printfln("Canvas-sync successfully updated!")
 		}
 	},
 }

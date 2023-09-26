@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.22.2](https://github.com/aidanaden/canvas-sync/compare/v1.22.1...v1.22.2) (2023-09-26)
+
+
+### Bug Fixes
+
+* run brew update before brew upgrade ([#155](https://github.com/aidanaden/canvas-sync/issues/155)) ([10e0789](https://github.com/aidanaden/canvas-sync/commit/10e0789cb7d18886676330a98fd0168e03954e4d))
+
+## [1.22.1](https://github.com/aidanaden/canvas-sync/compare/v1.22.0...v1.22.1) (2023-09-26)
+
+
+### Bug Fixes
+
+* use success print for successful uupgrades ([#153](https://github.com/aidanaden/canvas-sync/issues/153)) ([b983e30](https://github.com/aidanaden/canvas-sync/commit/b983e3062b2961d2e1cca44fe8d64c4614a42eb0))
+
+## [1.22.0](https://github.com/aidanaden/canvas-sync/compare/v1.21.0...v1.22.0) (2023-09-26)
+
+
+### Features
+
+* upgrade brew installs via upgrade command ([#151](https://github.com/aidanaden/canvas-sync/issues/151)) ([06634f4](https://github.com/aidanaden/canvas-sync/commit/06634f4c44586f07608b17858180ad10c001be71))
+
 ## [1.21.0](https://github.com/aidanaden/canvas-sync/compare/v1.20.1...v1.21.0) (2023-09-24)
 
 
