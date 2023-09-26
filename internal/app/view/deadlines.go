@@ -24,7 +24,7 @@ func RunViewDeadlines(cmd *cobra.Command, args []string, isPast bool) {
 
 	courses, err := canvasClient.GetActiveEnrolledCourses()
 	if err != nil {
-		pterm.Error.Printfln("Error: failed to get actively enrolled courses: %s", err.Error())
+		pterm.Error.Printfln("Failed to get actively enrolled courses: %s", err.Error())
 		os.Exit(1)
 	}
 
@@ -32,13 +32,13 @@ func RunViewDeadlines(cmd *cobra.Command, args []string, isPast bool) {
 	if isPast {
 		events, err = canvasClient.GetRecentCalendarEvents()
 		if err != nil {
-			pterm.Error.Printfln("Error: failed to fetch all recent assignments: %s", err.Error())
+			pterm.Error.Printfln("Failed to fetch all recent assignments: %s", err.Error())
 			os.Exit(1)
 		}
 	} else {
 		events, err = canvasClient.GetIncomingCalendarEvents()
 		if err != nil {
-			pterm.Error.Printfln("Error: failed to fetch all upcoming assignments: %s", err.Error())
+			pterm.Error.Printfln("Failed to fetch all upcoming assignments: %s", err.Error())
 			os.Exit(1)
 		}
 	}

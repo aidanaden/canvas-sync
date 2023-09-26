@@ -58,23 +58,32 @@ func init() {
 	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func verifyHash(versionStr string) {
-	splits := strings.Split(strings.ReplaceAll(versionStr, ")", ""), " ")
+func isLatestVersion(rawVersionStr string) bool {
+	splits := strings.Split(strings.ReplaceAll(rawVersionStr, ")", ""), " ")
 	currHash := splits[len(splits)-1]
 	latestReleaseInfo, err := utils.GetCavasSyncLatestVersionHash()
 	if err != nil {
-		pterm.Error.Printfln("Error: failed to get latest canvas-sync version: %s", err.Error())
-	} else if currHash == "" {
-		pterm.Error.Println("Error: current canvas-sync does not contain a version hash, please re-install via the instructions at https://github.com/aidanaden/canvas-sync")
-	} else if currHash != latestReleaseInfo.CommitHash {
-		pterm.Warning.Printfln("New version %s of canvas-sync available, update now!", latestReleaseInfo.TagName)
+		return false
+	}
+	if currHash == "" {
+		return false
+	}
+	if currHash != latestReleaseInfo.CommitHash {
+		return false
+	}
+	return true
+}
+
+func latestVersionCheck(versionStr string) {
+	if !isLatestVersion(rootCmd.Version) {
+		pterm.Warning.Printfln("New version of canvas-sync available, run 'canvas-sync upgrade' to update!")
 		pterm.Println()
 	}
 }
 
 // preRun reads in config file and ENV variables if set, verifies current app version
 func preRun(cmd *cobra.Command) {
-	verifyHash(rootCmd.Version)
+	latestVersionCheck(rootCmd.Version)
 
 	if cfgFile != "" {
 		// Use config file from the flag.
@@ -97,7 +106,7 @@ func preRun(cmd *cobra.Command) {
 	if err := viper.ReadInConfig(); err == nil {
 		pterm.Info.Printfln("Using config file: %s", viper.ConfigFileUsed())
 	} else {
-		pterm.Error.Printfln("error reading config: %s", err.Error())
+		pterm.Error.Printfln("Error reading config: %s", err.Error())
 		os.Exit(1)
 	}
 }

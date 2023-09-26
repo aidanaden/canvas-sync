@@ -24,7 +24,7 @@ func RunViewCourseAnnouncements(cmd *cobra.Command, args []string) {
 
 	courseAnnouncements, err := canvasClient.GetCourseAnnouncements(courseCode)
 	if err != nil {
-		pterm.Error.Printfln("Error: failed to fetch all course announcements: %s", err.Error())
+		pterm.Error.Printfln("Failed to fetch all course announcements: %s", err.Error())
 	}
 
 	tableData := pterm.TableData{

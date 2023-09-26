@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.0](https://github.com/aidanaden/canvas-sync/compare/v1.20.1...v1.21.0) (2023-09-24)
+
+
+### Features
+
+* direct canvas login to generate access token, extract cookies ([#148](https://github.com/aidanaden/canvas-sync/issues/148)) ([74846c4](https://github.com/aidanaden/canvas-sync/commit/74846c4d2b5a30df47607a871a690a44ddd7b3f4))
+
 ## [1.20.1](https://github.com/aidanaden/canvas-sync/compare/v1.20.0...v1.20.1) (2023-09-22)
 
 

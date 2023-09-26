@@ -17,20 +17,13 @@ var viewCmd = &cobra.Command{
 	Use:     "view",
 	Aliases: VIEW_ALIASES,
 	Short:   "View data from canvas (events, deadlines, people)",
-	// 	Long: `A longer description that spans multiple lines and likely contains examples
-	// and usage of using your command. For example:
-
-	// Cobra is a CLI library for Go that empowers applications.
-	// This application is a tool to generate the needed files
-	// to quickly create a Cobra application.`,
 }
 
 // represents the view people command
 var viewPeopleCmd = &cobra.Command{
 	Use:     "people",
 	Aliases: VIEW_PEOPLE_ALIASES,
-	Short:   "View people from a given course",
-	Long:    `View all students from a given course code (case-insensitive).`,
+	Short:   "View people from a given course (case-insensitive)",
 	Run: func(cmd *cobra.Command, args []string) {
 		preRun(cmd)
 		view.RunViewCoursePeople(cmd, args)
@@ -106,8 +99,7 @@ var viewPastDeadlinesCmd = &cobra.Command{
 // represents the view announcements command
 var viewAnnouncementsCmd = &cobra.Command{
 	Use:   "announcements",
-	Short: "View announcements from a given course",
-	Long:  "View all announcements from a given course code (case-insensitive).",
+	Short: "View announcements from a given course (case-insensitive)",
 	Run: func(cmd *cobra.Command, args []string) {
 		preRun(cmd)
 		view.RunViewCourseAnnouncements(cmd, args)

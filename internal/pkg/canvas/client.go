@@ -438,7 +438,7 @@ func (c *CanvasClient) GetCoursePeople(code string) ([]nodes.PersonNode, error) 
 		}
 	}
 	if courseId == 0 {
-		return nil, errors.New("error: course not found")
+		return nil, errors.New("course not found")
 	}
 
 	peopleUrl := url.URL{
@@ -491,7 +491,7 @@ func (c *CanvasClient) GetCourseAnnouncements(code string) ([]nodes.Announcement
 		}
 	}
 	if courseId == 0 {
-		return nil, errors.New("error: course not found")
+		return nil, errors.New("course not found")
 	}
 
 	peopleUrl := url.URL{

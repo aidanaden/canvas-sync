@@ -22,7 +22,6 @@ Specify target directory in the $HOME/canvas-sync/config.yml file
 var pullFilesCmd = &cobra.Command{
 	Use:   "files",
 	Short: "Downloads files for a given course (all if none specified)",
-	Long:  `Downloads files for the given course code(s) case insensitive. If none is specified, all will be downloaded.`,
 	Example: `  canvas-sync pull files - downloads files for all courses
   canvas-sync pull files --data_dir /Users/test - downloads files for all courses in the /Users/test/files directory
   canvas-sync pull files CS3219 CS3230 - downloads files for courses with course codes "CS3219" or "CS3230"`,
