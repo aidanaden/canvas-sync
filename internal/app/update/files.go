@@ -11,13 +11,14 @@ import (
 	"github.com/aidanaden/canvas-sync/internal/pkg/nodes"
 	"github.com/aidanaden/canvas-sync/internal/pkg/utils"
 	"github.com/chelnak/ysmrr"
+	"github.com/chelnak/ysmrr/pkg/colors"
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 func RunUpdateFiles(cmd *cobra.Command, args []string) {
-	targetDir := filepath.Join(fmt.Sprintf("%s", viper.Get("data_dir")), "files")
+	targetDir := fmt.Sprintf("%s", viper.Get("data_dir"))
 	targetDir = utils.GetExpandedHomeDirectoryPath(targetDir)
 
 	accessToken := fmt.Sprintf("%v", viper.Get("access_token"))
@@ -58,7 +59,10 @@ func RunUpdateFiles(cmd *cobra.Command, args []string) {
 
 	pterm.Println()
 	var wg sync.WaitGroup
-	sm := ysmrr.NewSpinnerManager()
+	sm := ysmrr.NewSpinnerManager(
+		ysmrr.WithCompleteColor(colors.FgHiGreen),
+		ysmrr.WithSpinnerColor(colors.FgHiBlue),
+	)
 
 	for ci := range courses {
 		wg.Add(1)
@@ -73,7 +77,7 @@ func RunUpdateFiles(cmd *cobra.Command, args []string) {
 				pterm.Error.Printfln("Error: failed to fetch course root folder: %s", err.Error())
 				os.Exit(1)
 			}
-			rootNode.Name = fmt.Sprintf("%s/%s", targetDir, code)
+			rootNode.Name = filepath.Join(targetDir, code, "files")
 
 			sp.UpdateMessagef(pterm.FgCyan.Sprintf("Pulling files info for %s", code))
 			if err := canvasClient.RecurseDirectoryNode(rootNode, nil); err != nil {

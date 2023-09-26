@@ -9,6 +9,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/aidanaden/canvas-sync/internal/pkg/canvas"
 	"github.com/playwright-community/playwright-go"
 	"github.com/pterm/pterm"
 )
@@ -41,80 +42,16 @@ func generateConfigYaml(config *Config) string {
 	return buf.String()
 }
 
-func generateCanvasAccessToken(page playwright.Page, canvasUrl url.URL) (string, error) {
-	loginUrl := url.URL{
-		Host:   canvasUrl.Host,
-		Scheme: canvasUrl.Scheme,
-		Path:   "/login/saml/105",
-	}
-
-	loginSuccessUrl := url.URL{
-		Host:   canvasUrl.Host,
-		Scheme: canvasUrl.Scheme,
-		Path:   "/",
-		RawQuery: url.Values{
-			"login_success": {"1"},
-		}.Encode(),
+func generateCanvasAccessToken(page playwright.Page, canvasUrl *url.URL) (string, error) {
+	page, err := canvas.LoginToCanvas(page, canvasUrl)
+	if err != nil {
+		return "", err
 	}
 
 	profileUrl := url.URL{
 		Host:   canvasUrl.Host,
 		Scheme: canvasUrl.Scheme,
 		Path:   "/profile/settings",
-	}
-
-	if _, err := page.Goto(loginUrl.String()); err != nil {
-		return "", fmt.Errorf("failed to navigate to login url %s: %s", loginUrl.String(), err.Error())
-	}
-
-	// login if not logged in yet (prompt for credentials)
-	if strings.Contains(page.URL(), "https://vafs.u.nus.edu/adfs/ls/?SAMLRequest=") {
-		rawUsername, err := pterm.DefaultInteractiveTextInput.Show("Please enter your canvas username")
-		if err != nil {
-			return "", fmt.Errorf("failed to get username input: %s", err.Error())
-		}
-		if rawUsername == "" {
-			return "", fmt.Errorf("username cannot be empty")
-		}
-		rawPassword, err := pterm.DefaultInteractiveTextInput.WithMask("*").Show("Please enter your canvas password")
-		if err != nil {
-			return "", fmt.Errorf("failed to get password input: %s", err.Error())
-		}
-		if rawPassword == "" {
-			return "", fmt.Errorf("password cannot be empty")
-		}
-		usernameInputLoc := page.Locator("#userNameInput")
-		if err := usernameInputLoc.Fill(rawUsername); err != nil {
-			return "", fmt.Errorf("failed to enter username on login page: %s", err.Error())
-		}
-		usernameValue, err := usernameInputLoc.InputValue()
-		if err != nil {
-			return "", fmt.Errorf("failed to get username input value: %s", err.Error())
-		} else if usernameValue == "" {
-			return "", fmt.Errorf("failed to fill username into form")
-		}
-		passwordInputLoc := page.Locator("#passwordInput")
-		if err := passwordInputLoc.Fill(rawPassword); err != nil {
-			pterm.Error.Printfln("Error entering password on login page: %s", err.Error())
-			os.Exit(1)
-		}
-		passwordValue, err := passwordInputLoc.InputValue()
-		if err != nil {
-			return "", fmt.Errorf("failed to get password input value: %s", err.Error())
-		} else if passwordValue == "" {
-			return "", fmt.Errorf("failed to fill password into form")
-		}
-		if err := passwordInputLoc.Click(); err != nil {
-			return "", fmt.Errorf("failed to get click into password input: %s", err.Error())
-		}
-		if err := page.Keyboard().Down("Enter"); err != nil {
-			return "", fmt.Errorf("failed to sign in: %s", err.Error())
-		}
-		if err := page.WaitForURL(loginSuccessUrl.String()); err != nil {
-			if page.URL() != loginSuccessUrl.String() {
-				return "", fmt.Errorf("login failed: current page is %s", page.URL())
-			}
-		}
 	}
 
 	if _, err := page.Goto(profileUrl.String()); err != nil {
@@ -171,10 +108,6 @@ func generateCanvasAccessToken(page playwright.Page, canvasUrl url.URL) (string,
 }
 
 func initConfigFile(path string) error {
-	if err := playwright.Install(); err != nil {
-		pterm.Warning.Println("Failed to install headless chrome, login via username/password disabled.")
-	}
-
 	configDir := filepath.Dir(path)
 	accessToken := ""
 	dataDir := ""
@@ -218,6 +151,9 @@ func initConfigFile(path string) error {
 		}
 	}
 
+	if err := playwright.Install(&playwright.RunOptions{Verbose: false}); err != nil {
+		pterm.Warning.Println("Failed to install headless chrome, login via username/password disabled.")
+	}
 	pterm.Info.Println("Logging in to canvas...")
 	pw, err := playwright.Run()
 	if err != nil {
@@ -232,14 +168,14 @@ func initConfigFile(path string) error {
 		return err
 	}
 
-	accessToken, err = generateCanvasAccessToken(page, *parsedCanvasUrl)
+	accessToken, err = generateCanvasAccessToken(page, parsedCanvasUrl)
 	if err != nil {
 		return err
 	}
 
 	d1 := []byte(generateConfigYaml(&Config{
 		DataDir:     dataDir,
-		CanvasUrl:   canvasUrl,
+		CanvasUrl:   parsedCanvasUrl.String(),
 		AccessToken: accessToken,
 	}))
 

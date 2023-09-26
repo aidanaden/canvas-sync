@@ -17,19 +17,19 @@ import (
 )
 
 func RunPullFiles(cmd *cobra.Command, args []string) {
-	targetDir := filepath.Join(fmt.Sprintf("%s", viper.Get("data_dir")), "files")
+	targetDir := fmt.Sprintf("%s", viper.Get("data_dir"))
 	targetDir = utils.GetExpandedHomeDirectoryPath(targetDir)
 	accessToken := fmt.Sprintf("%v", viper.Get("access_token"))
 	canvasUrl := fmt.Sprintf("%v", viper.Get("canvas_url"))
-	providedCodes := utils.GetCourseCodesFromArgs(args)
 
+	providedCodes := utils.GetCourseCodesFromArgs(args)
 	pterm.Info.Printfln("Downloading files to: %s", targetDir)
 
-	canvasClient := canvas.NewClient(canvasUrl, accessToken)
 	if accessToken == "" {
 		pterm.Error.Printfln("Invalid config, please run 'canvas-sync init'")
 		os.Exit(1)
 	}
+	canvasClient := canvas.NewClient(canvasUrl, accessToken)
 
 	rawCourses, err := canvasClient.GetActiveEnrolledCourses()
 	if err != nil {
@@ -71,7 +71,7 @@ func RunPullFiles(cmd *cobra.Command, args []string) {
 				sp.UpdateMessagef(pterm.Error.Sprintf("Error: failed to fetch course root folder: %s", err.Error()))
 				sp.Error()
 			}
-			rootNode.Name = fmt.Sprintf("%s/%s", targetDir, code)
+			rootNode.Name = filepath.Join(targetDir, code, "files")
 
 			sp.UpdateMessagef(pterm.FgCyan.Sprintf("Pulling files info for %s", code))
 			if err := canvasClient.RecurseDirectoryNode(rootNode, nil); err != nil {
