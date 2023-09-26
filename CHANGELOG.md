@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.22.1](https://github.com/aidanaden/canvas-sync/compare/v1.22.0...v1.22.1) (2023-09-26)
+
+
+### Bug Fixes
+
+* use success print for successful uupgrades ([#153](https://github.com/aidanaden/canvas-sync/issues/153)) ([b983e30](https://github.com/aidanaden/canvas-sync/commit/b983e3062b2961d2e1cca44fe8d64c4614a42eb0))
+
 ## [1.22.0](https://github.com/aidanaden/canvas-sync/compare/v1.21.0...v1.22.0) (2023-09-26)
 
 
