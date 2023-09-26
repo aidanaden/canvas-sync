@@ -59,7 +59,7 @@ func RunPullVideos(cmd *cobra.Command, args []string) {
 	if err != nil {
 		pterm.Error.Printfln("%s is an invalid canvas url: %s", canvasUrl, err.Error())
 	}
-	pterm.Info.Printfln("parsed canvas url: %s", parsedCanvasUrl.String())
+	pterm.Info.Printfln("canvas url: %s", parsedCanvasUrl.String())
 
 	canvasClient := canvas.NewClient(canvasUrl, accessToken)
 	rawCourses, err := canvasClient.GetActiveEnrolledCourses()
