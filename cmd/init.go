@@ -18,7 +18,7 @@ Default values:
   - data_dir: $HOME/canvas-sync/data
   - canvas_url: https://canvas.nus.edu.sg`,
 	Run: func(cmd *cobra.Command, args []string) {
-		verifyHash(rootCmd.Version)
+		latestVersionCheck(rootCmd.Version)
 		initialise.RunInit(true)
 	},
 }
