@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/aidanaden/canvas-sync/internal/pkg/canvas"
+	"github.com/aidanaden/canvas-sync/internal/pkg/config"
 	"github.com/aidanaden/canvas-sync/internal/pkg/nodes"
 	"github.com/aidanaden/canvas-sync/internal/pkg/utils"
 	"github.com/playwright-community/playwright-go"
@@ -91,10 +92,33 @@ func RunPullVideos(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	page, _, err = canvas.LoginToCanvas(page, username, password, parsedCanvasUrl)
+	page, loginInfo, err := canvas.LoginToCanvas(page, username, password, parsedCanvasUrl)
 	if err != nil {
 		pterm.Error.Printfln("Error logging in to canvas: %s", err.Error())
 		os.Exit(1)
+	}
+
+	existingConfig := config.Config{
+		DataDir:     targetDir,
+		CanvasUrl:   parsedCanvasUrl.String(),
+		AccessToken: accessToken,
+		Username:    loginInfo.Username,
+		Password:    loginInfo.Password,
+	}
+
+	saveCredentials, err := pterm.DefaultInteractiveConfirm.Show("Login is required to download videos - save credentials to config?")
+	if err != nil {
+		pterm.Error.Printfln("Error getting save credentials user input: %s", err.Error())
+		os.Exit(1)
+	}
+
+	configPaths := config.GetConfigPaths()
+
+	if saveCredentials {
+		if err := config.SaveConfig(configPaths.CfgFilePath, &existingConfig, false); err != nil {
+			pterm.Error.Printfln("Error saving credentials to config: %s", err.Error())
+			os.Exit(1)
+		}
 	}
 
 	pterm.Info.Printfln("Getting videos for %d courses", len(courses))
@@ -106,7 +130,7 @@ func RunPullVideos(cmd *cobra.Command, args []string) {
 		}
 		videoUrls, err := canvasClient.GetCourseVideos(page, c)
 		if err != nil {
-			pterm.Error.Printfln("error getting course videos for %s: %s", c.CourseCode, err.Error())
+			pterm.Error.Printfln("error getting videos for %s: %s", c.CourseCode, err.Error())
 		}
 		var wg sync.WaitGroup
 		for video, urls := range videoUrls {

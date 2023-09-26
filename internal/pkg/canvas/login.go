@@ -31,7 +31,7 @@ func LoginToCanvas(page playwright.Page, username string, password string, canva
 	}
 
 	if _, err := page.Goto(loginUrl.String()); err != nil {
-		return nil, nil, fmt.Errorf("failed to navigate to login url %s: %s", loginUrl.String(), err.Error())
+		return page, nil, fmt.Errorf("failed to navigate to login url %s: %s", loginUrl.String(), err.Error())
 	}
 
 	if !strings.Contains(page.URL(), "https://vafs.u.nus.edu/adfs/ls/?SAMLRequest=") {
@@ -43,30 +43,31 @@ func LoginToCanvas(page playwright.Page, username string, password string, canva
 	if username == "" {
 		username, err = pterm.DefaultInteractiveTextInput.Show("Please enter your canvas username")
 		if err != nil {
-			return nil, nil, fmt.Errorf("failed to get username input: %s", err.Error())
+			return page, nil, fmt.Errorf("failed to get username input: %s", err.Error())
 		}
 		if username == "" {
-			return nil, nil, fmt.Errorf("username cannot be empty")
+			return page, nil, fmt.Errorf("username cannot be empty")
 		}
 	}
 	if password == "" {
 		password, err = pterm.DefaultInteractiveTextInput.WithMask("*").Show("Please enter your canvas password")
 		if err != nil {
-			return nil, nil, fmt.Errorf("failed to get password input: %s", err.Error())
+			return page, nil, fmt.Errorf("failed to get password input: %s", err.Error())
 		}
 		if password == "" {
-			return nil, nil, fmt.Errorf("password cannot be empty")
+			return page, nil, fmt.Errorf("password cannot be empty")
 		}
 	}
+
 	usernameInputLoc := page.Locator("#userNameInput")
 	if err := usernameInputLoc.Fill(username); err != nil {
-		return nil, nil, fmt.Errorf("failed to enter username on login page: %s", err.Error())
+		return page, nil, fmt.Errorf("failed to enter username on login page: %s", err.Error())
 	}
 	usernameValue, err := usernameInputLoc.InputValue()
 	if err != nil {
-		return nil, nil, fmt.Errorf("failed to get username input value: %s", err.Error())
+		return page, nil, fmt.Errorf("failed to get username input value: %s", err.Error())
 	} else if usernameValue == "" {
-		return nil, nil, fmt.Errorf("failed to fill username into form")
+		return page, nil, fmt.Errorf("failed to fill username into form")
 	}
 	passwordInputLoc := page.Locator("#passwordInput")
 	if err := passwordInputLoc.Fill(password); err != nil {
@@ -75,21 +76,22 @@ func LoginToCanvas(page playwright.Page, username string, password string, canva
 	}
 	passwordValue, err := passwordInputLoc.InputValue()
 	if err != nil {
-		return nil, nil, fmt.Errorf("failed to get password input value: %s", err.Error())
+		return page, nil, fmt.Errorf("failed to get password input value: %s", err.Error())
 	} else if passwordValue == "" {
-		return nil, nil, fmt.Errorf("failed to fill password into form")
+		return page, nil, fmt.Errorf("failed to fill password into form")
 	}
 	if err := passwordInputLoc.Click(); err != nil {
-		return nil, nil, fmt.Errorf("failed to get click into password input: %s", err.Error())
+		return page, nil, fmt.Errorf("failed to get click into password input: %s", err.Error())
 	}
 	if err := page.Keyboard().Down("Enter"); err != nil {
-		return nil, nil, fmt.Errorf("failed to sign in: %s", err.Error())
+		return page, nil, fmt.Errorf("failed to sign in: %s", err.Error())
 	}
 	if err := page.WaitForURL(loginSuccessUrl.String()); err != nil {
 		if page.URL() != loginSuccessUrl.String() {
-			return nil, nil, fmt.Errorf("login failed: current page is %s", page.URL())
+			return page, nil, fmt.Errorf("login failed: current page is %s", page.URL())
 		}
 	}
+
 	return page, &LoginInfo{
 		Username: username,
 		Password: password,

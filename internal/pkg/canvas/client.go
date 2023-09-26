@@ -551,7 +551,7 @@ func (c *CanvasClient) GetCourseVideos(page playwright.Page, course nodes.Course
 	frameLoc := page.FrameLocator("#tool_content")
 	folderListLoc := frameLoc.Locator(".subfolder-list")
 	if err := folderListLoc.WaitFor(playwright.LocatorWaitForOptions{Timeout: &VIDEO_TIMEOUT}); err != nil {
-		return nil, fmt.Errorf("iFrame not found - likely that course %s has no videos", course.CourseCode)
+		return nil, fmt.Errorf("iFrame not found - likely that %s has no videos", course.CourseCode)
 	}
 	folderLocs, err := folderListLoc.Locator(".subfolder-item").All()
 	if err != nil {

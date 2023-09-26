@@ -20,19 +20,10 @@ var pullVideosCmd = &cobra.Command{
 }
 
 func init() {
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// rawTargetDir := flag.String("target-dir", "canvas-sync", "target directory to store downloaded canvas files & directories")
-	// rawAccessToken := flag.String("access-token", "", "access token to bypass canvas oauth process")
+	pullCmd.AddCommand(pullVideosCmd)
 
 	pullVideosCmd.PersistentFlags().StringP("username", "u", "", "canvas username")
 	viper.BindPFlag("username", pullVideosCmd.PersistentFlags().Lookup("username"))
 	pullVideosCmd.PersistentFlags().StringP("password", "p", "", "canvas password")
 	viper.BindPFlag("password", pullVideosCmd.PersistentFlags().Lookup("password"))
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// pullCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
