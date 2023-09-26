@@ -44,7 +44,16 @@ func RunPullVideos(cmd *cobra.Command, args []string) {
 
 	targetDir := fmt.Sprintf("%s", viper.Get("data_dir"))
 	targetDir = utils.GetExpandedHomeDirectoryPath(targetDir)
+	username := fmt.Sprintf("%v", viper.Get("username"))
+	password := fmt.Sprintf("%v", viper.Get("password"))
+
 	accessToken := fmt.Sprintf("%v", viper.Get("access_token"))
+	if accessToken == "" {
+		pterm.Error.Printfln("Invalid config, please run 'canvas-sync init'")
+		os.Exit(1)
+	}
+	providedCodes := utils.GetCourseCodesFromArgs(args)
+
 	canvasUrl := fmt.Sprintf("%v", viper.Get("canvas_url"))
 	parsedCanvasUrl, err := url.Parse(canvasUrl)
 	if err != nil {
@@ -52,12 +61,6 @@ func RunPullVideos(cmd *cobra.Command, args []string) {
 	}
 	pterm.Info.Printfln("parsed canvas url: %s", parsedCanvasUrl.String())
 
-	providedCodes := utils.GetCourseCodesFromArgs(args)
-
-	if accessToken == "" {
-		pterm.Error.Printfln("Invalid config, please run 'canvas-sync init'")
-		os.Exit(1)
-	}
 	canvasClient := canvas.NewClient(canvasUrl, accessToken)
 	rawCourses, err := canvasClient.GetActiveEnrolledCourses()
 	if err != nil {
@@ -88,7 +91,7 @@ func RunPullVideos(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	page, err = canvas.LoginToCanvas(page, parsedCanvasUrl)
+	page, _, err = canvas.LoginToCanvas(page, username, password, parsedCanvasUrl)
 	if err != nil {
 		pterm.Error.Printfln("Error logging in to canvas: %s", err.Error())
 		os.Exit(1)
