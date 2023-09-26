@@ -54,7 +54,7 @@ var upgradeCmd = &cobra.Command{
 
 		cmdToRun := ""
 		if IsUnderHomebrew() {
-			cmdToRun = "brew upgrade canvas-sync"
+			cmdToRun = "brew update && brew upgrade canvas-sync"
 		} else {
 			pterm.Error.Printfln("Only installs via brew can be upgraded via 'canvas-sync upgrade' :(")
 			return
