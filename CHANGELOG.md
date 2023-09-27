@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.24.1](https://github.com/aidanaden/canvas-sync/compare/v1.24.0...v1.24.1) (2023-09-27)
+
+
+### Bug Fixes
+
+* use canvas_username, canvas_password as cred keys in config yml (windows bug) ([#161](https://github.com/aidanaden/canvas-sync/issues/161)) ([d4a1f3c](https://github.com/aidanaden/canvas-sync/commit/d4a1f3c0f69bae7ed6a2769fc9b36fdb439c8089))
+
 ## [1.24.0](https://github.com/aidanaden/canvas-sync/compare/v1.23.0...v1.24.0) (2023-09-27)
 
 
