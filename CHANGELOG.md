@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.23.0](https://github.com/aidanaden/canvas-sync/compare/v1.22.2...v1.23.0) (2023-09-27)
+
+
+### Features
+
+* video download ([#150](https://github.com/aidanaden/canvas-sync/issues/150)) ([61facee](https://github.com/aidanaden/canvas-sync/commit/61facee5b614e9e46dda9df8705656a93edf71bf))
+
 ## [1.22.2](https://github.com/aidanaden/canvas-sync/compare/v1.22.1...v1.22.2) (2023-09-26)
 
 
