@@ -47,8 +47,8 @@ func RunPullVideos(cmd *cobra.Command, args []string, isUpdate bool) {
 
 	targetDir := fmt.Sprintf("%s", viper.Get("data_dir"))
 	targetDir = utils.GetExpandedHomeDirectoryPath(targetDir)
-	username := fmt.Sprintf("%v", viper.Get("username"))
-	password := fmt.Sprintf("%v", viper.Get("password"))
+	username := fmt.Sprintf("%v", viper.Get("canvas_username"))
+	password := fmt.Sprintf("%v", viper.Get("canvas_password"))
 
 	accessToken := fmt.Sprintf("%v", viper.Get("access_token"))
 	if accessToken == "" {

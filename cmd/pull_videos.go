@@ -22,8 +22,8 @@ var pullVideosCmd = &cobra.Command{
 func init() {
 	pullCmd.AddCommand(pullVideosCmd)
 
-	pullVideosCmd.PersistentFlags().StringP("username", "u", "", "canvas username")
-	viper.BindPFlag("username", pullVideosCmd.PersistentFlags().Lookup("username"))
-	pullVideosCmd.PersistentFlags().StringP("password", "p", "", "canvas password")
-	viper.BindPFlag("password", pullVideosCmd.PersistentFlags().Lookup("password"))
+	pullVideosCmd.PersistentFlags().StringP("canvas_username", "u", "", "canvas username")
+	viper.BindPFlag("canvas_username", pullVideosCmd.PersistentFlags().Lookup("canvas_username"))
+	pullVideosCmd.PersistentFlags().StringP("canvas_password", "p", "", "canvas password")
+	viper.BindPFlag("canvas_password", pullVideosCmd.PersistentFlags().Lookup("canvas_password"))
 }
