@@ -571,12 +571,12 @@ func (c *CanvasClient) GetCourseVideos(page playwright.Page, course nodes.Course
 
 		tableLoc := frameLoc.Locator("#detailsTable")
 		if err := tableLoc.WaitFor(); err != nil {
-			pterm.Error.Printfln("Error loading details table: %s", err.Error())
+			pterm.Error.Printfln("Error loading details table, failed to get videos for %s", course.CourseCode)
 		}
 
 		videoLocs, err := tableLoc.Locator(".thumbnail-row").All()
 		if err != nil {
-			pterm.Error.Printfln("Error loading videos in folder: %s, skipping...", err.Error())
+			pterm.Error.Printfln("Error loading videos in folder for %s", course.CourseCode)
 			continue
 		}
 
@@ -585,12 +585,12 @@ func (c *CanvasClient) GetCourseVideos(page playwright.Page, course nodes.Course
 			videoDetailLoc := videoLoc.Locator(".detail-cell").GetByRole("link")
 			videoUrl, err := videoDetailLoc.GetAttribute("href")
 			if err != nil {
-				pterm.Error.Printfln("Error loading video %d url: %s, skipping...", vi, err.Error())
+				pterm.Error.Printfln("Error loading video %d url, skipping...", vi)
 				continue
 			}
 			videoName, err := videoDetailLoc.TextContent()
 			if err != nil {
-				pterm.Error.Printfln("Error loading video %d name: %s, skipping...", vi, err.Error())
+				pterm.Error.Printfln("Error loading video %d name, skipping...", vi)
 				continue
 			}
 			videoName = strings.Trim(videoName, " \n")
@@ -608,17 +608,17 @@ func (c *CanvasClient) GetCourseVideos(page playwright.Page, course nodes.Course
 				}
 			})
 			if _, err := page.Goto(url); err != nil {
-				pterm.Error.Printfln("failed to navigate to %s: %s", url, err.Error())
+				pterm.Error.Printfln("failed to navigate to %s", url)
 			}
 			playBtnLoc := page.Locator("#playButton")
 			if err := playBtnLoc.WaitFor(); err != nil {
-				pterm.Error.Printfln("failed to wait for play btn %s: %s", url, err.Error())
+				pterm.Error.Printfln("failed to wait for play btn %s", url)
 			}
 			if err := playBtnLoc.Click(); err != nil {
-				pterm.Error.Printfln("failed to play %s: %s", url, err.Error())
+				pterm.Error.Printfln("failed to play %s", url)
 			}
 			if _, err := page.WaitForEvent("request"); err != nil {
-				pterm.Error.Printfln("failed to wait for request: %s", err.Error())
+				pterm.Error.Printfln("failed to wait for request for %s", url)
 			}
 			time.Sleep(3 * time.Second)
 		}
