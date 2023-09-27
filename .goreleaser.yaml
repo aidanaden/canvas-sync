@@ -63,8 +63,8 @@ brews:
 
     # Custom post_install script for brew.
     # Could be used to do any additional work after the "install" script
-    # post_install: |
-    #   system "echo", "\nif type brew &>/dev/null; then FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH && autoload -Uz compinit && compinit; fi", ">>", "~/.zshrc"
+    post_install: |
+      system "brew", "install", "ffmpeg"
 
 scoops:
   - folder: bucket
@@ -75,6 +75,9 @@ scoops:
     homepage: https://github.com/aidanaden/canvas-sync
     description: Canvas-sync is a  CLI to download (course files, videos, etc) & view (deadlines, events, announcements) from Canvas
     license: MIT
+
+    # An array of commands to be executed after an application is installed.
+    post_install: ["scoop install ffmpeg"]
 
 snapcrafts:
   - name_template: "{{ .ProjectName }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
