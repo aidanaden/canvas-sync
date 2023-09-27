@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.24.2](https://github.com/aidanaden/canvas-sync/compare/v1.24.1...v1.24.2) (2023-09-27)
+
+
+### Bug Fixes
+
+* hide locator error text ([#163](https://github.com/aidanaden/canvas-sync/issues/163)) ([109ff2e](https://github.com/aidanaden/canvas-sync/commit/109ff2efc68d21ba7a2561ab566da43f03ccdd15))
+
 ## [1.24.1](https://github.com/aidanaden/canvas-sync/compare/v1.24.0...v1.24.1) (2023-09-27)
 
 
