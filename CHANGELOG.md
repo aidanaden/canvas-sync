@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.24.0](https://github.com/aidanaden/canvas-sync/compare/v1.23.0...v1.24.0) (2023-09-27)
+
+
+### Features
+
+* post-install ffmpeg ([#159](https://github.com/aidanaden/canvas-sync/issues/159)) ([c91f195](https://github.com/aidanaden/canvas-sync/commit/c91f195667e1817355f21aa7d194e21af6f11392))
+
 ## [1.23.0](https://github.com/aidanaden/canvas-sync/compare/v1.22.2...v1.23.0) (2023-09-27)
 
 
