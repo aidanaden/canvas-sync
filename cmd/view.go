@@ -41,6 +41,7 @@ var viewPeopleCmd = &cobra.Command{
 var viewEventsCmd = &cobra.Command{
 	Use:   "events",
 	Short: "View upcoming/past events",
+	Run:   viewUpcomingEventsCmd.Run,
 }
 
 // view upcoming events command
@@ -70,6 +71,7 @@ var viewDeadlinesCmd = &cobra.Command{
 	Use:     "deadlines",
 	Aliases: []string{"assignments"},
 	Short:   "View past/future assignment deadlines",
+	Run:     viewUpcomingDeadlinesCmd.Run,
 }
 
 // view upcoming deadlines command
