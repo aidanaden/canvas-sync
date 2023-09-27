@@ -11,6 +11,7 @@ import (
 	"github.com/aidanaden/canvas-sync/internal/pkg/nodes"
 	"github.com/aidanaden/canvas-sync/internal/pkg/utils"
 	"github.com/chelnak/ysmrr"
+	"github.com/chelnak/ysmrr/pkg/colors"
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -56,7 +57,10 @@ func RunPullFiles(cmd *cobra.Command, args []string) {
 
 	pterm.Println()
 	var wg sync.WaitGroup
-	sm := ysmrr.NewSpinnerManager()
+	sm := ysmrr.NewSpinnerManager(
+		ysmrr.WithCompleteColor(colors.FgHiGreen),
+		ysmrr.WithSpinnerColor(colors.FgHiBlue),
+	)
 
 	for ci := range courses {
 		wg.Add(1)

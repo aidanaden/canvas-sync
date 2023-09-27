@@ -15,7 +15,7 @@ var pullVideosCmd = &cobra.Command{
   canvas-sync pull videos CS3219 CS3230 - downloads videos for courses with course codes "CS3219" or "CS3230"`,
 	Run: func(cmd *cobra.Command, args []string) {
 		preRun(cmd)
-		pull.RunPullVideos(cmd, args)
+		pull.RunPullVideos(cmd, args, false)
 	},
 }
 

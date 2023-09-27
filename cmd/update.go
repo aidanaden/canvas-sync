@@ -34,6 +34,6 @@ func init() {
 	updateCmd.AddCommand(updateFilesCmd)
 	rootCmd.AddCommand(updateCmd)
 
-	updateCmd.PersistentFlags().BoolP("force", "f", false, "overwrite downloaded files if there's a newer version on canvas")
-	viper.BindPFlag("force", updateCmd.PersistentFlags().Lookup("force"))
+	updateFilesCmd.PersistentFlags().BoolP("force", "f", false, "overwrite downloaded files if there's a newer version on canvas")
+	viper.BindPFlag("force", updateFilesCmd.PersistentFlags().Lookup("force"))
 }

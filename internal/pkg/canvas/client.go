@@ -559,8 +559,6 @@ func (c *CanvasClient) GetCourseVideos(page playwright.Page, course nodes.Course
 	}
 
 	videoUrlInfos := make(map[string]*CourseVideoUrls, 0)
-
-	pterm.Info.Printfln("found %d folders for course %s", len(folderLocs), course.CourseCode)
 	for fi, folderLoc := range folderLocs {
 		visible, err := folderLoc.IsVisible()
 		if err != nil || !visible {

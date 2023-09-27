@@ -2,17 +2,19 @@ package pull
 
 import (
 	"fmt"
+	"io"
 	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/aidanaden/canvas-sync/internal/pkg/canvas"
 	"github.com/aidanaden/canvas-sync/internal/pkg/config"
 	"github.com/aidanaden/canvas-sync/internal/pkg/nodes"
 	"github.com/aidanaden/canvas-sync/internal/pkg/utils"
+	"github.com/chelnak/ysmrr"
+	"github.com/chelnak/ysmrr/pkg/colors"
 	"github.com/playwright-community/playwright-go"
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
@@ -37,7 +39,7 @@ func getPage() (playwright.Page, error) {
 	return page, nil
 }
 
-func RunPullVideos(cmd *cobra.Command, args []string) {
+func RunPullVideos(cmd *cobra.Command, args []string, isUpdate bool) {
 	if err := playwright.Install(&playwright.RunOptions{Verbose: false}); err != nil {
 		pterm.Error.Println("Error setting up playwright. Please create an issue on https://github.com/aidanaden/canvas-sync/issues")
 		os.Exit(1)
@@ -106,111 +108,125 @@ func RunPullVideos(cmd *cobra.Command, args []string) {
 		Password:    loginInfo.Password,
 	}
 
-	saveCredentials, err := pterm.DefaultInteractiveConfirm.Show("Login is required to download videos - save credentials to config?")
-	if err != nil {
-		pterm.Error.Printfln("Error getting save credentials user input: %s", err.Error())
-		os.Exit(1)
-	}
-
-	configPaths := config.GetConfigPaths()
-
-	if saveCredentials {
-		if err := config.SaveConfig(configPaths.CfgFilePath, &existingConfig, false); err != nil {
-			pterm.Error.Printfln("Error saving credentials to config: %s", err.Error())
+	// only save credentials if none provided
+	if username == "" || password == "" {
+		saveCredentials, err := pterm.DefaultInteractiveConfirm.Show("Login is required to download videos - save credentials to config?")
+		if err != nil {
+			pterm.Error.Printfln("Error getting save credentials user input: %s", err.Error())
 			os.Exit(1)
+		}
+		configPaths := config.GetConfigPaths()
+		if saveCredentials {
+			if err := config.SaveConfig(configPaths.CfgFilePath, &existingConfig, false); err != nil {
+				pterm.Error.Printfln("Error saving credentials to config: %s", err.Error())
+				os.Exit(1)
+			}
 		}
 	}
 
 	pterm.Info.Printfln("Getting videos for %d courses", len(courses))
+	courseVideoUrls := make(map[string]map[string]*canvas.CourseVideoUrls, len(courses))
 	for _, c := range courses {
+		videoUrls, err := canvasClient.GetCourseVideos(page, c)
+		if err != nil {
+			pterm.Error.Printfln("Error getting videos for %s: %s", c.CourseCode, err.Error())
+			continue
+		}
+
+		if len(videoUrls) == 0 {
+			pterm.Warning.Printfln("No videos found for %s", c.CourseCode)
+			continue
+		}
+
+		filteredVideoUrls := map[string]*canvas.CourseVideoUrls{}
+		for video, videoUrlInfos := range videoUrls {
+			video = strings.ReplaceAll(video, "/", "-")
+			courseVideosDir := filepath.Join(targetDir, c.CourseCode, "videos")
+			videoFilename := filepath.Join(courseVideosDir, fmt.Sprintf(`%s.mp4`, video))
+			if !isUpdate {
+				// add video url if 'pull'
+				filteredVideoUrls[video] = videoUrlInfos
+			} else {
+				// add video url if not exists if 'update'
+				if _, err := os.Stat(videoFilename); err != nil {
+					filteredVideoUrls[video] = videoUrlInfos
+				}
+			}
+		}
+
 		courseVideosDir := filepath.Join(targetDir, c.CourseCode, "videos")
 		if err := os.MkdirAll(courseVideosDir, 0755); err != nil {
 			pterm.Error.Printfln("error creating videos directory for %s: %s", c.CourseCode, err.Error())
 			continue
 		}
-		videoUrls, err := canvasClient.GetCourseVideos(page, c)
-		if err != nil {
-			pterm.Error.Printfln("error getting videos for %s: %s", c.CourseCode, err.Error())
+		courseVideoUrls[c.CourseCode] = filteredVideoUrls
+	}
+
+	pterm.Println()
+	var wg sync.WaitGroup
+	sm := ysmrr.NewSpinnerManager(
+		ysmrr.WithCompleteColor(colors.FgHiGreen),
+		ysmrr.WithSpinnerColor(colors.FgHiBlue),
+	)
+
+	for code, videoUrls := range courseVideoUrls {
+		if len(videoUrls) == 0 {
+			sm.AddSpinner(pterm.FgGreen.Sprintf("All videos already downloaded for %s", code)).Complete()
+			continue
 		}
-		var wg sync.WaitGroup
-		for video, urls := range videoUrls {
-			wg.Add(1)
-			go func(video string, urls *canvas.CourseVideoUrls) {
-				defer wg.Done()
+		wg.Add(1)
+		sp := sm.AddSpinner(pterm.FgCyan.Sprintf("Downloading %d videos for %s...", len(videoUrls), code))
+		go func(code string, sp *ysmrr.Spinner, videoUrls map[string]*canvas.CourseVideoUrls) {
+			defer wg.Done()
+			var videoWg sync.WaitGroup
+			numDownloaded := 0
+			for video, urls := range videoUrls {
 				video = strings.ReplaceAll(video, "/", "-")
+				courseVideosDir := filepath.Join(targetDir, code, "videos")
 				videoFilename := filepath.Join(courseVideosDir, fmt.Sprintf(`%s.mp4`, video))
-				if _, err := os.Stat(videoFilename); err == nil {
-					pterm.Info.Printfln("%s already downloaded in %s", video, videoFilename)
-					return
-				}
+
 				if urls.VideoUrl == "" {
-					if err := ffmpeg_go.
+					// if only 1 source file, simply download
+					err = ffmpeg_go.
 						Input(urls.AudioUrl).
 						Output(videoFilename, ffmpeg_go.KwArgs{"c": "copy"}).
-						ErrorToStdOut().
-						Run(); err != nil {
-						pterm.Error.Printfln("Error downloading video %s: %s", video, err.Error())
-					} else {
-						pterm.Success.Println("successfully downloaded n merged video: ", time.Now())
-					}
+						Silent(true).
+						OverWriteOutput().
+						WithOutput(io.Discard).
+						Run()
 				} else {
-					// merge audio n video
+					// if 2 source files, merge audio of audio file into video files
 					main := ffmpeg_go.Input(urls.VideoUrl)
 					overlay := ffmpeg_go.Input(urls.AudioUrl)
-					err := ffmpeg_go.Output(
+					err = ffmpeg_go.Output(
 						[]*ffmpeg_go.Stream{main, overlay},
 						videoFilename,
 						ffmpeg_go.KwArgs{"map": "1:a,0:v", "c:v": "copy"},
 					).
-						ErrorToStdOut().
+						Silent(true).
+						OverWriteOutput().
+						WithOutput(io.Discard).
 						Run()
-					if err != nil {
-						pterm.Error.Printfln("Error downloading n merging video %s: %s", video, err.Error())
-					} else {
-						pterm.Success.Printfln("successfully downloaded n merged video %s: %s", video, time.Now())
-					}
 				}
-			}(video, urls)
-		}
-		wg.Wait()
+				numDownloaded += 1
+				if err != nil {
+					pterm.Error.Printfln("Error downloading video %s: %s", video, err.Error())
+				} else {
+					sp.UpdateMessagef(pterm.FgCyan.Sprintf("Downloaded %d/%d videos for %s", numDownloaded, len(videoUrls), code))
+				}
+			}
+
+			videoWg.Wait()
+			sp.UpdateMessagef(pterm.FgGreen.Sprintf("Downloaded %d videos for %s", len(videoUrls), code))
+			sp.Complete()
+		}(code, sp, videoUrls)
 	}
 
-	// 1. convert main screen to 30fps
-	// ffmpeg -i index1.mp4 -filter:v fps=29.72 index1-30fps.mp4
-	// 2. compress lecturer screen to 204 x 116
-	// ffmpeg -i index2.mp4 -vf "scale=204:116" index2-mini.mp4
-	// 3. overlay compressed lecturer screen on main screen
-	// ffmpeg -i index1-30fps.mp4 -i index2-mini.mp4 -filter_complex 'overlay=main_w-overlay_w-10:10' overlayed.mp4
-
-	// var wg sync.WaitGroup
-	// wg.Add(1)
-	// go func() {
-	// 	defer wg.Done()
-	// 	pterm.Info.Println("starting index1 download: ", time.Now())
-	// 	// main := ffmpeg_go.Input(`https://s-cloudfront.cdn.ap.panopto.com/sessions/ad21a9bd-ac56-4fac-844c-b05e006a054b/dfa7e8f4-8164-49cd-af7c-b0820062e24f.object.hls/228532/index.m3u8`).Filter("fps", ffmpeg_go.Args{"2972/100"})
-	// 	// overlay := ffmpeg_go.Input(`https://s-cloudfront.cdn.ap.panopto.com/sessions/ad21a9bd-ac56-4fac-844c-b05e006a054b/1f0c2f51-c6b1-4b17-9595-b05e006a0553-10eaf9d2-8529-49e2-966c-b08200835cf8.hls/1088712/index.m3u8`).Filter("scale", ffmpeg_go.Args{"256:144"})
-	// 	// err := ffmpeg_go.Filter([]*ffmpeg_go.Stream{
-	// 	// 	main,
-	// 	// 	overlay,
-	// 	// }, "overlay", ffmpeg_go.Args{"main_w-overlay_w-10:10"}).
-	// 	// 	Output(fmt.Sprintf("%s.mp4", "merged"), ffmpeg_go.KwArgs{"map": "1:a"}).
-	// 	// 	OverWriteOutput().
-	// 	// 	ErrorToStdOut().
-	// 	// 	Run()
-	// 	main := ffmpeg_go.Input(`https://s-cloudfront.cdn.ap.panopto.com/sessions/ad21a9bd-ac56-4fac-844c-b05e006a054b/dfa7e8f4-8164-49cd-af7c-b0820062e24f.object.hls/228532/index.m3u8`)
-	// 	overlay := ffmpeg_go.Input(`https://s-cloudfront.cdn.ap.panopto.com/sessions/ad21a9bd-ac56-4fac-844c-b05e006a054b/1f0c2f51-c6b1-4b17-9595-b05e006a0553-10eaf9d2-8529-49e2-966c-b08200835cf8.hls/1088712/index.m3u8`)
-	// 	err := ffmpeg_go.Output([]*ffmpeg_go.Stream{main, overlay}, fmt.Sprintf("%s.mp4", "merged2"), ffmpeg_go.KwArgs{"map": "1:a,0:v", "c:v": "copy"}).
-	// 		OverWriteOutput().
-	// 		ErrorToStdOut().
-	// 		Run()
-	// 	if err != nil {
-	// 		pterm.Error.Printfln("Error downloading n merging videos: %s", err.Error())
-	// 	} else {
-	// 		pterm.Success.Println("successfully downloaded n merged video: ", time.Now())
-	// 	}
-	// }()
-	// wg.Wait()
-
-	// pterm.Error.Println("NOT IMPLEMENTED YET:")
-	// pterm.Info.Println("Downloading videos is p fking annoying cuz ill need to simulate a browser to get the video urls (thank u canvas) - will add before 1.0 release!")
+	if len(sm.GetSpinners()) > 0 {
+		sm.Start()
+		wg.Wait()
+		sm.Stop()
+	}
+	pterm.Println()
+	pterm.Success.Printfln("Downloaded videos: %s\n", targetDir)
 }
