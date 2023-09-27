@@ -46,7 +46,7 @@ func LoginToCanvas(page playwright.Page, username string, password string, canva
 			return page, nil, fmt.Errorf("failed to get username input: %s", err.Error())
 		}
 		if username == "" {
-			return page, nil, fmt.Errorf("username cannot be empty")
+			return page, nil, fmt.Errorf("canvas_username cannot be empty")
 		}
 	}
 	if password == "" {
@@ -55,7 +55,7 @@ func LoginToCanvas(page playwright.Page, username string, password string, canva
 			return page, nil, fmt.Errorf("failed to get password input: %s", err.Error())
 		}
 		if password == "" {
-			return page, nil, fmt.Errorf("password cannot be empty")
+			return page, nil, fmt.Errorf("canvas_password cannot be empty")
 		}
 	}
 
