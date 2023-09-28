@@ -4,7 +4,6 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -56,7 +55,6 @@ func IsUnderScoop() bool {
 	}
 
 	scoopCanvasPath := utils.GetExpandedHomeDirectoryPath(string(rawScoopCanvasPath))
-	fmt.Printf("scoop canvas: %s, binary: %s", scoopCanvasPath, binary)
 	return strings.EqualFold(binary, scoopCanvasPath)
 }
 
