@@ -261,7 +261,7 @@ Display people from a given course code
   <summary>
     It doesn't work for my university
   </summary>
-  This tool was built by an NUS student (me), hence i'm not able to test it with canvas sites from any other university. Please create an issue [here](https://github.com/aidanaden/canvas-sync/issues) regarding any problems you face with your school's canvas website. Thank you! :)
+  This tool was built by an NUS student (me), hence i'm not able to test it with canvas sites from any other university. Please create an issue at https://github.com/aidanaden/canvas-sync/issues regarding any problems you face with your school's canvas website. Thank you! :)
 </details>
 
 <details>
