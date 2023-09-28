@@ -4,11 +4,13 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 
+	"github.com/aidanaden/canvas-sync/internal/pkg/utils"
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 )
@@ -38,7 +40,24 @@ func IsUnderHomebrew() bool {
 }
 
 func IsUnderScoop() bool {
-	return false
+	binary, err := os.Executable()
+	if err != nil {
+		return false
+	}
+
+	scoopExe, err := exec.LookPath("scoop")
+	if err != nil {
+		return false
+	}
+
+	rawScoopCanvasPath, err := exec.Command(scoopExe, "which", "canvas-sync").Output()
+	if err != nil {
+		return false
+	}
+
+	scoopCanvasPath := utils.GetExpandedHomeDirectoryPath(string(rawScoopCanvasPath))
+	fmt.Printf("scoop canvas: %s, binary: %s", scoopCanvasPath, binary)
+	return strings.EqualFold(binary, scoopCanvasPath)
 }
 
 // upgradeCmd represents the upgrade command
@@ -53,14 +72,19 @@ var upgradeCmd = &cobra.Command{
 		}
 
 		cmdToRun := ""
+		var command *exec.Cmd
+
 		if IsUnderHomebrew() {
 			cmdToRun = "brew update && brew upgrade canvas-sync"
+			command = exec.Command("sh", "-c", cmdToRun)
+		} else if IsUnderScoop() {
+			cmdToRun = "scoop update; scoop update canvas-sync"
+			command = exec.Command("cmd", "/C", cmdToRun)
 		} else {
-			pterm.Error.Printfln("Only installs via brew can be upgraded via 'canvas-sync upgrade' :(")
+			pterm.Error.Printfln("Only installs via brew/scoop can be upgraded via 'canvas-sync upgrade' :(")
 			return
 		}
 
-		command := exec.Command("sh", "-c", cmdToRun)
 		command.Stdout = os.Stdout
 		command.Stderr = os.Stderr
 		if err := command.Run(); err != nil {
