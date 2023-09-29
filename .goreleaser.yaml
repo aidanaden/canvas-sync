@@ -92,20 +92,3 @@ snapcrafts:
     grade: stable
     confinement: strict
     publish: true
-# winget:
-#   - name: canvas-sync
-#     publisher: aidanaden
-#     license: mit
-#     homepage: https://github.com/aidanaden/canvas-sync
-#     short_description: CLI to download & view data from canvas
-#     repository:
-#       owner: aidanaden
-#       name: winget-pkgs
-#       branch: "goreleaser-pro-{{.Version}}"
-#       pull_request:
-#         enabled: true
-#         draft: true
-#         base:
-#           owner: microsoft
-#           name: winget-pkgs
-#           branch: master
