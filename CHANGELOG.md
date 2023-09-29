@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.0](https://github.com/aidanaden/canvas-sync/compare/v1.25.0...v1.26.0) (2023-09-29)
+
+
+### Features
+
+* recurse video folders, update spinners to log extracting folders ([#168](https://github.com/aidanaden/canvas-sync/issues/168)) ([5751b67](https://github.com/aidanaden/canvas-sync/commit/5751b67260251a61a1aaf1405df3d0e5674afe50))
+
 ## [1.25.0](https://github.com/aidanaden/canvas-sync/compare/v1.24.2...v1.25.0) (2023-09-28)
 
 
