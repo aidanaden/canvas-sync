@@ -22,7 +22,7 @@ import (
 	ffmpeg_go "github.com/u2takey/ffmpeg-go"
 )
 
-func getPage() (playwright.Page, error) {
+func getBrowser() (playwright.Browser, error) {
 	pw, err := playwright.Run()
 	if err != nil {
 		return nil, err
@@ -32,12 +32,27 @@ func getPage() (playwright.Page, error) {
 	if err != nil {
 		return nil, err
 	}
+	return bw, nil
+}
+
+func getPage(bw playwright.Browser) (playwright.Page, error) {
 	page, err := bw.NewPage(playwright.BrowserNewPageOptions{Viewport: &playwright.Size{Height: 1080, Width: 1920}})
 	if err != nil {
 		return nil, err
 	}
 	return page, nil
 }
+
+func extractVideosFromDirectory(folder *canvas.CourseVideoFolder) []*canvas.CourseVideoFile {
+	flattened := []*canvas.CourseVideoFile{}
+	flattened = append(flattened, folder.Videos...)
+	for _, fold := range folder.Folders {
+		flattened = append(flattened, extractVideosFromDirectory(fold)...)
+	}
+	return flattened
+}
+
+const MAX_DOWNLOAD_ATTEMPTS = 5
 
 func RunPullVideos(cmd *cobra.Command, args []string, isUpdate bool) {
 	if err := playwright.Install(&playwright.RunOptions{Verbose: false}); err != nil {
@@ -88,13 +103,20 @@ func RunPullVideos(cmd *cobra.Command, args []string, isUpdate bool) {
 		}
 	}
 
-	page, err := getPage()
+	bw, err := getBrowser()
+	if err != nil {
+		pterm.Error.Printfln("Error getting browser: %s", err.Error())
+		os.Exit(1)
+	}
+	defer bw.Close()
+
+	page, err := getPage(bw)
 	if err != nil {
 		pterm.Error.Printfln("Error getting page: %s", err.Error())
 		os.Exit(1)
 	}
 
-	page, loginInfo, err := canvas.LoginToCanvas(page, username, password, parsedCanvasUrl)
+	_, loginInfo, err := canvas.LoginToCanvas(page, username, password, parsedCanvasUrl)
 	if err != nil {
 		pterm.Error.Printfln("Error logging in to canvas: %s", err.Error())
 		os.Exit(1)
@@ -125,108 +147,152 @@ func RunPullVideos(cmd *cobra.Command, args []string, isUpdate bool) {
 	}
 
 	pterm.Info.Printfln("Getting videos for %d courses", len(courses))
-	courseVideoUrls := make(map[string]map[string]*canvas.CourseVideoUrls, len(courses))
-	for _, c := range courses {
-		videoUrls, err := canvasClient.GetCourseVideos(page, c)
-		if err != nil {
-			pterm.Error.Printfln("Error getting videos for %s: %s", c.CourseCode, err.Error())
-			continue
-		}
 
-		if len(videoUrls) == 0 {
-			pterm.Warning.Printfln("No videos found for %s", c.CourseCode)
-			continue
-		}
-
-		filteredVideoUrls := map[string]*canvas.CourseVideoUrls{}
-		for video, videoUrlInfos := range videoUrls {
-			video = strings.ReplaceAll(video, "/", "-")
-			courseVideosDir := filepath.Join(targetDir, c.CourseCode, "videos")
-			videoFilename := filepath.Join(courseVideosDir, fmt.Sprintf(`%s.mp4`, video))
-			if !isUpdate {
-				// add video url if 'pull'
-				filteredVideoUrls[video] = videoUrlInfos
-			} else {
-				// add video url if not exists if 'update'
-				if _, err := os.Stat(videoFilename); err != nil {
-					filteredVideoUrls[video] = videoUrlInfos
-				}
-			}
-		}
-
-		courseVideosDir := filepath.Join(targetDir, c.CourseCode, "videos")
-		if err := os.MkdirAll(courseVideosDir, 0755); err != nil {
-			pterm.Error.Printfln("error creating videos directory for %s: %s", c.CourseCode, err.Error())
-			continue
-		}
-		courseVideoUrls[c.CourseCode] = filteredVideoUrls
-	}
-
-	pterm.Println()
-	var wg sync.WaitGroup
 	sm := ysmrr.NewSpinnerManager(
 		ysmrr.WithCompleteColor(colors.FgHiGreen),
 		ysmrr.WithSpinnerColor(colors.FgHiBlue),
 	)
 
-	for code, videoUrls := range courseVideoUrls {
-		if len(videoUrls) == 0 {
-			sm.AddSpinner(pterm.FgGreen.Sprintf("All videos already downloaded for %s", code)).Complete()
-			continue
-		}
-		wg.Add(1)
-		sp := sm.AddSpinner(pterm.FgCyan.Sprintf("Downloading %d videos for %s...", len(videoUrls), code))
-		go func(code string, sp *ysmrr.Spinner, videoUrls map[string]*canvas.CourseVideoUrls) {
-			defer wg.Done()
-			var videoWg sync.WaitGroup
-			numDownloaded := 0
-			for video, urls := range videoUrls {
-				video = strings.ReplaceAll(video, "/", "-")
-				courseVideosDir := filepath.Join(targetDir, code, "videos")
-				videoFilename := filepath.Join(courseVideosDir, fmt.Sprintf(`%s.mp4`, video))
+	type SpinnerCount struct {
+		course      string
+		sp          *ysmrr.Spinner
+		fileCount   int
+		folderCount int
+	}
 
-				if urls.VideoUrl == "" {
-					// if only 1 source file, simply download
-					err = ffmpeg_go.
-						Input(urls.AudioUrl).
-						Output(videoFilename, ffmpeg_go.KwArgs{"c": "copy"}).
-						Silent(true).
-						OverWriteOutput().
-						WithOutput(io.Discard).
-						Run()
-				} else {
-					// if 2 source files, merge audio of audio file into video files
-					main := ffmpeg_go.Input(urls.VideoUrl)
-					overlay := ffmpeg_go.Input(urls.AudioUrl)
-					err = ffmpeg_go.Output(
-						[]*ffmpeg_go.Stream{main, overlay},
-						videoFilename,
-						ffmpeg_go.KwArgs{"map": "1:a,0:v", "c:v": "copy"},
-					).
-						Silent(true).
-						OverWriteOutput().
-						WithOutput(io.Discard).
-						Run()
-				}
-				numDownloaded += 1
-				if err != nil {
-					pterm.Error.Printfln("Error downloading video %s: %s", video, err.Error())
-				} else {
-					sp.UpdateMessagef(pterm.FgCyan.Sprintf("Downloaded %d/%d videos for %s", numDownloaded, len(videoUrls), code))
+	courseSpinners := make(map[string]*SpinnerCount)
+	incrementCount := func(spc *SpinnerCount, isFile bool) {
+		if isFile {
+			spc.fileCount += 1
+			spc.sp.UpdateMessage(pterm.FgCyan.Sprintf("Extracting %d file(s) from %s", spc.fileCount, spc.course))
+		} else {
+			spc.folderCount += 1
+			spc.sp.UpdateMessage(pterm.FgCyan.Sprintf("Extracting %d folder(s) from %s", spc.folderCount, spc.course))
+		}
+	}
+
+	for _, c := range courses {
+		sp := sm.AddSpinner(pterm.FgCyan.Sprintf("Extracting video files for %s", c.CourseCode))
+		spc := SpinnerCount{
+			course:      c.CourseCode,
+			sp:          sp,
+			fileCount:   0,
+			folderCount: 0,
+		}
+		courseSpinners[c.CourseCode] = &spc
+	}
+
+	sm.Start()
+	var wg sync.WaitGroup
+
+	pterm.Println()
+	for _, course := range courses {
+		wg.Add(1)
+		go func(c nodes.CourseNode, spc *SpinnerCount) {
+			defer wg.Done()
+
+			code := c.CourseCode
+			page, err := getPage(bw)
+			if err != nil {
+				return
+			}
+			page, _, err = canvas.LoginToCanvas(page, loginInfo.Username, loginInfo.Password, parsedCanvasUrl)
+			if err != nil {
+				courseSpinners[code].sp.UpdateMessage(pterm.Error.Sprintf("Error logging in to canvas: %s", err.Error()))
+				return
+			}
+
+			rootFolder, err := canvasClient.GetCourseVideos(page, targetDir, c, func(isFile bool) {
+				incrementCount(courseSpinners[code], isFile)
+			})
+			if err != nil {
+				courseSpinners[code].sp.UpdateMessage(pterm.FgRed.Sprintf("No videos found for %s", code))
+				courseSpinners[code].sp.Error()
+				return
+			}
+
+			filtered := []*canvas.CourseVideoFile{}
+			files := extractVideosFromDirectory(rootFolder)
+			for _, fil := range files {
+				if !isUpdate {
+					filtered = append(filtered, fil)
+				} else if !fil.Downloaded && isUpdate {
+					filtered = append(filtered, fil)
 				}
 			}
 
-			videoWg.Wait()
-			sp.UpdateMessagef(pterm.FgGreen.Sprintf("Downloaded %d videos for %s", len(videoUrls), code))
-			sp.Complete()
-		}(code, sp, videoUrls)
+			if len(filtered) == 0 {
+				courseSpinners[code].sp.UpdateMessage(pterm.FgRed.Sprintf("No videos found for %s", code))
+				courseSpinners[code].sp.Error()
+				return
+			}
+
+			// reset spinner count
+			courseSpinners[code].fileCount = 0
+			courseSpinners[code].sp.UpdateMessage(pterm.FgCyan.Sprintf("Downloading %d videos for %s...", len(files), c.CourseCode))
+
+			for _, fil := range filtered {
+				path := fil.Path
+				audioUrl := fil.AudioUrl
+				videoUrl := fil.VideoUrl
+
+				parent := filepath.Dir(path)
+				if err := os.MkdirAll(parent, 0755); err != nil {
+					pterm.Error.Printf("failed to create parent directory for file %s, skipping", path)
+				}
+
+				if videoUrl == "" {
+					// if only 1 source file, simply download
+					for i := 0; i < MAX_DOWNLOAD_ATTEMPTS; i++ {
+						err = ffmpeg_go.
+							Input(audioUrl).
+							Output(path, ffmpeg_go.KwArgs{"c": "copy"}).
+							Silent(true).
+							OverWriteOutput().
+							WithOutput(io.Discard).
+							Run()
+						if err == nil {
+							break
+						}
+					}
+				} else {
+					// if 2 source files, merge audio of audio file into video files
+					main := ffmpeg_go.Input(videoUrl)
+					overlay := ffmpeg_go.Input(audioUrl)
+					for i := 0; i < MAX_DOWNLOAD_ATTEMPTS; i++ {
+						err = ffmpeg_go.Output(
+							[]*ffmpeg_go.Stream{main, overlay},
+							path,
+							ffmpeg_go.KwArgs{"map": "1:a,0:v", "c:v": "copy"},
+						).
+							Silent(true).
+							OverWriteOutput().
+							WithOutput(io.Discard).
+							Run()
+						if err == nil {
+							break
+						}
+					}
+				}
+
+				if err != nil {
+					pterm.Error.Printfln("Error downloading video %s: %s", path, err.Error())
+				}
+
+				spc.fileCount += 1
+				spc.sp.UpdateMessagef(pterm.FgCyan.Sprintf("Downloaded %d/%d videos for %s", spc.fileCount, len(filtered), code))
+			}
+
+			spc.sp.UpdateMessagef(pterm.FgGreen.Sprintf("Downloaded %d videos for %s", len(filtered), code))
+			spc.sp.Complete()
+		}(course, courseSpinners[course.CourseCode])
 	}
 
+	wg.Wait()
 	if len(sm.GetSpinners()) > 0 {
-		sm.Start()
-		wg.Wait()
 		sm.Stop()
 	}
+
 	pterm.Println()
 	pterm.Success.Printfln("Downloaded videos: %s\n", targetDir)
 }
