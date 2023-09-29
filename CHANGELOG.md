@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.10](https://github.com/aidanaden/canvas-sync/compare/v1.26.9...v1.26.10) (2023-09-29)
+
+
+### Bug Fixes
+
+* add ffmpeg dep to scoop ([ced05c1](https://github.com/aidanaden/canvas-sync/commit/ced05c11ccdbb4636bf34a64820068753d935994))
+
 ## [1.26.9](https://github.com/aidanaden/canvas-sync/compare/v1.26.8...v1.26.9) (2023-09-29)
 
 
