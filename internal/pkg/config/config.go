@@ -17,7 +17,8 @@ type Config struct {
 	AccessToken string
 }
 
-const cfg_template = `# file directory to store canvas data e.g. $HOME/canvas-sync/data
+const cfg_template = `
+# file directory to store canvas data e.g. $HOME/canvas-sync/data
 data_dir: {{ .DataDir }}
 # canvas website url e.g. https://canvas.nus.edu.sg
 canvas_url: {{ .CanvasUrl }}
