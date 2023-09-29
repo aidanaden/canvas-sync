@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.7](https://github.com/aidanaden/canvas-sync/compare/v1.26.6...v1.26.7) (2023-09-29)
+
+
+### Bug Fixes
+
+* brew post install ([#180](https://github.com/aidanaden/canvas-sync/issues/180)) ([45d135e](https://github.com/aidanaden/canvas-sync/commit/45d135e90b18246202d5e381c43879f8c26419b9))
+
 ## [1.26.6](https://github.com/aidanaden/canvas-sync/compare/v1.26.5...v1.26.6) (2023-09-29)
 
 
