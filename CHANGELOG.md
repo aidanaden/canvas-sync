@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.2](https://github.com/aidanaden/canvas-sync/compare/v1.26.1...v1.26.2) (2023-09-29)
+
+
+### Bug Fixes
+
+* replace tab within cfg template with space ([39fa2b8](https://github.com/aidanaden/canvas-sync/commit/39fa2b80c22b3883b9840572f7c8a5a12b27565a))
+
 ## [1.26.1](https://github.com/aidanaden/canvas-sync/compare/v1.26.0...v1.26.1) (2023-09-29)
 
 
