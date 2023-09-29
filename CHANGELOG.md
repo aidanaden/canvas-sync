@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.5](https://github.com/aidanaden/canvas-sync/compare/v1.26.4...v1.26.5) (2023-09-29)
+
+
+### Bug Fixes
+
+* add quotes to strings in config ([#176](https://github.com/aidanaden/canvas-sync/issues/176)) ([ae3ea67](https://github.com/aidanaden/canvas-sync/commit/ae3ea675aea4000e1688f2dd0953d555c278afa4))
+
 ## [1.26.4](https://github.com/aidanaden/canvas-sync/compare/v1.26.3...v1.26.4) (2023-09-29)
 
 
