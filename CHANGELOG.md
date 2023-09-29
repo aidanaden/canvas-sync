@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.4](https://github.com/aidanaden/canvas-sync/compare/v1.26.3...v1.26.4) (2023-09-29)
+
+
+### Bug Fixes
+
+* remove all comments from config yaml ([c09fe23](https://github.com/aidanaden/canvas-sync/commit/c09fe2344ea955f678d21abdf0ef905fe005c290))
+
 ## [1.26.3](https://github.com/aidanaden/canvas-sync/compare/v1.26.2...v1.26.3) (2023-09-29)
 
 
