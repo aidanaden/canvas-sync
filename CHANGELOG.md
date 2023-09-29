@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.9](https://github.com/aidanaden/canvas-sync/compare/v1.26.8...v1.26.9) (2023-09-29)
+
+
+### Bug Fixes
+
+* add ffmpeg brew dependency ([ac4b102](https://github.com/aidanaden/canvas-sync/commit/ac4b102a958c8bb63ec44aa0099a1e6c36238014))
+
 ## [1.26.8](https://github.com/aidanaden/canvas-sync/compare/v1.26.7...v1.26.8) (2023-09-29)
 
 
