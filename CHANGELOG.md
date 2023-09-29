@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.26.3](https://github.com/aidanaden/canvas-sync/compare/v1.26.2...v1.26.3) (2023-09-29)
+
+
+### Bug Fixes
+
+* install ffmpeg only if exist brew ([#174](https://github.com/aidanaden/canvas-sync/issues/174)) ([230dde3](https://github.com/aidanaden/canvas-sync/commit/230dde3db94cc2df19bad7956a42ce406f970f3e))
+* only install chromium ([#172](https://github.com/aidanaden/canvas-sync/issues/172)) ([e518ef3](https://github.com/aidanaden/canvas-sync/commit/e518ef3a22841e9bac2e862ebee6060bf61581eb))
+
 ## [1.26.2](https://github.com/aidanaden/canvas-sync/compare/v1.26.1...v1.26.2) (2023-09-29)
 
 
