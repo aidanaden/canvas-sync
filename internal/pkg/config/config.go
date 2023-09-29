@@ -19,11 +19,11 @@ type Config struct {
 }
 
 const cfg_template = `
-data_dir: {{ .DataDir }}
-canvas_url: {{ .CanvasUrl }}
-canvas_username: {{ .Username }}
-canvas_password: {{ .Password }}
-access_token: {{ .AccessToken }}`
+data_dir: "{{ .DataDir }}"
+canvas_url: "{{ .CanvasUrl }}"
+canvas_username: "{{ .Username }}"
+canvas_password: "{{ .Password }}"
+access_token: "{{ .AccessToken }}"`
 
 func GenerateConfigYaml(config *Config) string {
 	cleanedTemplate := strings.ReplaceAll(cfg_template, "\t", " ")
