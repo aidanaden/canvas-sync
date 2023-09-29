@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.8](https://github.com/aidanaden/canvas-sync/compare/v1.26.7...v1.26.8) (2023-09-29)
+
+
+### Bug Fixes
+
+* revert, install ffmpeg post_install ([85de690](https://github.com/aidanaden/canvas-sync/commit/85de6908a8ef473d1ed7dd1ffe30e14f65f8bde6))
+
 ## [1.26.7](https://github.com/aidanaden/canvas-sync/compare/v1.26.6...v1.26.7) (2023-09-29)
 
 
