@@ -64,7 +64,7 @@ brews:
     # Custom post_install script for brew.
     # Could be used to do any additional work after the "install" script
     post_install: |
-      %x{ if brew ls --versions "ffmpeg"; then brew upgrade "ffmpeg"; else brew install "ffmpeg"; fi }
+      system "brew", "install", "ffmpeg"
 
 scoops:
   - folder: bucket
