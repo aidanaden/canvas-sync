@@ -130,7 +130,7 @@ func initConfigFile(path string) error {
 		}
 	}
 
-	if err := playwright.Install(&playwright.RunOptions{Verbose: false}); err != nil {
+	if err := playwright.Install(&playwright.RunOptions{Verbose: false, Browsers: []string{"chromium"}}); err != nil {
 		pterm.Warning.Println("Failed to install headless chrome, login via username/password disabled.")
 	}
 	pterm.Info.Println("Logging in to canvas...")
