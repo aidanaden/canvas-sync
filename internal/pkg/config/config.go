@@ -72,7 +72,16 @@ func PrintConfig(path string, config *Config) error {
 		td = append(td, []string{pterm.FgCyan.Sprint("canvas_username"), pterm.FgGreen.Sprint(config.Username)})
 	}
 	if config.Password != "" {
-		td = append(td, []string{pterm.FgCyan.Sprint("canvas_password"), pterm.FgGreen.Sprint(config.Password)})
+		var rawTruncated = []byte{}
+		for i := 0; i < len(config.Password); i++ {
+			if i == 0 || i == len(config.Password)-1 {
+				rawTruncated = append(rawTruncated, []byte(config.Password)[i])
+			} else {
+				rawTruncated = append(rawTruncated, '*')
+			}
+		}
+		truncated := string(rawTruncated)
+		td = append(td, []string{pterm.FgCyan.Sprint("canvas_password"), pterm.FgGreen.Sprint(truncated)})
 	}
 	td = append(td, []string{pterm.FgCyan.Sprint("access_token"), pterm.FgGreen.Sprint(config.AccessToken)})
 

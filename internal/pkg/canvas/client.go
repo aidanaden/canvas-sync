@@ -523,12 +523,189 @@ func (c *CanvasClient) GetCourseAnnouncements(code string) ([]nodes.Announcement
 	return announcements, nil
 }
 
-type CourseVideoUrls struct {
-	VideoUrl string
-	AudioUrl string
+type CourseVideoFile struct {
+	Path       string
+	SourceUrl  string
+	VideoUrl   string
+	AudioUrl   string
+	Downloaded bool
 }
 
-func (c *CanvasClient) GetCourseVideos(page playwright.Page, course nodes.CourseNode) (map[string]*CourseVideoUrls, error) {
+type CourseVideoFolder struct {
+	Path    string
+	Videos  []*CourseVideoFile
+	Folders []*CourseVideoFolder
+}
+
+func (c *CanvasClient) extractVideoAudioUrlFromFile(page playwright.Page, file *CourseVideoFile, increment func()) {
+	sourceVideoUrlMap := make(map[string]map[string]interface{}, 0)
+
+	// extract m3u8 urls
+	page.On("request", func(req playwright.Request) {
+		if strings.Contains(req.URL(), "index.m3u8") {
+			if sourceVideoUrlMap[file.SourceUrl] == nil {
+				sourceVideoUrlMap[file.SourceUrl] = make(map[string]interface{}, 2)
+			}
+			sourceVideoUrlMap[file.SourceUrl][req.URL()] = struct{}{}
+		}
+	})
+
+	if _, err := page.Goto(file.SourceUrl); err != nil {
+		pterm.Error.Printfln("failed to navigate to %s", file.SourceUrl)
+	}
+	playBtnLoc := page.Locator("#playButton")
+	if err := playBtnLoc.WaitFor(); err != nil {
+		pterm.Error.Printfln("failed to wait for play btn %s", file.SourceUrl)
+	}
+	if err := playBtnLoc.Click(); err != nil {
+		pterm.Error.Printfln("failed to play %s", file.SourceUrl)
+	}
+	if _, err := page.WaitForEvent("request"); err != nil {
+		pterm.Error.Printfln("failed to wait for request for %s", file.SourceUrl)
+	}
+	time.Sleep(2 * time.Second)
+
+	// extract media urls from map
+	mediaUrls := []string{}
+	for mediaUrl := range sourceVideoUrlMap[file.SourceUrl] {
+		mediaUrls = append(mediaUrls, mediaUrl)
+	}
+
+	if len(mediaUrls) == 0 {
+		// pterm.Error.Printfln("no video urls found for %s", file.Path)
+		return
+	}
+
+	// set audio/video urls
+	data, err := ffprobe.ProbeURL(context.Background(), mediaUrls[0])
+	if err != nil {
+		pterm.Error.Printfln("failed to ffprobe url %s: %s", mediaUrls[0], err.Error())
+		return
+	}
+
+	if len(mediaUrls) == 1 {
+		file.AudioUrl = mediaUrls[0]
+		increment()
+		return
+	}
+
+	// first url contains audio
+	if data.FirstAudioStream() != nil {
+		file.AudioUrl = mediaUrls[0]
+		file.VideoUrl = mediaUrls[1]
+		increment()
+		return
+	}
+
+	data, err = ffprobe.ProbeURL(context.Background(), mediaUrls[1])
+	if err == nil {
+		// second url contains audio
+		if data.FirstAudioStream() != nil {
+			file.AudioUrl = mediaUrls[1]
+			file.VideoUrl = mediaUrls[0]
+			increment()
+		} else {
+			pterm.Error.Printfln("both urls %s and %s contain no audio stream!", mediaUrls[0], mediaUrls[1])
+		}
+	}
+}
+
+func (c *CanvasClient) extractVideoAudioUrlFromFolder(page playwright.Page, folder *CourseVideoFolder, increment func(isFile bool)) {
+	for _, fold := range folder.Folders {
+		c.extractVideoAudioUrlFromFolder(page, fold, increment)
+	}
+	incrementFile := func() {
+		increment(true)
+	}
+	for _, fil := range folder.Videos {
+		c.extractVideoAudioUrlFromFile(page, fil, incrementFile)
+	}
+}
+
+func (c *CanvasClient) extractCurrentVideoFolder(page playwright.Page, folderPath string, increment func(isFile bool)) *CourseVideoFolder {
+	frameLoc := page.FrameLocator("#tool_content")
+	currentVideos := []*CourseVideoFile{}
+	currentFolders := []*CourseVideoFolder{}
+
+	videoTableLocs := frameLoc.Locator("#detailsTable")
+	if err := videoTableLocs.WaitFor(); err == nil {
+		videoLocs, err := videoTableLocs.Locator(".detail-cell").All()
+		if err == nil && len(videoLocs) > 0 {
+			for _, videoLoc := range videoLocs {
+				videoUrlLoc := videoLoc.GetByRole("link")
+				videoUrl, err := videoUrlLoc.GetAttribute("href")
+				// no valid video url found
+				if err != nil {
+					pterm.Error.Printfln("no valid video url found, skipping")
+					continue
+				}
+				videoName, err := videoUrlLoc.TextContent()
+				// no valid video name found
+				if err != nil {
+					pterm.Error.Printfln("no valid video name found, skipping")
+					continue
+				}
+				videoName = strings.ReplaceAll(strings.Trim(videoName, " \n"), "/", "-")
+				videoName = fmt.Sprintf("%s.mp4", videoName)
+				videoPath := filepath.Join(folderPath, videoName)
+				currentVideos = append(currentVideos, &CourseVideoFile{
+					Path:       videoPath,
+					SourceUrl:  videoUrl,
+					Downloaded: false,
+				})
+			}
+		}
+	}
+
+	expandSubfoldersLoc := frameLoc.Locator(".expand-subfolders")
+	expandSubfoldersLoc.Click()
+
+	// expand all hidden folders
+	folderListLoc := frameLoc.Locator(".subfolder-list")
+	if err := folderListLoc.WaitFor(); err == nil {
+		folderLocs, err := folderListLoc.Locator(".subfolder-item").All()
+		if err == nil && len(folderLocs) > 0 {
+			for _, folderLoc := range folderLocs {
+				visible, err := folderLoc.IsVisible()
+				if err != nil || !visible {
+					// folder not valid, skip
+					continue
+				}
+				folderName, err := folderLoc.TextContent()
+				if err != nil {
+					continue
+				}
+				folderName = strings.Trim(folderName, " \n")
+				if err := folderLoc.Click(); err != nil {
+					continue
+				}
+				folderName = filepath.Join(folderPath, folderName)
+				folder := c.extractCurrentVideoFolder(page, folderName, increment)
+				currentFolders = append(currentFolders, folder)
+
+				// increment folder count
+				increment(false)
+
+				// click back till successful
+				backBtn := frameLoc.Locator("#parentFolderButtonInHeader")
+				if err = backBtn.Click(); err != nil {
+					pterm.Error.Printfln("no 'back' btn found")
+				}
+				if err := expandSubfoldersLoc.WaitFor(); err == nil {
+					expandSubfoldersLoc.Click()
+				}
+			}
+		}
+	}
+
+	return &CourseVideoFolder{
+		Path:    folderPath,
+		Videos:  currentVideos,
+		Folders: currentFolders,
+	}
+}
+
+func (c *CanvasClient) GetCourseVideos(page playwright.Page, dataDir string, course nodes.CourseNode, increment func(isFile bool)) (*CourseVideoFolder, error) {
 	var VIDEO_TIMEOUT float64 = 30_000
 	courseUrl := url.URL{
 		Scheme: c.canvasPath.Scheme,
@@ -548,125 +725,18 @@ func (c *CanvasClient) GetCourseVideos(page playwright.Page, course nodes.Course
 		return nil, fmt.Errorf("course %v has no videos", course.CourseCode)
 	}
 
-	frameLoc := page.FrameLocator("#tool_content")
-	folderListLoc := frameLoc.Locator(".subfolder-list")
-	if err := folderListLoc.WaitFor(playwright.LocatorWaitForOptions{Timeout: &VIDEO_TIMEOUT}); err != nil {
-		return nil, fmt.Errorf("iFrame not found - likely that %s has no videos", course.CourseCode)
+	courseVideosPath := filepath.Join(dataDir, course.CourseCode, "videos")
+	courseFolder := c.extractCurrentVideoFolder(page, courseVideosPath, increment)
+	for _, fold := range courseFolder.Folders {
+		c.extractVideoAudioUrlFromFolder(page, fold, increment)
 	}
-	folderLocs, err := folderListLoc.Locator(".subfolder-item").All()
-	if err != nil {
-		return nil, err
+	incrementFile := func() {
+		increment(true)
 	}
-
-	videoUrlInfos := make(map[string]*CourseVideoUrls, 0)
-	for fi, folderLoc := range folderLocs {
-		visible, err := folderLoc.IsVisible()
-		if err != nil || !visible {
-			pterm.Error.Printfln("folder %d not visible, skipping...", fi)
-			continue
-		}
-		if err := folderLoc.Click(); err != nil {
-			return nil, err
-		}
-
-		tableLoc := frameLoc.Locator("#detailsTable")
-		if err := tableLoc.WaitFor(); err != nil {
-			pterm.Error.Printfln("Error loading details table, failed to get videos for %s", course.CourseCode)
-		}
-
-		videoLocs, err := tableLoc.Locator(".thumbnail-row").All()
-		if err != nil {
-			pterm.Error.Printfln("Error loading videos in folder for %s", course.CourseCode)
-			continue
-		}
-
-		videoUrlMap := make(map[string]string, 0)
-		for vi, videoLoc := range videoLocs {
-			videoDetailLoc := videoLoc.Locator(".detail-cell").GetByRole("link")
-			videoUrl, err := videoDetailLoc.GetAttribute("href")
-			if err != nil {
-				pterm.Error.Printfln("Error loading video %d url, skipping...", vi)
-				continue
-			}
-			videoName, err := videoDetailLoc.TextContent()
-			if err != nil {
-				pterm.Error.Printfln("Error loading video %d name, skipping...", vi)
-				continue
-			}
-			videoName = strings.Trim(videoName, " \n")
-			videoUrlMap[videoName] = videoUrl
-		}
-
-		sourceVideoUrlMap := make(map[string]map[string]interface{}, 0)
-		for _, url := range videoUrlMap {
-			page.On("request", func(req playwright.Request) {
-				if strings.Contains(req.URL(), "index.m3u8") {
-					if sourceVideoUrlMap[url] == nil {
-						sourceVideoUrlMap[url] = make(map[string]interface{}, 2)
-					}
-					sourceVideoUrlMap[url][req.URL()] = struct{}{}
-				}
-			})
-			if _, err := page.Goto(url); err != nil {
-				pterm.Error.Printfln("failed to navigate to %s", url)
-			}
-			playBtnLoc := page.Locator("#playButton")
-			if err := playBtnLoc.WaitFor(); err != nil {
-				pterm.Error.Printfln("failed to wait for play btn %s", url)
-			}
-			if err := playBtnLoc.Click(); err != nil {
-				pterm.Error.Printfln("failed to play %s", url)
-			}
-			if _, err := page.WaitForEvent("request"); err != nil {
-				pterm.Error.Printfln("failed to wait for request for %s", url)
-			}
-			time.Sleep(3 * time.Second)
-		}
-
-		for name, url := range videoUrlMap {
-			urls := []string{}
-			for sourceUrl := range sourceVideoUrlMap[url] {
-				urls = append(urls, sourceUrl)
-			}
-			if len(urls) == 0 {
-				pterm.Error.Printfln("no video urls found for %s", name)
-				continue
-			}
-			data, err := ffprobe.ProbeURL(context.Background(), urls[0])
-			if err != nil {
-				pterm.Error.Printfln("failed to ffprobe url %s: %s", urls[0], err.Error())
-				continue
-			}
-			if len(urls) == 1 {
-				videoUrlInfos[name] = &CourseVideoUrls{
-					AudioUrl: urls[0],
-				}
-				continue
-			}
-			if data.FirstAudioStream() != nil {
-				videoUrlInfos[name] = &CourseVideoUrls{
-					AudioUrl: urls[0],
-					VideoUrl: urls[1],
-				}
-			} else {
-				data, err = ffprobe.ProbeURL(context.Background(), urls[1])
-				if err != nil {
-					pterm.Error.Printfln("failed to ffprobe url %s: %s", urls[1], err.Error())
-					continue
-				}
-				if data.FirstAudioStream() != nil {
-					videoUrlInfos[name] = &CourseVideoUrls{
-						AudioUrl: urls[1],
-						VideoUrl: urls[0],
-					}
-				} else {
-					pterm.Error.Printfln("both urls %s and %s contain no audio stream!", urls[0], urls[1])
-				}
-			}
-		}
+	for _, vid := range courseFolder.Videos {
+		c.extractVideoAudioUrlFromFile(page, vid, incrementFile)
 	}
-
-	return videoUrlInfos, nil
+	return courseFolder, nil
 }
 
 func (c *CanvasClient) GetCourseGrades(code string) error {
