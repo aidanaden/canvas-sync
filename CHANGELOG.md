@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.6](https://github.com/aidanaden/canvas-sync/compare/v1.26.5...v1.26.6) (2023-09-29)
+
+
+### Bug Fixes
+
+* inline post-install command ([#178](https://github.com/aidanaden/canvas-sync/issues/178)) ([a816be5](https://github.com/aidanaden/canvas-sync/commit/a816be560e6ac99c457fabe8d6885ae6d11d6669))
+
 ## [1.26.5](https://github.com/aidanaden/canvas-sync/compare/v1.26.4...v1.26.5) (2023-09-29)
 
 
