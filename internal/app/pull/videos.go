@@ -55,11 +55,6 @@ func extractVideosFromDirectory(folder *canvas.CourseVideoFolder) []*canvas.Cour
 const MAX_DOWNLOAD_ATTEMPTS = 5
 
 func RunPullVideos(cmd *cobra.Command, args []string, isUpdate bool) {
-	if err := playwright.Install(&playwright.RunOptions{Verbose: false}); err != nil {
-		pterm.Error.Println("Error setting up playwright. Please create an issue on https://github.com/aidanaden/canvas-sync/issues")
-		os.Exit(1)
-	}
-
 	targetDir := fmt.Sprintf("%s", viper.Get("data_dir"))
 	targetDir = utils.GetExpandedHomeDirectoryPath(targetDir)
 	username := fmt.Sprintf("%v", viper.Get("canvas_username"))
