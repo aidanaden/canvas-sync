@@ -222,8 +222,12 @@ func RunPullVideos(cmd *cobra.Command, args []string, isUpdate bool) {
 			}
 
 			if len(filtered) == 0 {
-				courseSpinners[code].sp.UpdateMessage(pterm.FgRed.Sprintf("No videos found for %s", code))
-				courseSpinners[code].sp.Error()
+				if len(files) > 0 {
+					courseSpinners[code].sp.UpdateMessage(pterm.FgGreen.Sprintf("All videos already downloaded for %s", code))
+				} else {
+					courseSpinners[code].sp.UpdateMessage(pterm.FgGreen.Sprintf("No videos available for %s", code))
+				}
+				courseSpinners[code].sp.Complete()
 				return
 			}
 

@@ -648,10 +648,14 @@ func (c *CanvasClient) extractCurrentVideoFolder(page playwright.Page, folderPat
 				videoName = strings.ReplaceAll(strings.Trim(videoName, " \n"), "/", "-")
 				videoName = fmt.Sprintf("%s.mp4", videoName)
 				videoPath := filepath.Join(folderPath, videoName)
+				fileDownloaded := false
+				if _, err := os.Stat(videoPath); err == nil {
+					fileDownloaded = true
+				}
 				currentVideos = append(currentVideos, &CourseVideoFile{
 					Path:       videoPath,
 					SourceUrl:  videoUrl,
-					Downloaded: false,
+					Downloaded: fileDownloaded,
 				})
 			}
 		}
