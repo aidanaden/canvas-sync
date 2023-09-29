@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.26.1](https://github.com/aidanaden/canvas-sync/compare/v1.26.0...v1.26.1) (2023-09-29)
+
+
+### Bug Fixes
+
+* add start, end newlines to config ([5c4ea58](https://github.com/aidanaden/canvas-sync/commit/5c4ea588b2232925f452acbc8e38a3e583686a87))
+* use complete instead of error spinner for no vidoes available ([2bc7417](https://github.com/aidanaden/canvas-sync/commit/2bc7417b44b3931b2cd0ccd99b31b91d9e33cbe1))
+
 ## [1.26.0](https://github.com/aidanaden/canvas-sync/compare/v1.25.0...v1.26.0) (2023-09-29)
 
 
