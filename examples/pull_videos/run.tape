@@ -52,7 +52,7 @@
 #   Hide                            Hide the subsequent commands from the output
 #   Show                            Show the subsequent commands in the output
 
-Output examples/update_files_all.gif
+Output examples/pull_videos/run.gif
 
 Require echo
 
@@ -60,9 +60,9 @@ Set Shell "bash"
 Set FontSize 32
 Set Width 1400
 Set Height 700
-Set PlaybackSpeed 0.5 # Make output 2 times slower
+Set PlaybackSpeed 2 # Make output 2 times faster
 Set CursorBlink false
 
-Type "canvas-sync update files" Sleep 500ms  Enter
+Type "canvas-sync pull videos" Sleep 500ms  Enter
 
-Sleep 25s
+Sleep 300s

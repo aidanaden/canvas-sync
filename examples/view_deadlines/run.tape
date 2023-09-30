@@ -52,17 +52,25 @@
 #   Hide                            Hide the subsequent commands from the output
 #   Show                            Show the subsequent commands in the output
 
-Output examples/pull_files_help.gif
+Output examples/view_deadlines/run.gif
 
 Require echo
 
 Set Shell "bash"
 Set FontSize 32
-Set Width 1800
-Set Height 1200
+Set Width 1600
+Set Height 800
 Set PlaybackSpeed 0.5 # Make output 2 times slower
 Set CursorBlink false
 
-Type "canvas-sync pull files -h" Sleep 500ms  Enter
+Type "canvas-sync view deadlines upcoming" Sleep 500ms  Enter
 
-Sleep 25s
+Sleep 4s
+
+Type "clear"  Enter
+
+Sleep 1s
+
+Type "canvas-sync view deadlines past" Sleep 500ms  Enter
+
+Sleep 4s

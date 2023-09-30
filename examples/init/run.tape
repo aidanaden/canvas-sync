@@ -52,25 +52,33 @@
 #   Hide                            Hide the subsequent commands from the output
 #   Show                            Show the subsequent commands in the output
 
-Output examples/view_deadlines.gif
+Output examples/init/frames/
+Output examples/init/init.gif
 
 Require echo
 
+Set Framerate 60
 Set Shell "bash"
 Set FontSize 32
-Set Width 1600
+Set Width 2000
 Set Height 800
-Set PlaybackSpeed 0.5 # Make output 2 times slower
+Set PlaybackSpeed 0.3 # Make output 2 times slower
 Set CursorBlink false
 
-Type "canvas-sync view deadlines past" Sleep 500ms  Enter
+Type "canvas-sync init" Sleep 1s
 
-Sleep 4s
+Enter  Sleep 1s
 
-Type "clear"  Enter
+Enter  Sleep 1s
 
-Sleep 1s
+Enter  Sleep 3s
 
-Type "canvas-sync view deadlines upcoming" Sleep 500ms  Enter
+Type "e0544363"
 
-Sleep 4s
+Enter  Sleep 1s  Type "^NYiieb6p8$zxr8t8MvRmvm%hbF@ndzA"
+
+Enter  Sleep 8s  Type "y"
+
+# Set Width 2200
+
+Sleep 6s

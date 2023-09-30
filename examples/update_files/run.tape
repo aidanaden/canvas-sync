@@ -52,25 +52,17 @@
 #   Hide                            Hide the subsequent commands from the output
 #   Show                            Show the subsequent commands in the output
 
-Output examples/view_events.gif
+Output examples/update_files/run.gif
 
 Require echo
 
 Set Shell "bash"
 Set FontSize 32
-Set Width 1600
-Set Height 800
+Set Width 1400
+Set Height 700
 Set PlaybackSpeed 0.5 # Make output 2 times slower
 Set CursorBlink false
 
-Type "canvas-sync view events past" Sleep 500ms  Enter
+Type "canvas-sync update files" Sleep 500ms  Enter
 
-Sleep 4s
-
-Type "clear"  Enter
-
-Sleep 1s
-
-Type "canvas-sync view events upcoming" Sleep 500ms  Enter
-
-Sleep 4s
+Sleep 25s

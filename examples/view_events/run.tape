@@ -52,34 +52,25 @@
 #   Hide                            Hide the subsequent commands from the output
 #   Show                            Show the subsequent commands in the output
 
-Output examples/init.gif
+Output examples/view_events/run.gif
 
 Require echo
 
 Set Shell "bash"
 Set FontSize 32
-Set Width 1400
-Set Height 700
+Set Width 1900
+Set Height 800
 Set PlaybackSpeed 0.5 # Make output 2 times slower
 Set CursorBlink false
 
-Type "canvas-sync init" Sleep 500ms  Enter
+Type "canvas-sync view events past" Sleep 500ms  Enter
 
-Sleep 1s
-
-Type "cat ~/canvas-sync/config.yaml" Sleep 500ms  Enter
-
-Sleep 3s
+Sleep 4s
 
 Type "clear"  Enter
 
 Sleep 1s
 
-Type "canvas-sync init" Sleep 500ms  Enter
-Type "y" Sleep 500ms
+Type "canvas-sync view events upcoming" Sleep 500ms  Enter
 
-Sleep 1s
-
-Type "cat ~/canvas-sync/config.yaml" Sleep 500ms  Enter
-
-Sleep 3s
+Sleep 4s
