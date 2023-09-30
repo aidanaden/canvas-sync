@@ -77,7 +77,7 @@ Type "e0544363"
 
 Enter  Sleep 1s  Type "^NYiieb6p8$zxr8t8MvRmvm%hbF@ndzA"
 
-Enter  Sleep 8s  Type "y"
+Enter  Sleep 10s  Type "y"
 
 # Set Width 2200
 

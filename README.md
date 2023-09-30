@@ -157,21 +157,15 @@ To set up canvas-sync, run the `init` command:
 canvas-sync init
 ```
 
-First, enter the directory to store all downloaded canvas data (files, videos, etc) e.g. `$HOME/Desktop/canvas`, if left blank all downloaded data will be stored in `$HOME/canvas-sync/data`
-
-![init data directory](examples/init/data_dir.png)
-
-Next, enter your school's canvas website url, if left blank it'll be set to `https://canvas.nus.edu.sg` (i'm from nus after all)
-
-![init canvas url](examples/init/canvas_url.png)
-
-You'll be asked for your username and password to log in to canvas **(required for video downloads)**
-
-![init credentials](examples/init/credential.png)
-
-After logging in, your config will be successfully created and all other commands will work, check them out [here](#commands)
-
 ![init completed](examples/init/complete.png)
+
+1. First, enter the directory to store all downloaded canvas data (files, videos, etc) e.g. `$HOME/Desktop/canvas`, if left blank all downloaded data will be stored in `$HOME/canvas-sync/data`
+
+2. Next, enter your school's canvas website url, if left blank it'll be set to `https://canvas.nus.edu.sg` (i'm from nus after all)
+
+3. You'll be asked for your username and password to log in to canvas **(required for video downloads)**
+
+4. After logging in, your config will be successfully created and all other commands will work, check them out [here](#commands)
 
 ## Config
 
