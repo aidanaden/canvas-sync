@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.11](https://github.com/aidanaden/canvas-sync/compare/v1.26.10...v1.26.11) (2023-09-30)
+
+
+### Bug Fixes
+
+* spacing ([6b75a75](https://github.com/aidanaden/canvas-sync/commit/6b75a7586fa77a919fda1ac2c983fffa86cf216b))
+
 ## [1.26.10](https://github.com/aidanaden/canvas-sync/compare/v1.26.9...v1.26.10) (2023-09-29)
 
 
