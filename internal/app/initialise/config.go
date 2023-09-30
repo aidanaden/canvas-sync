@@ -197,9 +197,6 @@ func RunInit(isInitCommand bool) string {
 			pterm.Error.Printfln("Error creating config file: %s", err.Error())
 			os.Exit(1)
 		}
-		if isInitCommand {
-			pterm.Success.Printfln("Successfully created config file: %s\n", cfgPaths.CfgFilePath)
-		}
 		return cfgPaths.CfgDirPath
 	}
 

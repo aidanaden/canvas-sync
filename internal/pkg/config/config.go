@@ -50,9 +50,9 @@ func SaveConfig(filepath string, config *Config, verbose bool) error {
 	if err := os.WriteFile(filepath, d1, 0755); err != nil {
 		return err
 	}
+	pterm.Println()
 	pterm.Success.Printfln("Successfully saved config file: %s", filepath)
 	if verbose {
-		pterm.Println()
 		if err := PrintConfig(filepath, config); err != nil {
 			return err
 		}
