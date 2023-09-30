@@ -2,4 +2,4 @@ build:
 	go build -o bin/canvas-sync main.go
 
 record:
-	vhs examples/init.tape && vhs examples/pull_files_demo.tape && vhs examples/update_files_demo.tape && vhs examples/pull_files_help.tape && vhs examples/update_files_help.tape && vhs examples/view_events.tape && vhs examples/view_deadlines.tape && vhs examples/view_people.tape
+	vhs examples/init/run.tape && vhs examples/pull_files/run.tape && vhs examples/update_files/run.tape && vhs examples/pull_videos/run.tape && vhs examples/update_videos/run.tape && vhs examples/view_events/run.tape && vhs examples/view_deadlines/run.tape && vhs examples/view_people/run.tape 

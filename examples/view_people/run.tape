@@ -52,17 +52,17 @@
 #   Hide                            Hide the subsequent commands from the output
 #   Show                            Show the subsequent commands in the output
 
-Output examples/update_files_help.gif
+Output examples/view_people/run.gif
 
 Require echo
 
 Set Shell "bash"
 Set FontSize 32
-Set Width 1800
-Set Height 1200
+Set Width 1400
+Set Height 700
 Set PlaybackSpeed 0.5 # Make output 2 times slower
 Set CursorBlink false
 
-Type "canvas-sync update files -h" Sleep 500ms  Enter
+Type "canvas-sync view people cs3103" Sleep 500ms  Enter
 
-Sleep 25s
+Sleep 8s

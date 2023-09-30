@@ -52,7 +52,7 @@
 #   Hide                            Hide the subsequent commands from the output
 #   Show                            Show the subsequent commands in the output
 
-Output examples/pull_files_all.gif
+Output examples/pull_files/run.gif
 
 Require echo
 
