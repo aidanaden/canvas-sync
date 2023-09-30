@@ -171,7 +171,7 @@ canvas-sync init
 
 All configuration is done in the `$HOME/canvas-sync/config.yaml` file.
 
-3 values can be configured:
+4 values can be configured:
 
 - data_dir: directory to store downloaded canvas data, defaults to `$HOME/canvas-sync/data`  
 - canvas_url: URL of your target canvas site, defaults to `https://canvas.nus.edu.sg`
