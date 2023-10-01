@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.12](https://github.com/aidanaden/canvas-sync/compare/v1.26.11...v1.26.12) (2023-10-01)
+
+
+### Bug Fixes
+
+* check canvas url before every command ([af789a3](https://github.com/aidanaden/canvas-sync/commit/af789a370ab0bf56e7180f32f792d2e28a9b0c6d))
+
 ## [1.26.11](https://github.com/aidanaden/canvas-sync/compare/v1.26.10...v1.26.11) (2023-09-30)
 
 
