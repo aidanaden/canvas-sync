@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"strings"
 
@@ -107,6 +108,13 @@ func preRun(cmd *cobra.Command) {
 		pterm.Info.Printfln("Using config file: %s", viper.ConfigFileUsed())
 	} else {
 		pterm.Error.Printfln("Error reading config: %s", err.Error())
+		os.Exit(1)
+	}
+
+	canvasUrl := fmt.Sprintf("%v", viper.Get("canvas_url"))
+	_, err := url.Parse(canvasUrl)
+	if err != nil {
+		pterm.Error.Printfln("%s is an invalid canvas url: %s", canvasUrl, err.Error())
 		os.Exit(1)
 	}
 }
