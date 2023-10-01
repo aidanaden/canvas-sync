@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.13](https://github.com/aidanaden/canvas-sync/compare/v1.26.12...v1.26.13) (2023-10-01)
+
+
+### Bug Fixes
+
+* add post run message to pull vidos ([01d9dbb](https://github.com/aidanaden/canvas-sync/commit/01d9dbbc4cca5d7b011adec428facb312184f3b6))
+
 ## [1.26.12](https://github.com/aidanaden/canvas-sync/compare/v1.26.11...v1.26.12) (2023-10-01)
 
 
