@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -135,7 +136,10 @@ func (c *CanvasClient) RecurseDirectoryNode(node *nodes.DirectoryNode, parent *n
 	if node == nil {
 		return errors.New("cannot recurse nil directory node")
 	}
-	dir = filepath.Join(dir, node.Name)
+	name := strings.ReplaceAll(node.Name, "/", "-")
+	re := regexp.MustCompile("[^a-zA-Z0-9-]")
+	name = re.ReplaceAllString(name, "")
+	dir = filepath.Join(dir, name)
 	node.Directory = dir
 
 	if node.FilesCount > 0 {
