@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.15](https://github.com/aidanaden/canvas-sync/compare/v1.26.14...v1.26.15) (2023-10-03)
+
+
+### Bug Fixes
+
+* windows timezone fix ([6d3760d](https://github.com/aidanaden/canvas-sync/commit/6d3760dff3d70fe426b54130ac5cd8dc3bbb0df0))
+
 ## [1.26.14](https://github.com/aidanaden/canvas-sync/compare/v1.26.13...v1.26.14) (2023-10-03)
 
 
