@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.14](https://github.com/aidanaden/canvas-sync/compare/v1.26.13...v1.26.14) (2023-10-03)
+
+
+### Bug Fixes
+
+* sanitise course node name ([#191](https://github.com/aidanaden/canvas-sync/issues/191)) ([021366c](https://github.com/aidanaden/canvas-sync/commit/021366c34929d999c8b0c721cec7c0df449bb818))
+
 ## [1.26.13](https://github.com/aidanaden/canvas-sync/compare/v1.26.12...v1.26.13) (2023-10-01)
 
 
