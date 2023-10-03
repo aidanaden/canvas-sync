@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.16](https://github.com/aidanaden/canvas-sync/compare/v1.26.15...v1.26.16) (2023-10-03)
+
+
+### Bug Fixes
+
+* update go mod ([8b30f1b](https://github.com/aidanaden/canvas-sync/commit/8b30f1b6b3d71d8febcae7f854648a8500cf7579))
+
 ## [1.26.15](https://github.com/aidanaden/canvas-sync/compare/v1.26.14...v1.26.15) (2023-10-03)
 
 
