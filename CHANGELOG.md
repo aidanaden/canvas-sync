@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.17](https://github.com/aidanaden/canvas-sync/compare/v1.26.16...v1.26.17) (2023-10-04)
+
+
+### Bug Fixes
+
+* only replace / to - in course code ([be26912](https://github.com/aidanaden/canvas-sync/commit/be26912b2097ec8baf251da9badccdd04af2f812))
+
 ## [1.26.16](https://github.com/aidanaden/canvas-sync/compare/v1.26.15...v1.26.16) (2023-10-03)
 
 
