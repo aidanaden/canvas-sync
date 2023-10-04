@@ -94,7 +94,12 @@ func (c *CanvasClient) GetActiveEnrolledCourses() ([]nodes.CourseNode, error) {
 	if strings.Contains(courseJson, "user authorisation required") {
 		return nil, fmt.Errorf("existing config invalid, please run 'canvas-sync init'")
 	}
-
+	re := regexp.MustCompile("[^a-zA-Z0-9-]")
+	for i := range courses {
+		code := strings.ReplaceAll(courses[i].CourseCode, "/", "-")
+		code = re.ReplaceAllString(code, "")
+		courses[i].CourseCode = code
+	}
 	return courses, nil
 }
 
@@ -136,10 +141,7 @@ func (c *CanvasClient) RecurseDirectoryNode(node *nodes.DirectoryNode, parent *n
 	if node == nil {
 		return errors.New("cannot recurse nil directory node")
 	}
-	name := strings.ReplaceAll(node.Name, "/", "-")
-	re := regexp.MustCompile("[^a-zA-Z0-9-]")
-	name = re.ReplaceAllString(name, "")
-	dir = filepath.Join(dir, name)
+	dir = filepath.Join(dir, node.Name)
 	node.Directory = dir
 
 	if node.FilesCount > 0 {
