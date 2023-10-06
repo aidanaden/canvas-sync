@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.18](https://github.com/aidanaden/canvas-sync/compare/v1.26.17...v1.26.18) (2023-10-06)
+
+
+### Bug Fixes
+
+* replace with single quote ([#197](https://github.com/aidanaden/canvas-sync/issues/197)) ([a70ddfc](https://github.com/aidanaden/canvas-sync/commit/a70ddfcdd6e38a176b8dd47f535527712f0288d1))
+
 ## [1.26.17](https://github.com/aidanaden/canvas-sync/compare/v1.26.16...v1.26.17) (2023-10-04)
 
 
