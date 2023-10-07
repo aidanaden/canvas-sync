@@ -36,7 +36,7 @@ func RunViewCoursePeople(cmd *cobra.Command, args []string) {
 	}
 	pterm.Println()
 	if err := pterm.DefaultTable.WithHasHeader().WithData(tableData).Render(); err != nil {
-		pterm.Error.Printfln("Error rendering events: %s", err.Error())
+		pterm.Error.Printfln("Error rendering people: %s", err.Error())
 		os.Exit(1)
 	}
 	pterm.Info.Printfln("Showing %d people from %s", len(coursePeople), courseCode)
