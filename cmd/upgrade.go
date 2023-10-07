@@ -58,7 +58,7 @@ func IsUnderScoop() bool {
 
 	scoopCanvasPath := utils.GetExpandedHomeDirectoryPath(string(rawScoopCanvasPath))
 	scoopCanvasPath = strings.Trim(scoopCanvasPath, " \n")
-	fmt.Printf("binary: %s\nscoop canvas-sync path: %s\n", binary, scoopCanvasPath)
+	fmt.Printf("binary: %s\nscoop canvas-sync path: %s", binary, scoopCanvasPath)
 	return strings.EqualFold(binary, scoopCanvasPath)
 }
 
