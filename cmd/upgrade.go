@@ -78,7 +78,7 @@ var upgradeCmd = &cobra.Command{
 			cmdToRun = "brew update && brew upgrade canvas-sync"
 			command = exec.Command("sh", "-c", cmdToRun)
 		} else if IsUnderScoop() {
-			cmdToRun = "scoop update; scoop update canvas-sync"
+			cmdToRun = "scoop update && scoop update canvas-sync"
 			command = exec.Command("cmd", "/C", cmdToRun)
 		} else {
 			pterm.Error.Printfln("Only installs via brew/scoop can be upgraded via 'canvas-sync upgrade' :(")
