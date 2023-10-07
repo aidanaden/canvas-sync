@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.24](https://github.com/aidanaden/canvas-sync/compare/v1.26.23...v1.26.24) (2023-10-07)
+
+
+### Bug Fixes
+
+* add len ([a4d9005](https://github.com/aidanaden/canvas-sync/commit/a4d90057ae8a8372041a026b5278dfab8ed7fa85))
+
 ## [1.26.23](https://github.com/aidanaden/canvas-sync/compare/v1.26.22...v1.26.23) (2023-10-07)
 
 
