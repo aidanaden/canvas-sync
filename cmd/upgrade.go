@@ -4,7 +4,6 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -57,8 +56,6 @@ func IsUnderScoop() bool {
 	}
 
 	scoopCanvasPath := filepath.Dir(utils.GetExpandedHomeDirectoryPath(strings.Trim(string(rawScoopCanvasPath), " \n")))
-	fmt.Println(fmt.Sprintf("binary dir: '%s' (%d)", binary, len(binary)))
-	fmt.Println(fmt.Sprintf("scoop dir: '%s' (%d)", scoopCanvasPath, len(scoopCanvasPath)))
 	return strings.EqualFold(binary, scoopCanvasPath)
 }
 
@@ -68,8 +65,6 @@ var upgradeCmd = &cobra.Command{
 	Short: "Upgrade canvas-sync to the latest available version",
 	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-
-		IsUnderScoop()
 
 		if isLatestVersion(rootCmd.Version) {
 			pterm.Success.Printfln("Canvas-sync is up-to-date!")
