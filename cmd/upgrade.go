@@ -68,6 +68,9 @@ var upgradeCmd = &cobra.Command{
 	Short: "Upgrade canvas-sync to the latest available version",
 	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
+
+		IsUnderScoop()
+
 		if isLatestVersion(rootCmd.Version) {
 			pterm.Success.Printfln("Canvas-sync is up-to-date!")
 			return
