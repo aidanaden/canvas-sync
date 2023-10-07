@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.37](https://github.com/aidanaden/canvas-sync/compare/v1.26.36...v1.26.37) (2023-10-07)
+
+
+### Bug Fixes
+
+* coruse people ([b07686a](https://github.com/aidanaden/canvas-sync/commit/b07686a8f39bb3cd7590c2d572f96b18a7c95960))
+
 ## [1.26.36](https://github.com/aidanaden/canvas-sync/compare/v1.26.35...v1.26.36) (2023-10-07)
 
 
