@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.33](https://github.com/aidanaden/canvas-sync/compare/v1.26.32...v1.26.33) (2023-10-07)
+
+
+### Bug Fixes
+
+* print isunderscoop 2 ([75970d4](https://github.com/aidanaden/canvas-sync/commit/75970d40058b80d6008f4efccd048ffaad6df271))
+
 ## [1.26.32](https://github.com/aidanaden/canvas-sync/compare/v1.26.31...v1.26.32) (2023-10-07)
 
 
