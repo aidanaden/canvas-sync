@@ -14,6 +14,8 @@ CLI to download (course files, videos, etc) & view (deadlines, events, announcem
     - [bash](#bash)
     - [fish (not necessary if you installed fish via homebrew)](#fish-not-necessary-if-you-installed-fish-via-homebrew)
   - [Updating](#updating)
+    - [Brew](#brew)
+    - [Scoop](#scoop)
 - [Set-up](#set-up)
 - [Config](#config)
 - [Commands](#commands)
@@ -141,10 +143,20 @@ Run the following code block to add autocompletion for canvas-sync to your shell
 
 ### Updating
 
-If installed using brew/scoop, simply run:
+#### Brew
+
+If installed using brew, simply run:
 
 ```bash
 canvas-sync upgrade
+```
+
+#### Scoop
+
+If installed using scoop, simply run:
+
+```bash
+scoop update; scoop update canvas-sync
 ```
 
 You can also download the latest version directly from the [releases](https://github.com/aidanaden/canvas-sync/releases) page
