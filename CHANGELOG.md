@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.27](https://github.com/aidanaden/canvas-sync/compare/v1.26.26...v1.26.27) (2023-10-07)
+
+
+### Bug Fixes
+
+* unndo expand filepath ([e52d00f](https://github.com/aidanaden/canvas-sync/commit/e52d00f3af38ba87ad88ba1157fff118bd547adf))
+
 ## [1.26.26](https://github.com/aidanaden/canvas-sync/compare/v1.26.25...v1.26.26) (2023-10-07)
 
 
