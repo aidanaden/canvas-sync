@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.38](https://github.com/aidanaden/canvas-sync/compare/v1.26.37...v1.26.38) (2023-10-07)
+
+
+### Bug Fixes
+
+* remove upgrade from scoop ([83990c9](https://github.com/aidanaden/canvas-sync/commit/83990c9107901b7da667549de84e102285182ec1))
+
 ## [1.26.37](https://github.com/aidanaden/canvas-sync/compare/v1.26.36...v1.26.37) (2023-10-07)
 
 
