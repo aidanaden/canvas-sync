@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.26](https://github.com/aidanaden/canvas-sync/compare/v1.26.25...v1.26.26) (2023-10-07)
+
+
+### Bug Fixes
+
+* upddate view poele error msg ([afa9b29](https://github.com/aidanaden/canvas-sync/commit/afa9b29eea1cafd0109e0f408ddff4a00322535e))
+
 ## [1.26.25](https://github.com/aidanaden/canvas-sync/compare/v1.26.24...v1.26.25) (2023-10-07)
 
 
