@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.35](https://github.com/aidanaden/canvas-sync/compare/v1.26.34...v1.26.35) (2023-10-07)
+
+
+### Bug Fixes
+
+* remove log ([921a8dc](https://github.com/aidanaden/canvas-sync/commit/921a8dc01d5fd7f1ec53c6e909d09267055cd872))
+
 ## [1.26.34](https://github.com/aidanaden/canvas-sync/compare/v1.26.33...v1.26.34) (2023-10-07)
 
 
