@@ -10,7 +10,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/aidanaden/canvas-sync/internal/pkg/utils"
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 )
@@ -56,8 +55,7 @@ func IsUnderScoop() bool {
 		return false
 	}
 
-	scoopCanvasPath := utils.GetExpandedHomeDirectoryPath(string(rawScoopCanvasPath))
-	scoopCanvasPath = strings.Trim(scoopCanvasPath, " \n")
+	scoopCanvasPath := strings.Trim(string(rawScoopCanvasPath), " \n")
 	fmt.Printf("\nbinary: %s (%d)\nscoop canvas-sync path: %s (%d)\n", binary, len(binary), scoopCanvasPath, len(scoopCanvasPath))
 	return strings.EqualFold(binary, scoopCanvasPath)
 }
