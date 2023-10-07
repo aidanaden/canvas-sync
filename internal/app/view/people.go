@@ -22,7 +22,7 @@ func RunViewCoursePeople(cmd *cobra.Command, args []string) {
 
 	coursePeople, err := canvasClient.GetCoursePeople(courseCode)
 	if err != nil {
-		pterm.Error.Printfln("Failed to fetch all upcoming calendar events: %s", err.Error())
+		pterm.Error.Printfln("Failed to fetch all people from %s: %s", courseCode, err.Error())
 	}
 
 	tableData := pterm.TableData{
