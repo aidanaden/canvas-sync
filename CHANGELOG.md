@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.36](https://github.com/aidanaden/canvas-sync/compare/v1.26.35...v1.26.36) (2023-10-07)
+
+
+### Bug Fixes
+
+* use && windows ([5b2e4e0](https://github.com/aidanaden/canvas-sync/commit/5b2e4e01ce7a5c5db1ebe983832c38d100cb7329))
+
 ## [1.26.35](https://github.com/aidanaden/canvas-sync/compare/v1.26.34...v1.26.35) (2023-10-07)
 
 
