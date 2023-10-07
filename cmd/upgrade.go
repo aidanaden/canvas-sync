@@ -56,7 +56,7 @@ func IsUnderScoop() bool {
 	}
 
 	scoopCanvasPath := strings.Trim(string(rawScoopCanvasPath), " \n")
-	fmt.Printf("\nbinary: %s (%d)\nscoop canvas-sync path: %s (%d)\n", binary, len(binary), scoopCanvasPath, len(scoopCanvasPath))
+	fmt.Printf("binary: %s (%d)\nscoop canvas-sync path: %s (%d)\n", binary, len(binary), scoopCanvasPath, len(scoopCanvasPath))
 	return strings.EqualFold(binary, scoopCanvasPath)
 }
 
