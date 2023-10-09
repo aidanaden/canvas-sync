@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.39](https://github.com/aidanaden/canvas-sync/compare/v1.26.38...v1.26.39) (2023-10-09)
+
+
+### Bug Fixes
+
+* exit on view people error ([950e61c](https://github.com/aidanaden/canvas-sync/commit/950e61c089b8635a127f2815875e6da06df44fcc))
+
 ## [1.26.38](https://github.com/aidanaden/canvas-sync/compare/v1.26.37...v1.26.38) (2023-10-07)
 
 
