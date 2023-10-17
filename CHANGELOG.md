@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.40](https://github.com/aidanaden/canvas-sync/compare/v1.26.39...v1.26.40) (2023-10-17)
+
+
+### Bug Fixes
+
+* remove good luck msg ([38f6184](https://github.com/aidanaden/canvas-sync/commit/38f61845ac38161aae9fbbde494f36f16a2adc65))
+
 ## [1.26.39](https://github.com/aidanaden/canvas-sync/compare/v1.26.38...v1.26.39) (2023-10-09)
 
 
