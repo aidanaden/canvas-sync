@@ -142,7 +142,7 @@ func initConfigFile(path string) error {
 	if err != nil {
 		return err
 	}
-	page, err := bw.NewPage()
+	page, err := bw.NewPage(playwright.BrowserNewPageOptions{Viewport: &playwright.Size{Height: 1600, Width: 1920}})
 	if err != nil {
 		return err
 	}

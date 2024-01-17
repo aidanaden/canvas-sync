@@ -633,37 +633,44 @@ func (c *CanvasClient) extractCurrentVideoFolder(page playwright.Page, folderPat
 	currentVideos := []*CourseVideoFile{}
 	currentFolders := []*CourseVideoFolder{}
 
-	videoTableLocs := frameLoc.Locator("#detailsTable")
-	if err := videoTableLocs.WaitFor(); err == nil {
-		videoLocs, err := videoTableLocs.Locator(".detail-cell").All()
-		if err == nil && len(videoLocs) > 0 {
-			for _, videoLoc := range videoLocs {
-				videoUrlLoc := videoLoc.GetByRole("link")
-				videoUrl, err := videoUrlLoc.GetAttribute("href")
-				// no valid video url found
-				if err != nil {
-					pterm.Error.Printfln("no valid video url found, skipping")
-					continue
-				}
-				videoName, err := videoUrlLoc.TextContent()
-				// no valid video name found
-				if err != nil {
-					pterm.Error.Printfln("no valid video name found, skipping")
-					continue
-				}
-				videoName = strings.ReplaceAll(strings.Trim(videoName, " \n"), "/", "-")
-				videoName = fmt.Sprintf("%s.mp4", videoName)
-				videoPath := filepath.Join(folderPath, videoName)
-				fileDownloaded := false
-				if _, err := os.Stat(videoPath); err == nil {
-					fileDownloaded = true
-				}
-				currentVideos = append(currentVideos, &CourseVideoFile{
-					Path:       videoPath,
-					SourceUrl:  videoUrl,
-					Downloaded: fileDownloaded,
-				})
+	videoTableLocs := frameLoc.Locator("#listViewContainer")
+	videoTableLocs.WaitFor()
+	videoLocs, err := videoTableLocs.Locator(".detail-cell").All()
+	if err != nil {
+		pterm.Error.Printfln("error finding videos in %s", folderPath)
+	}
+	if len(videoLocs) == 0 {
+		pterm.Info.Printfln("found 0 videos in %s", folderPath)
+	}
+	if len(videoLocs) > 0 {
+		for _, videoLoc := range videoLocs {
+			videoUrlLoc := videoLoc.GetByRole("link").First()
+			videoUrl, err := videoUrlLoc.GetAttribute("href")
+			// no valid video url found
+			if err != nil {
+				pterm.Error.Printfln("no valid video url found, skipping")
+				continue
 			}
+			videoName, err := videoUrlLoc.TextContent()
+			// no valid video name found
+			if err != nil {
+				pterm.Error.Printfln("no valid video name found, skipping")
+				continue
+			}
+			videoName = strings.Trim(videoName, " \n")
+			videoName = strings.ReplaceAll(videoName, ",", "")
+			videoName = strings.ReplaceAll(videoName, "/", "-")
+			videoName = fmt.Sprintf("%s.mp4", videoName)
+			videoPath := filepath.Join(folderPath, videoName)
+			fileDownloaded := false
+			if _, err := os.Stat(videoPath); err == nil {
+				fileDownloaded = true
+			}
+			currentVideos = append(currentVideos, &CourseVideoFile{
+				Path:       videoPath,
+				SourceUrl:  videoUrl,
+				Downloaded: fileDownloaded,
+			})
 		}
 	}
 
@@ -672,21 +679,32 @@ func (c *CanvasClient) extractCurrentVideoFolder(page playwright.Page, folderPat
 
 	// expand all hidden folders
 	folderListLoc := frameLoc.Locator(".subfolder-list")
-	if err := folderListLoc.WaitFor(); err == nil {
-		folderLocs, err := folderListLoc.Locator(".subfolder-item").All()
-		if err == nil && len(folderLocs) > 0 {
+	folderListLoc.WaitFor()
+	folderLocs, err := folderListLoc.Locator(".subfolder-item").All()
+	if err != nil {
+		pterm.Error.Printfln("err getting .subfolder-item")
+	} else {
+		// fmt.Printf("\nfound %d folder locs", len(folderLocs))
+		if len(folderLocs) > 0 {
 			for _, folderLoc := range folderLocs {
 				visible, err := folderLoc.IsVisible()
-				if err != nil || !visible {
+				if err != nil {
+					pterm.Error.Printfln("err getting folder visibility")
+					continue
+				}
+				if !visible {
+					pterm.Error.Printfln("folder loc not visible, skipping...")
 					// folder not valid, skip
 					continue
 				}
 				folderName, err := folderLoc.TextContent()
 				if err != nil {
+					pterm.Error.Printfln("err getting folder name: %v", err)
 					continue
 				}
 				folderName = strings.Trim(folderName, " \n")
-				if err := folderLoc.Click(); err != nil {
+				if err := folderLoc.DispatchEvent("click", nil); err != nil {
+					pterm.Error.Printfln("err clicking on folder '%s': %v", folderName, err)
 					continue
 				}
 				folderName = filepath.Join(folderPath, folderName)

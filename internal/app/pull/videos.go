@@ -36,7 +36,7 @@ func getBrowser() (playwright.Browser, error) {
 }
 
 func getPage(bw playwright.Browser) (playwright.Page, error) {
-	page, err := bw.NewPage(playwright.BrowserNewPageOptions{Viewport: &playwright.Size{Height: 1080, Width: 1920}})
+	page, err := bw.NewPage(playwright.BrowserNewPageOptions{Viewport: &playwright.Size{Height: 1600, Width: 1920}})
 	if err != nil {
 		return nil, err
 	}
@@ -181,6 +181,7 @@ func RunPullVideos(cmd *cobra.Command, args []string, isUpdate bool) {
 	var wg sync.WaitGroup
 
 	pterm.Println()
+
 	for _, course := range courses {
 		wg.Add(1)
 		go func(c nodes.CourseNode, spc *SpinnerCount) {
