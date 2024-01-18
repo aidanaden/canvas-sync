@@ -635,13 +635,7 @@ func (c *CanvasClient) extractCurrentVideoFolder(page playwright.Page, folderPat
 
 	videoTableLocs := frameLoc.Locator("#listViewContainer")
 	videoTableLocs.WaitFor()
-	videoLocs, err := videoTableLocs.Locator(".detail-cell").All()
-	if err != nil {
-		pterm.Error.Printfln("error finding videos in %s", folderPath)
-	}
-	if len(videoLocs) == 0 {
-		pterm.Info.Printfln("found 0 videos in %s", folderPath)
-	}
+	videoLocs, _ := videoTableLocs.Locator(".detail-cell").All()
 	if len(videoLocs) > 0 {
 		for _, videoLoc := range videoLocs {
 			videoUrlLoc := videoLoc.GetByRole("link").First()
@@ -680,48 +674,44 @@ func (c *CanvasClient) extractCurrentVideoFolder(page playwright.Page, folderPat
 	// expand all hidden folders
 	folderListLoc := frameLoc.Locator(".subfolder-list")
 	folderListLoc.WaitFor()
-	folderLocs, err := folderListLoc.Locator(".subfolder-item").All()
-	if err != nil {
-		pterm.Error.Printfln("err getting .subfolder-item")
-	} else {
-		// fmt.Printf("\nfound %d folder locs", len(folderLocs))
-		if len(folderLocs) > 0 {
-			for _, folderLoc := range folderLocs {
-				visible, err := folderLoc.IsVisible()
-				if err != nil {
-					pterm.Error.Printfln("err getting folder visibility")
-					continue
-				}
-				if !visible {
-					pterm.Error.Printfln("folder loc not visible, skipping...")
-					// folder not valid, skip
-					continue
-				}
-				folderName, err := folderLoc.TextContent()
-				if err != nil {
-					pterm.Error.Printfln("err getting folder name: %v", err)
-					continue
-				}
-				folderName = strings.Trim(folderName, " \n")
-				if err := folderLoc.DispatchEvent("click", nil); err != nil {
-					pterm.Error.Printfln("err clicking on folder '%s': %v", folderName, err)
-					continue
-				}
-				folderName = filepath.Join(folderPath, folderName)
-				folder := c.extractCurrentVideoFolder(page, folderName, increment)
-				currentFolders = append(currentFolders, folder)
 
-				// increment folder count
-				increment(false)
+	folderLocs, _ := folderListLoc.Locator(".subfolder-item").All()
+	if len(folderLocs) > 0 {
+		for _, folderLoc := range folderLocs {
+			visible, err := folderLoc.IsVisible()
+			if err != nil {
+				pterm.Error.Printfln("err getting folder visibility")
+				continue
+			}
+			if !visible {
+				pterm.Error.Printfln("folder loc not visible, skipping...")
+				// folder not valid, skip
+				continue
+			}
+			folderName, err := folderLoc.TextContent()
+			if err != nil {
+				pterm.Error.Printfln("err getting folder name: %v", err)
+				continue
+			}
+			folderName = strings.Trim(folderName, " \n")
+			if err := folderLoc.DispatchEvent("click", nil); err != nil {
+				pterm.Error.Printfln("err clicking on folder '%s': %v", folderName, err)
+				continue
+			}
+			folderName = filepath.Join(folderPath, folderName)
+			folder := c.extractCurrentVideoFolder(page, folderName, increment)
+			currentFolders = append(currentFolders, folder)
 
-				// click back till successful
-				backBtn := frameLoc.Locator("#parentFolderButtonInHeader")
-				if err = backBtn.Click(); err != nil {
-					pterm.Error.Printfln("no 'back' btn found")
-				}
-				if err := expandSubfoldersLoc.WaitFor(); err == nil {
-					expandSubfoldersLoc.Click()
-				}
+			// increment folder count
+			increment(false)
+
+			// click back till successful
+			backBtn := frameLoc.Locator("#parentFolderButtonInHeader")
+			if err = backBtn.Click(); err != nil {
+				pterm.Error.Printfln("no 'back' btn found")
+			}
+			if err := expandSubfoldersLoc.WaitFor(); err == nil {
+				expandSubfoldersLoc.Click()
 			}
 		}
 	}
