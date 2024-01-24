@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.43](https://github.com/aidanaden/canvas-sync/compare/v1.26.42...v1.26.43) (2024-01-24)
+
+
+### Bug Fixes
+
+* update vulnerable indirect dep ([#227](https://github.com/aidanaden/canvas-sync/issues/227)) ([610f9ee](https://github.com/aidanaden/canvas-sync/commit/610f9ee2448972ba6d1b29db76d7b208de603387))
+
 ## [1.26.42](https://github.com/aidanaden/canvas-sync/compare/v1.26.41...v1.26.42) (2024-01-24)
 
 
