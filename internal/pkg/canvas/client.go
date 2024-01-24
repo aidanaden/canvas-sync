@@ -635,17 +635,7 @@ func (c *CanvasClient) extractCurrentVideoFolder(page playwright.Page, folderPat
 
 	videoTableLocs := frameLoc.Locator("#listViewContainer")
 	videoTableLocs.WaitFor()
-<<<<<<< HEAD
 	videoLocs, _ := videoTableLocs.Locator(".detail-cell").All()
-=======
-	videoLocs, err := videoTableLocs.Locator(".detail-cell").All()
-	if err != nil {
-		pterm.Error.Printfln("error finding videos in %s", folderPath)
-	}
-	// if len(videoLocs) == 0 {
-	// 	pterm.Info.Printfln("found 0 videos in %s", folderPath)
-	// }
->>>>>>> 4377343a107aac720a2fef3685fef86cf6da59d3
 	if len(videoLocs) > 0 {
 		for _, videoLoc := range videoLocs {
 			videoUrlLoc := videoLoc.GetByRole("link").First()
