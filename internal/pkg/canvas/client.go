@@ -629,7 +629,7 @@ func (c *CanvasClient) extractVideoAudioUrlFromFolder(page playwright.Page, fold
 }
 
 func (c *CanvasClient) extractCurrentVideoFolder(page playwright.Page, folderPath string, increment func(isFile bool)) *CourseVideoFolder {
-	frameLoc := page.FrameLocator("#tool_content")
+	frameLoc := page.FrameLocator(".tool_launch")
 	currentVideos := []*CourseVideoFile{}
 	currentFolders := []*CourseVideoFolder{}
 
@@ -639,9 +639,9 @@ func (c *CanvasClient) extractCurrentVideoFolder(page playwright.Page, folderPat
 	if err != nil {
 		pterm.Error.Printfln("error finding videos in %s", folderPath)
 	}
-	if len(videoLocs) == 0 {
-		pterm.Info.Printfln("found 0 videos in %s", folderPath)
-	}
+	// if len(videoLocs) == 0 {
+	// 	pterm.Info.Printfln("found 0 videos in %s", folderPath)
+	// }
 	if len(videoLocs) > 0 {
 		for _, videoLoc := range videoLocs {
 			videoUrlLoc := videoLoc.GetByRole("link").First()
@@ -682,7 +682,7 @@ func (c *CanvasClient) extractCurrentVideoFolder(page playwright.Page, folderPat
 	folderListLoc.WaitFor()
 	folderLocs, err := folderListLoc.Locator(".subfolder-item").All()
 	if err != nil {
-		pterm.Error.Printfln("err getting .subfolder-item")
+		pterm.Error.Printfln("err getting .subfolder-item: %s", err)
 	} else {
 		// fmt.Printf("\nfound %d folder locs", len(folderLocs))
 		if len(folderLocs) > 0 {
@@ -755,6 +755,7 @@ func (c *CanvasClient) GetCourseVideos(page playwright.Page, dataDir string, cou
 
 	courseVideosPath := filepath.Join(dataDir, course.CourseCode, "videos")
 	courseFolder := c.extractCurrentVideoFolder(page, courseVideosPath, increment)
+	fmt.Printf("\ncourse folders: %v", courseFolder.Folders)
 	for _, fold := range courseFolder.Folders {
 		c.extractVideoAudioUrlFromFolder(page, fold, increment)
 	}
