@@ -684,7 +684,6 @@ func (c *CanvasClient) extractCurrentVideoFolder(page playwright.Page, folderPat
 	if err != nil {
 		pterm.Error.Printfln("err getting .subfolder-item: %s", err)
 	} else {
-		// fmt.Printf("\nfound %d folder locs", len(folderLocs))
 		if len(folderLocs) > 0 {
 			for _, folderLoc := range folderLocs {
 				visible, err := folderLoc.IsVisible()
@@ -755,7 +754,6 @@ func (c *CanvasClient) GetCourseVideos(page playwright.Page, dataDir string, cou
 
 	courseVideosPath := filepath.Join(dataDir, course.CourseCode, "videos")
 	courseFolder := c.extractCurrentVideoFolder(page, courseVideosPath, increment)
-	fmt.Printf("\ncourse folders: %v", courseFolder.Folders)
 	for _, fold := range courseFolder.Folders {
 		c.extractVideoAudioUrlFromFolder(page, fold, increment)
 	}
