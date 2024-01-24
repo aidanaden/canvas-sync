@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.42](https://github.com/aidanaden/canvas-sync/compare/v1.26.41...v1.26.42) (2024-01-24)
+
+
+### Bug Fixes
+
+* use class to locate frame ([#225](https://github.com/aidanaden/canvas-sync/issues/225)) ([0154e04](https://github.com/aidanaden/canvas-sync/commit/0154e04b4e1da7f3ea44e1e6d50633f4b067f866))
+
 ## [1.26.41](https://github.com/aidanaden/canvas-sync/compare/v1.26.40...v1.26.41) (2024-01-17)
 
 
