@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.27.0](https://github.com/aidanaden/canvas-sync/compare/v1.26.43...v1.27.0) (2024-01-28)
+
+
+### Features
+
+* remove thank u persistent post message ([#230](https://github.com/aidanaden/canvas-sync/issues/230)) ([d8d638d](https://github.com/aidanaden/canvas-sync/commit/d8d638d1f680a24eaf370cc54b1b04cea35a110a))
+
 ## [1.26.43](https://github.com/aidanaden/canvas-sync/compare/v1.26.42...v1.26.43) (2024-01-24)
 
 
