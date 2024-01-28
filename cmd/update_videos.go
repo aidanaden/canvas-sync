@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"github.com/aidanaden/canvas-sync/internal/app/pull"
-	"github.com/aidanaden/canvas-sync/internal/pkg/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -16,9 +15,6 @@ var updateVideosCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		preRun(cmd)
 		pull.RunPullVideos(cmd, args, true)
-	},
-	PersistentPostRun: func(cmd *cobra.Command, args []string) {
-		utils.MotivationalAndStarMessage()
 	},
 }
 
