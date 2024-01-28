@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"github.com/aidanaden/canvas-sync/internal/app/update"
-	"github.com/aidanaden/canvas-sync/internal/pkg/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -24,9 +23,6 @@ var updateFilesCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		preRun(cmd)
 		update.RunUpdateFiles(cmd, args)
-	},
-	PersistentPostRun: func(cmd *cobra.Command, args []string) {
-		utils.MotivationalAndStarMessage()
 	},
 }
 
