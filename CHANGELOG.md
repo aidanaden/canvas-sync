@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.27.1](https://github.com/aidanaden/canvas-sync/compare/v1.27.0...v1.27.1) (2024-02-02)
+
+
+### Bug Fixes
+
+* remove newline after success ([#232](https://github.com/aidanaden/canvas-sync/issues/232)) ([4baf73e](https://github.com/aidanaden/canvas-sync/commit/4baf73e5e0d1460c5a2ff66035036ce260b79617))
+
 ## [1.27.0](https://github.com/aidanaden/canvas-sync/compare/v1.26.43...v1.27.0) (2024-01-28)
 
 
