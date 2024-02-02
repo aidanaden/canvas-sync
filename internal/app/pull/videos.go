@@ -294,5 +294,5 @@ func RunPullVideos(cmd *cobra.Command, args []string, isUpdate bool) {
 	}
 
 	pterm.Println()
-	pterm.Success.Printfln("Downloaded videos: %s\n", targetDir)
+	pterm.Success.Printfln("Downloaded videos: %s", targetDir)
 }
