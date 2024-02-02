@@ -102,5 +102,5 @@ func RunPullFiles(cmd *cobra.Command, args []string) {
 	wg.Wait()
 	sm.Stop()
 	pterm.Println()
-	pterm.Success.Printfln("Downloaded files: %s\n", targetDir)
+	pterm.Success.Printfln("Downloaded files: %s", targetDir)
 }

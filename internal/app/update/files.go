@@ -110,5 +110,5 @@ func RunUpdateFiles(cmd *cobra.Command, args []string) {
 	wg.Wait()
 	sm.Stop()
 	pterm.Println()
-	pterm.Success.Printfln("Updated files: %s\n", targetDir)
+	pterm.Success.Printfln("Updated files: %s", targetDir)
 }
